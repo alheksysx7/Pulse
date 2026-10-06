@@ -1,4 +1,4 @@
-import { ReactNode, useState, Suspense, lazy } from 'react';
+import { useState, Suspense, lazy } from 'react';
 import styles from './Layout.module.css';
 import { PatternPicker } from '../PatternPicker/PatternPicker';
 import { ThreadControls } from '../ThreadControls/ThreadControls';

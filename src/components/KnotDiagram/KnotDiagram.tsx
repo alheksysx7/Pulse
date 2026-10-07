@@ -39,7 +39,7 @@ export function KnotDiagram() {
               // Draw incoming threads
               for (let i = 0; i < knot.threadSpan; i++) {
                 const threadX = xOffset + (i + 0.5) * segmentWidth;
-                const targetX = (knot.type === 'SQUARE' || knot.type === 'HALF_SQUARE_L' || knot.type === 'HALF_SQUARE_R') ? threadX : x;
+                const targetX = (knot.type === 'F' || knot.type === 'B') ? x : threadX;
                 const color = knot.inColors ? knot.inColors[i] : (i < knot.threadSpan / 2 ? knot.color1 : knot.color2);
                 
                 elements.push(
@@ -73,9 +73,10 @@ export function KnotDiagram() {
               
               const element = (
                 <g key={`${rowIndex}-${knotIndex}`} className={styles.node}>
-                  <>
-                    {/* Outer border loops (Background) */}
-                    <rect x={x + 2} y={y - knotSize * 0.45} width={currentKnotWidth / 2 - 4} height={knotSize * 0.45} rx={6} fill={knot.outColor2} />
+                  {knot.type === 'NONE' ? null : knot.type === 'SQUARE' || knot.type === 'HALF_SQUARE_L' || knot.type === 'HALF_SQUARE_R' ? (
+                    <>
+                      {/* Outer border loops (Background) */}
+                      <rect x={x + 2} y={y - knotSize * 0.45} width={currentKnotWidth / 2 - 4} height={knotSize * 0.45} rx={6} fill={knot.outColor2} />
                       <rect x={x + 2} y={y - knotSize * 0.45} width={currentKnotWidth / 2 - 4} height={knotSize * 0.45} rx={6} fill="none" stroke="rgba(0,0,0,0.2)" strokeWidth="1" />
                       
                       <rect x={x - currentKnotWidth / 2 + 2} y={y} width={currentKnotWidth / 2 - 4} height={knotSize * 0.45} rx={6} fill={knot.outColor2} />
@@ -106,6 +107,13 @@ export function KnotDiagram() {
                       
                       <text x={x} y={y} fill="#fff" fontSize="10" fontWeight="bold" textAnchor="middle" dominantBaseline="central" style={{ mixBlendMode: 'difference' }}>{knot.type === 'HALF_SQUARE_L' ? 'HL' : knot.type === 'HALF_SQUARE_R' ? 'HR' : 'SQ'}</text>
                     </>
+                  ) : (
+                    <>
+                      <circle cx={x} cy={y} r={knotSize * 0.45} fill={knot.outColor1} />
+                      <circle cx={x} cy={y} r={knotSize * 0.45} fill="none" stroke="rgba(0,0,0,0.1)" strokeWidth="1" />
+                      <text x={x} y={y} fill="#fff" fontSize="12" fontWeight="bold" textAnchor="middle" dominantBaseline="central" style={{ mixBlendMode: 'difference' }}>{knot.type}</text>
+                    </>
+                  )}
                 </g>
               );
               

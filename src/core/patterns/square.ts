@@ -2,7 +2,7 @@ import type { Pattern, KnotType } from '../types';
 
 export const squarePattern: Pattern = {
   id: 'square',
-  name: 'Tejido nudo plano',
+  name: 'Nudo plano',
   minThreads: 2,
   maxThreads: 4,
   evenOnly: false,

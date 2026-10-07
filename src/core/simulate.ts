@@ -38,7 +38,25 @@ export function simulateSequence(initialColors: string[], rowKnotTypes: KnotType
       let outColor1 = color1;
       let outColor2 = color2;
 
-      if (type === 'SQUARE' || type === 'HALF_SQUARE_L' || type === 'HALF_SQUARE_R') {
+      if (type === 'F') {
+        // Forward knot: left thread ties over right thread (guide)
+        outColor1 = color1; // The knot color is the working thread
+        outColor2 = color1; // The working thread is visible
+        nextColors[leftIdx] = color2; // Right thread moves left
+        nextColors[rightIdx] = color1; // Left thread moves right
+      } else if (type === 'B') {
+        // Backward knot: right thread ties over left thread (guide)
+        outColor1 = color2; // Knot color is the working thread
+        outColor2 = color2; // The working thread is visible
+        nextColors[leftIdx] = color2; // Right thread moves left
+        nextColors[rightIdx] = color1; // Left thread moves right
+      } else if (type === 'NONE') {
+        // No knot: threads drop straight down
+        outColor1 = color1;
+        outColor2 = color2;
+        nextColors[leftIdx] = color1;
+        nextColors[rightIdx] = color2;
+      } else if (type === 'SQUARE' || type === 'HALF_SQUARE_L' || type === 'HALF_SQUARE_R') {
         // Square knot spans 3 or 4 threads: outer threads tie around inner core(s)
         const outerLeft = currentColors[leftIdx];
         const outerRight = currentColors[leftIdx + threadSpan - 1];

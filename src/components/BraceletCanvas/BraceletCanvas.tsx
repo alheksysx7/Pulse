@@ -39,24 +39,53 @@ export function BraceletCanvas() {
       rowHeight = knotSize * 0.5;
     } else if (patternId === 'square' && threadsCount === 2) {
       rowHeight = knotSize * 0.75;
+    } else if (patternId === 'zigzag-festoon') {
+      rowHeight = knotSize * 0.22;
     }
     const paddingX = 40;
     const paddingTop = 80;
     const paddingBottom = 80;
     
-    // Width based on threads (each thread takes some width, knots combine 2 threads)
-    let actualRowsCount = 10; // default
+    // Generate an excess of rows to guarantee we fill the screen
+    let actualRowsCount = 50; 
+    const availableHeight = Math.max(100, containerHeight - paddingTop - paddingBottom);
     if (containerHeight > 0) {
-      const availableHeight = containerHeight - paddingTop - paddingBottom;
-      actualRowsCount = Math.max(1, Math.floor(availableHeight / rowHeight));
+      // Multiply by 2 because some patterns skip rows (NONE knots) which don't add to height
+      actualRowsCount = Math.max(10, Math.floor(availableHeight / rowHeight) * 2);
     }
     
     const sequence = pattern.generateSequence(threadsCount, actualRowsCount);
     const shiftOddRows = pattern.shiftOddRows !== false;
-    const { grid, finalColors } = simulateSequence(colors, sequence, shiftOddRows);
+    let { grid, finalColors } = simulateSequence(colors, sequence, shiftOddRows);
 
+    const rowY: number[] = [];
+    let currentY = paddingTop;
+    let cutoffIndex = grid.length;
+
+    for (let i = 0; i < grid.length; i++) {
+      const rowKnots = grid[i];
+      rowY.push(currentY);
+      
+      const hasKnots = rowKnots.some(k => k.type !== 'NONE');
+      if (hasKnots) {
+        currentY += rowHeight;
+      }
+
+      // If we've reached the bottom, stop here
+      if (currentY - paddingTop > availableHeight) {
+        cutoffIndex = i + 1;
+        break;
+      }
+    }
+
+    // Trim the sequence and re-simulate to get the correct final colors at the cutoff point
+    const trimmedSequence = sequence.slice(0, cutoffIndex);
+    const finalSim = simulateSequence(colors, trimmedSequence, shiftOddRows);
+    grid = finalSim.grid;
+    finalColors = finalSim.finalColors;
+    
     const width = threadsCount * (knotSize / 2) + paddingX * 2;
-    const height = actualRowsCount * rowHeight + paddingTop + paddingBottom;
+    const height = currentY + paddingBottom;
 
     // Handle high DPI displays
     const dpr = window.devicePixelRatio || 1;
@@ -72,10 +101,12 @@ export function BraceletCanvas() {
     // Draw threads first
     grid.forEach((rowKnots, rowIndex) => {
       const isOddRow = rowIndex % 2 !== 0;
-      const y = paddingTop + rowIndex * rowHeight + knotSize / 2;
-      const prevY = rowIndex === 0 ? 20 : y - rowHeight;
+      const y = rowY[rowIndex] + knotSize / 2;
+      const prevY = rowIndex === 0 ? 20 : rowY[rowIndex - 1] + knotSize / 2;
       let xOffset = paddingX;
       if (isOddRow && shiftOddRows) xOffset += knotSize / 2;
+
+      let globalThreadIndex = 0;
 
       rowKnots.forEach((knot) => {
         const currentKnotWidth = (knot.threadSpan / 2) * knotSize;
@@ -86,12 +117,21 @@ export function BraceletCanvas() {
           const targetX = threadX;
           const color = knot.inColors ? knot.inColors[i] : (i < knot.threadSpan / 2 ? knot.color1 : knot.color2);
           
-          ctx.beginPath();
-          ctx.moveTo(threadX, prevY);
-          ctx.lineTo(targetX, y);
-          ctx.lineWidth = 6; // Thicker threads to reduce gaps
-          ctx.strokeStyle = color;
-          ctx.stroke();
+          // Hide unknotted threads (NONE) ONLY on the extreme edges so they don't stick out.
+          // Internal NONE threads should be drawn so they are visible in the zigzag gaps.
+          const isEdgeThread = globalThreadIndex === 0 || globalThreadIndex === threadsCount - 1;
+          const shouldHide = knot.type === 'NONE' && isEdgeThread;
+
+          if (!shouldHide) {
+            ctx.beginPath();
+            ctx.moveTo(threadX, prevY);
+            ctx.lineTo(targetX, y);
+            ctx.lineWidth = 6; // Thicker threads to reduce gaps
+            ctx.strokeStyle = color;
+            ctx.stroke();
+          }
+          
+          globalThreadIndex++;
         }
         xOffset += currentKnotWidth;
       });
@@ -99,7 +139,7 @@ export function BraceletCanvas() {
 
     // Draw bottom tails
     if (grid.length > 0) {
-      const lastY = paddingTop + (grid.length - 1) * rowHeight + knotSize / 2;
+      const lastY = rowY[grid.length - 1] + knotSize / 2;
       finalColors.forEach((color, i) => {
         const threadX = paddingX + (i + 0.5) * (knotSize / 2);
         ctx.beginPath();
@@ -111,23 +151,36 @@ export function BraceletCanvas() {
       });
     }
 
-    // Draw grid of knots
-    grid.forEach((rowKnots, rowIndex) => {
+    // Draw grid of knots (bottom to top so upper knots overlap lower ones)
+    const reversedGrid = [...grid].reverse();
+    reversedGrid.forEach((rowKnots, reverseIndex) => {
+      const rowIndex = grid.length - 1 - reverseIndex;
       const isOddRow = rowIndex % 2 !== 0;
-      const y = paddingTop + rowIndex * rowHeight;
+      const y = rowY[rowIndex];
       
       let xOffset = paddingX;
       if (isOddRow && shiftOddRows) {
         xOffset += knotSize / 2;
       }
 
-      rowKnots.forEach((knot) => {
+      let firstNonEmptyIndex = -1;
+      let lastNonEmptyIndex = -1;
+      rowKnots.forEach((k, i) => {
+        if (k.type !== 'NONE') {
+          if (firstNonEmptyIndex === -1) firstNonEmptyIndex = i;
+          lastNonEmptyIndex = i;
+        }
+      });
+
+      rowKnots.forEach((knot, knotIndex) => {
         const x = xOffset;
         const currentKnotWidth = (knot.threadSpan / 2) * knotSize;
+        const isLeftEdge = knotIndex === firstNonEmptyIndex;
+        const isRightEdge = knotIndex === lastNonEmptyIndex;
         
         const renderer = KNOT_RENDERERS[knot.type];
         if (renderer) {
-          renderer({ ctx, knot, x, y, knotSize, currentKnotWidth });
+          renderer({ ctx, knot, x, y, knotSize, currentKnotWidth, isLeftEdge, isRightEdge });
         }
         
         xOffset += currentKnotWidth;

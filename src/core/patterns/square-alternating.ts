@@ -2,7 +2,7 @@ import type { Pattern, KnotType } from '../types';
 
 export const squareAlternatingPattern: Pattern = {
   id: 'square-alternating',
-  name: 'Tejido nudo plano alternado',
+  name: 'Nudo plano alternado',
   minThreads: 3,
   maxThreads: 3,
   evenOnly: false,

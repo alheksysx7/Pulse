@@ -39,21 +39,23 @@ export function BraceletCanvas() {
     } else if (patternId === 'square' && threadsCount === 2) {
       rowHeight = knotSize * 0.75;
     }
-    const padding = 20;
+    const paddingX = 40;
+    const paddingTop = 80;
+    const paddingBottom = 80;
     
     // Width based on threads (each thread takes some width, knots combine 2 threads)
     let actualRowsCount = 10; // default
     if (containerHeight > 0) {
-      const availableHeight = containerHeight - padding * 2;
+      const availableHeight = containerHeight - paddingTop - paddingBottom;
       actualRowsCount = Math.max(1, Math.floor(availableHeight / rowHeight));
     }
     
     const sequence = pattern.generateSequence(threadsCount, actualRowsCount);
     const shiftOddRows = pattern.shiftOddRows !== false;
-    const { grid } = simulateSequence(colors, sequence, shiftOddRows);
+    const { grid, finalColors } = simulateSequence(colors, sequence, shiftOddRows);
 
-    const width = threadsCount * (knotSize / 2) + padding * 2;
-    const height = actualRowsCount * rowHeight + padding * 2;
+    const width = threadsCount * (knotSize / 2) + paddingX * 2;
+    const height = actualRowsCount * rowHeight + paddingTop + paddingBottom;
 
     // Handle high DPI displays
     const dpr = window.devicePixelRatio || 1;
@@ -69,9 +71,9 @@ export function BraceletCanvas() {
     // Draw threads first
     grid.forEach((rowKnots, rowIndex) => {
       const isOddRow = rowIndex % 2 !== 0;
-      const y = padding + rowIndex * rowHeight + knotSize / 2;
-      const prevY = rowIndex === 0 ? padding : y - rowHeight;
-      let xOffset = padding;
+      const y = paddingTop + rowIndex * rowHeight + knotSize / 2;
+      const prevY = rowIndex === 0 ? 20 : y - rowHeight;
+      let xOffset = paddingX;
       if (isOddRow && shiftOddRows) xOffset += knotSize / 2;
 
       rowKnots.forEach((knot) => {
@@ -94,12 +96,26 @@ export function BraceletCanvas() {
       });
     });
 
+    // Draw bottom tails
+    if (grid.length > 0) {
+      const lastY = paddingTop + (grid.length - 1) * rowHeight + knotSize / 2;
+      finalColors.forEach((color, i) => {
+        const threadX = paddingX + (i + 0.5) * (knotSize / 2);
+        ctx.beginPath();
+        ctx.moveTo(threadX, lastY);
+        ctx.lineTo(threadX, height - 20);
+        ctx.lineWidth = 6;
+        ctx.strokeStyle = color;
+        ctx.stroke();
+      });
+    }
+
     // Draw grid of knots
     grid.forEach((rowKnots, rowIndex) => {
       const isOddRow = rowIndex % 2 !== 0;
-      const y = padding + rowIndex * rowHeight;
+      const y = paddingTop + rowIndex * rowHeight;
       
-      let xOffset = padding;
+      let xOffset = paddingX;
       if (isOddRow && shiftOddRows) {
         xOffset += knotSize / 2;
       }

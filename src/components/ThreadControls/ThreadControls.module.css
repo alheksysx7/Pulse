@@ -18,6 +18,12 @@
   color: var(--color-text-muted);
 }
 
+.subtitle {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  margin-top: -0.25rem;
+}
+
 .slider {
   width: 100%;
   accent-color: var(--color-accent-terracotta);

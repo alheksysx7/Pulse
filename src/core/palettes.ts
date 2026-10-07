@@ -5,27 +5,27 @@ export interface Palette {
 
 export const PREDEFINED_PALETTES: Palette[] = [
   {
-    name: 'Boho Chic',
-    colors: ['#D36C50', '#E5D5C5', '#8A9A86', '#E5B181', '#5B6B5D']
+    name: 'Rústico y Natural',
+    colors: ['#E8E3D9', '#C2A88D', '#DDA74F', '#B65C45', '#6A7045']
   },
   {
-    name: 'Pastel Soft',
-    colors: ['#FAD4D8', '#F3E1E1', '#D4E2D4', '#E6E6FA', '#FFF0BA']
+    name: 'Bosque Profundo',
+    colors: ['#2C4C3B', '#596A48', '#4A3525', '#8B3A33', '#888C8D']
   },
   {
-    name: 'Earth Tones',
-    colors: ['#5A3D31', '#8C6239', '#D9A05B', '#C17767', '#3D4A3E']
+    name: 'Clásica Marinera',
+    colors: ['#1B2A49', '#005C97', '#F4F4F0', '#A1232B', '#D7C4A5']
   },
   {
-    name: 'Sunset',
-    colors: ['#2A1B38', '#E04A3A', '#F39C12', '#F1C40F', '#E87E04']
+    name: 'Sólidos Vivos',
+    colors: ['#222222', '#C72C3A', '#F2C94C', '#5DA9E9', '#008F68']
   },
   {
-    name: 'Neon Cyberpunk',
-    colors: ['#FF003C', '#00ff88ff', '#D600FF', '#00B8FF', '#0D0208']
+    name: 'Pasteles Suaves',
+    colors: ['#D2A3A9', '#C1B4D5', '#A8D5BA', '#B5D8EB', '#FDF5E6']
   },
   {
-    name: 'Ocean Waves',
-    colors: ['#031B33', '#004A7C', '#005691', '#E8F1F5', '#A5D8DD']
+    name: 'Atardecer Cálido',
+    colors: ['#5B2333', '#9A2A54', '#D96C4A', '#ECA42E', '#E8E3D9']
   }
 ];

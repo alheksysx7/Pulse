@@ -7,12 +7,14 @@ export interface DesignState {
   threadsCount: number;
   rowsCount: number;
   colors: string[];
+  activePaletteName: string | null;
+  paletteShift: number;
   
   setPatternId: (id: string) => void;
   setThreadsCount: (count: number) => void;
   setRowsCount: (count: number) => void;
   setColor: (index: number, color: string) => void;
-  applyPalette: (colors: string[]) => void;
+  applyPalette: (name: string, colors: string[]) => void;
 }
 
 const defaultPatternId = 'chevron';
@@ -29,6 +31,8 @@ export const useDesignStore = create<DesignState>((set) => ({
   threadsCount: defaultThreadsCount,
   rowsCount: 20, // default visible rows
   colors: getInitialColors(defaultThreadsCount, defaultColors),
+  activePaletteName: PREDEFINED_PALETTES[0].name,
+  paletteShift: 0,
 
   setPatternId: (id) => set((state) => {
     const pattern = PATTERNS[id];
@@ -72,10 +76,21 @@ export const useDesignStore = create<DesignState>((set) => ({
   setColor: (index, color) => set((state) => {
     const newColors = [...state.colors];
     newColors[index] = color;
-    return { colors: newColors };
+    return { colors: newColors, activePaletteName: null, paletteShift: 0 }; // clear active palette if manually edited
   }),
   
-  applyPalette: (colors) => set((state) => ({
-    colors: getInitialColors(state.threadsCount, colors)
-  }))
+  applyPalette: (name, colors) => set((state) => {
+    let newShift = 0;
+    if (state.activePaletteName === name) {
+      newShift = (state.paletteShift + 1) % colors.length;
+    }
+    
+    const shiftedPalette = [...colors.slice(newShift), ...colors.slice(0, newShift)];
+    
+    return {
+      activePaletteName: name,
+      paletteShift: newShift,
+      colors: getInitialColors(state.threadsCount, shiftedPalette)
+    };
+  })
 }));

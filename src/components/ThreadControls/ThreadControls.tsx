@@ -47,12 +47,13 @@ export function ThreadControls() {
 
       <div className={styles.section}>
         <h3 className={styles.title}>Palettes</h3>
+        <p className={styles.subtitle}>Click a palette to apply it. Click again to cycle colors.</p>
         <div className={styles.paletteGrid}>
           {PREDEFINED_PALETTES.map((palette) => (
             <button 
               key={palette.name} 
               className={styles.paletteButton}
-              onClick={() => applyPalette(palette.colors)}
+              onClick={() => applyPalette(palette.name, palette.colors)}
               title={palette.name}
             >
               <div className={styles.palettePreview}>

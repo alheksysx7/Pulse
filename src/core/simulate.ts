@@ -24,7 +24,7 @@ export function simulateSequence(initialColors: string[], rowKnotTypes: KnotType
       const type = knotTypes[k];
       let threadSpan = 2;
       
-      if (type === 'SQUARE') {
+      if (type === 'SQUARE' || type === 'HALF_SQUARE_L' || type === 'HALF_SQUARE_R') {
         threadSpan = currentColors.length; // Spans all available threads (3 or 4)
       }
       
@@ -56,19 +56,27 @@ export function simulateSequence(initialColors: string[], rowKnotTypes: KnotType
         outColor1 = color2;
         nextColors[leftIdx] = color1;
         nextColors[rightIdx] = color2;
-      } else if (type === 'SQUARE') {
+      } else if (type === 'SQUARE' || type === 'HALF_SQUARE_L' || type === 'HALF_SQUARE_R') {
         // Square knot spans 3 or 4 threads: outer threads tie around inner core(s)
         const outerLeft = currentColors[leftIdx];
         const outerRight = currentColors[leftIdx + threadSpan - 1];
         
-        // If there are no core threads (threadSpan === 2), the two threads interlock with each other,
-        // causing the visible front color to alternate every row.
-        if (threadSpan === 2 && rowIndex % 2 !== 0) {
+        if (type === 'HALF_SQUARE_L') {
+          outColor1 = outerLeft;
+          outColor2 = outerRight;
+        } else if (type === 'HALF_SQUARE_R') {
           outColor1 = outerRight;
           outColor2 = outerLeft;
         } else {
-          outColor1 = outerLeft; // Zigzag inner thread (always goes OVER)
-          outColor2 = outerRight; // Border outer thread (always goes UNDER)
+          // If there are no core threads (threadSpan === 2), the two threads interlock with each other,
+          // causing the visible front color to alternate every row.
+          if (threadSpan === 2 && rowIndex % 2 !== 0) {
+            outColor1 = outerRight;
+            outColor2 = outerLeft;
+          } else {
+            outColor1 = outerLeft; // Zigzag inner thread (always goes OVER)
+            outColor2 = outerRight; // Border outer thread (always goes UNDER)
+          }
         }
         
         // Colors don't swap position in a flat square knot

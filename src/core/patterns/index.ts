@@ -3,6 +3,7 @@ import { chevronPattern } from './chevron';
 import { zigzagPattern } from './zigzag';
 import { diamondPattern } from './diamond';
 import { squarePattern } from './square';
+import { squareAlternatingPattern } from './square-alternating';
 import type { Pattern } from '../types';
 
 export const PATTERNS: Record<string, Pattern> = {
@@ -10,7 +11,8 @@ export const PATTERNS: Record<string, Pattern> = {
   [chevronPattern.id]: chevronPattern,
   [zigzagPattern.id]: zigzagPattern,
   [diamondPattern.id]: diamondPattern,
-  [squarePattern.id]: squarePattern
+  [squarePattern.id]: squarePattern,
+  [squareAlternatingPattern.id]: squareAlternatingPattern
 };
 
 export const PATTERN_LIST = Object.values(PATTERNS);

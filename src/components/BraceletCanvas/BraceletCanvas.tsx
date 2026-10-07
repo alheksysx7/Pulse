@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDesignStore } from '../../store/useDesignStore';
 import { PATTERNS } from '../../core/patterns';
 import { simulateSequence } from '../../core/simulate';
@@ -6,7 +6,22 @@ import styles from './BraceletCanvas.module.css';
 
 export function BraceletCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { patternId, threadsCount, rowsCount, colors } = useDesignStore();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [containerHeight, setContainerHeight] = useState(0);
+  
+  const { patternId, threadsCount, colors } = useDesignStore();
+
+  useEffect(() => {
+    const observer = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        setContainerHeight(entry.contentRect.height);
+      }
+    });
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -16,17 +31,29 @@ export function BraceletCanvas() {
 
     // We will do a simple drawing first to test.
     const pattern = PATTERNS[patternId];
-    const sequence = pattern.generateSequence(threadsCount, rowsCount);
-    const shiftOddRows = pattern.shiftOddRows !== false;
-    const { grid } = simulateSequence(colors, sequence, shiftOddRows);
-
     // Canvas setup
     const knotSize = 24;
+    let rowHeight = knotSize;
+    if (patternId === 'square-alternating') {
+      rowHeight = knotSize * 0.5;
+    } else if (patternId === 'square' && threadsCount === 2) {
+      rowHeight = knotSize * 0.75;
+    }
     const padding = 20;
     
     // Width based on threads (each thread takes some width, knots combine 2 threads)
+    let actualRowsCount = 10; // default
+    if (containerHeight > 0) {
+      const availableHeight = containerHeight - padding * 2;
+      actualRowsCount = Math.max(1, Math.floor(availableHeight / rowHeight));
+    }
+    
+    const sequence = pattern.generateSequence(threadsCount, actualRowsCount);
+    const shiftOddRows = pattern.shiftOddRows !== false;
+    const { grid } = simulateSequence(colors, sequence, shiftOddRows);
+
     const width = threadsCount * (knotSize / 2) + padding * 2;
-    const height = rowsCount * knotSize + padding * 2;
+    const height = actualRowsCount * rowHeight + padding * 2;
 
     // Handle high DPI displays
     const dpr = window.devicePixelRatio || 1;
@@ -42,8 +69,8 @@ export function BraceletCanvas() {
     // Draw threads first
     grid.forEach((rowKnots, rowIndex) => {
       const isOddRow = rowIndex % 2 !== 0;
-      const y = padding + rowIndex * knotSize + knotSize / 2;
-      const prevY = y - knotSize;
+      const y = padding + rowIndex * rowHeight + knotSize / 2;
+      const prevY = rowIndex === 0 ? padding : y - rowHeight;
       let xOffset = padding;
       if (isOddRow && shiftOddRows) xOffset += knotSize / 2;
 
@@ -54,7 +81,7 @@ export function BraceletCanvas() {
 
         for (let i = 0; i < knot.threadSpan; i++) {
           const threadX = xOffset + (i + 0.5) * segmentWidth;
-          const targetX = knot.type === 'SQUARE' ? threadX : x;
+          const targetX = (knot.type === 'SQUARE' || knot.type === 'HALF_SQUARE_L' || knot.type === 'HALF_SQUARE_R') ? threadX : x;
           const color = knot.inColors ? knot.inColors[i] : (i < knot.threadSpan / 2 ? knot.color1 : knot.color2);
           
           ctx.beginPath();
@@ -71,7 +98,7 @@ export function BraceletCanvas() {
     // Draw grid of knots
     grid.forEach((rowKnots, rowIndex) => {
       const isOddRow = rowIndex % 2 !== 0;
-      const y = padding + rowIndex * knotSize;
+      const y = padding + rowIndex * rowHeight;
       
       let xOffset = padding;
       if (isOddRow && shiftOddRows) {
@@ -159,6 +186,66 @@ export function BraceletCanvas() {
           ctx.moveTo(centerX - slant + 4, y + knotSize - 8);
           ctx.quadraticCurveTo(centerX - slant - 6, y + knotSize, centerX - slant + 4, y + knotSize + 8);
           ctx.stroke();
+        } else if (knot.type === 'HALF_SQUARE_L' || knot.type === 'HALF_SQUARE_R') {
+          const segmentWidth = currentKnotWidth / knot.threadSpan;
+          const centerX = x + segmentWidth * 1.5; // Center of the core thread
+          
+          // Draw the horizontal wrap (bump) over the core
+          ctx.beginPath();
+          ctx.moveTo(centerX - segmentWidth / 1.2, y + knotSize / 2);
+          ctx.lineTo(centerX + segmentWidth / 1.2, y + knotSize / 2);
+          ctx.lineWidth = knotSize * 0.6; // Thick horizontal bump covering the core
+          ctx.lineCap = 'round';
+          ctx.strokeStyle = knot.outColor1;
+          ctx.stroke();
+          
+          // Highlight on the horizontal bump
+          ctx.beginPath();
+          ctx.moveTo(centerX - segmentWidth / 1.5, y + knotSize / 2 - 2);
+          ctx.lineTo(centerX + segmentWidth / 1.5, y + knotSize / 2 - 2);
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+          ctx.stroke();
+          
+          // Shadow under the bump
+          ctx.beginPath();
+          ctx.moveTo(centerX - segmentWidth / 1.2, y + knotSize / 2 + 4);
+          ctx.lineTo(centerX + segmentWidth / 1.2, y + knotSize / 2 + 4);
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = 'rgba(0,0,0,0.3)';
+          ctx.stroke();
+
+          // Draw the side loop connecting to the outer thread
+          ctx.beginPath();
+          if (knot.type === 'HALF_SQUARE_L') {
+            // Loop on the left
+            ctx.moveTo(centerX - segmentWidth / 1.2 + 2, y + knotSize / 2);
+            ctx.quadraticCurveTo(x - 2, y + knotSize / 2, x + 2, y + 2);
+            ctx.quadraticCurveTo(x + 4, y - knotSize / 4, centerX - segmentWidth, y - 2);
+          } else {
+            // Loop on the right
+            ctx.moveTo(centerX + segmentWidth / 1.2 - 2, y + knotSize / 2);
+            ctx.quadraticCurveTo(x + segmentWidth * 3 + 2, y + knotSize / 2, x + segmentWidth * 3 - 2, y + 2);
+            ctx.quadraticCurveTo(x + segmentWidth * 3 - 4, y - knotSize / 4, centerX + segmentWidth, y - 2);
+          }
+          
+          ctx.lineWidth = knotSize * 0.35;
+          ctx.lineCap = 'round';
+          ctx.strokeStyle = knot.outColor1;
+          ctx.stroke();
+          
+          // Highlight for the side loop
+          ctx.beginPath();
+          if (knot.type === 'HALF_SQUARE_L') {
+            ctx.moveTo(centerX - segmentWidth / 1.2 + 2, y + knotSize / 2 - 2);
+            ctx.quadraticCurveTo(x, y + knotSize / 2 - 2, x + 2, y + 2);
+          } else {
+            ctx.moveTo(centerX + segmentWidth / 1.2 - 2, y + knotSize / 2 - 2);
+            ctx.quadraticCurveTo(x + segmentWidth * 3, y + knotSize / 2 - 2, x + segmentWidth * 3 - 2, y + 2);
+          }
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+          ctx.stroke();
         } else {
           // Draw a circle for standard knots (fill the whole space)
           ctx.arc(x + currentKnotWidth / 2, y + knotSize / 2, knotSize / 2, 0, Math.PI * 2);
@@ -176,10 +263,10 @@ export function BraceletCanvas() {
       });
     });
 
-  }, [patternId, threadsCount, rowsCount, colors]);
+  }, [patternId, threadsCount, colors, containerHeight]);
 
   return (
-    <div className={styles.container}>
+    <div ref={containerRef} className={styles.container}>
       <canvas ref={canvasRef} className={styles.canvas} />
     </div>
   );

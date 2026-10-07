@@ -1,0 +1,105 @@
+import { useDesignStore } from '../../store/useDesignStore';
+import styles from './Instructions.module.css';
+
+export function Instructions() {
+  const { patternId } = useDesignStore();
+
+  if (patternId === 'square') {
+    return (
+      <div className={styles.container}>
+        <h2 className={styles.title}>Instrucciones: Tejido Nudo Plano</h2>
+        
+        <div className={styles.content}>
+          <section className={styles.section}>
+            <h3>Preparación</h3>
+            <p>Para el nudo plano necesitas un hilo central (o grupo de hilos que sirvan como guía) y dos hilos laterales para anudar.</p>
+            <ul>
+              <li>Fija los hilos centrales a tu tabla de trabajo. Estos deben mantenerse tensos.</li>
+              <li>Coloca el hilo anudador por detrás de los hilos centrales de manera que tengas la misma longitud de hilo a la izquierda y a la derecha.</li>
+            </ul>
+          </section>
+
+          <section className={styles.section}>
+            <h3>Paso 1: Medio nudo plano (Lado izquierdo)</h3>
+            <ol>
+              <li>Toma el hilo del <strong>lado izquierdo</strong> y pásalo por <strong>encima</strong> de los hilos centrales, formando una forma de "4".</li>
+              <li>Toma el hilo del <strong>lado derecho</strong>, pásalo por <strong>encima</strong> de la cola del hilo izquierdo, luego por <strong>debajo</strong> de los hilos centrales.</li>
+              <li>Sácalo por el bucle (el "4") que formó el hilo izquierdo de abajo hacia arriba.</li>
+              <li>Tira de ambos hilos laterales simultáneamente para apretar el nudo hacia arriba. Mantén los hilos centrales tensos.</li>
+            </ol>
+          </section>
+
+          <section className={styles.section}>
+            <h3>Paso 2: Completar el nudo plano (Lado derecho)</h3>
+            <ol>
+              <li>Ahora, toma el hilo del <strong>lado derecho</strong> y pásalo por <strong>encima</strong> de los hilos centrales, formando una forma de "P" o un "4" invertido.</li>
+              <li>Toma el hilo del <strong>lado izquierdo</strong>, pásalo por <strong>encima</strong> de la cola del hilo derecho, luego por <strong>debajo</strong> de los hilos centrales.</li>
+              <li>Sácalo por el bucle que formó el hilo derecho de abajo hacia arriba.</li>
+              <li>Tira de ambos hilos para apretar el nudo y completar el primer nudo plano completo.</li>
+            </ol>
+          </section>
+
+          <section className={styles.section}>
+            <h3>Continuación</h3>
+            <p>Repite los Pasos 1 y 2 alternando siempre entre izquierda y derecha. Si olvidas de qué lado te toca, fíjate en el pequeño bulto vertical que se forma en el costado del último nudo completo; el hilo que sale de ese lado es el que debe hacer la forma de "4" (o "4" invertido) para iniciar el siguiente medio nudo.</p>
+          </section>
+        </div>
+      </div>
+    );
+  }
+
+  if (patternId === 'square-alternating') {
+    return (
+      <div className={styles.container}>
+        <h2 className={styles.title}>Instrucciones: Tejido Nudo Plano Alternado</h2>
+        
+        <div className={styles.content}>
+          <section className={styles.section}>
+            <h3>Materiales Necesarios</h3>
+            <p>3 hilos de colores contrastantes (por ejemplo: un hilo gris para el centro, uno rojo para la izquierda y uno amarillo para la derecha).</p>
+            <p>Una tabla con clip (portapapeles) para sujetar y tensar el inicio del tejido.</p>
+          </section>
+
+          <section className={styles.section}>
+            <h3>Preparación de la Base</h3>
+            <ul>
+              <li>Sujeta los tres hilos en la parte superior con el clip de la tabla.</li>
+              <li>Coloca el hilo gris en el centro; este funcionará como el hilo guía estático y vertical.</li>
+              <li>Coloca el hilo rojo a la izquierda y el hilo amarillo a la derecha; ambos funcionarán como hilos de trabajo.</li>
+            </ul>
+          </section>
+
+          <section className={styles.section}>
+            <h3>Primer Nudo (Lado Izquierdo)</h3>
+            <ol>
+              <li>Toma el hilo rojo de la izquierda y pásalo por <strong>encima</strong> del hilo guía central, formando un bucle hacia la derecha.</li>
+              <li>Pasa el extremo del hilo rojo por <strong>debajo</strong> del hilo guía y por <strong>dentro</strong> del bucle para cerrar el nudo hacia la izquierda, ajustándolo firmemente en la parte superior.</li>
+            </ol>
+          </section>
+
+          <section className={styles.section}>
+            <h3>Segundo Nudo (Lado Derecho)</h3>
+            <ol>
+              <li>Toma el hilo amarillo de la derecha y pásalo por <strong>encima</strong> del hilo guía central, formando un bucle hacia la izquierda.</li>
+              <li>Pasa el extremo del hilo amarillo por <strong>debajo</strong> del hilo guía y por <strong>dentro</strong> del bucle para cerrar el nudo hacia la derecha, ajustándolo justo debajo del nudo anterior.</li>
+            </ol>
+          </section>
+
+          <section className={styles.section}>
+            <h3>Repetición del Patrón</h3>
+            <p><strong>Alterna:</strong> Continúa repitiendo este ciclo: un nudo con el hilo izquierdo (rojo), seguido de un nudo con el hilo derecho (amarillo), y así sucesivamente.</p>
+          </section>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={styles.container}>
+      <div className={styles.emptyState}>
+        <h2>Instrucciones no disponibles</h2>
+        <p>Aún no tenemos instrucciones detalladas para este patrón. Por favor, selecciona el patrón "Tejido nudo plano" o "Tejido nudo plano alternado" para ver un ejemplo.</p>
+      </div>
+    </div>
+  );
+}

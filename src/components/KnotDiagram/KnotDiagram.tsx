@@ -7,14 +7,16 @@ export function KnotDiagram() {
   const { patternId, threadsCount, rowsCount, colors } = useDesignStore();
 
   const pattern = PATTERNS[patternId];
-  const sequence = pattern.generateSequence(threadsCount, rowsCount);
+  const actualRowsCount = patternId === 'square-alternating' ? rowsCount * 2 : rowsCount;
+  const sequence = pattern.generateSequence(threadsCount, actualRowsCount);
   const shiftOddRows = pattern.shiftOddRows !== false;
   const { grid } = simulateSequence(colors, sequence, shiftOddRows);
 
   const knotSize = 30;
+  const rowHeight = knotSize;
   const padding = 20;
   const width = threadsCount * (knotSize / 2) + padding * 2;
-  const height = rowsCount * knotSize + padding * 2;
+  const height = actualRowsCount * rowHeight + padding * 2;
 
   const renderArrow = (type: string, x: number, y: number, r: number) => {
     const size = r * 0.6;
@@ -46,14 +48,14 @@ export function KnotDiagram() {
         <g className={styles.threads}>
           {grid.map((rowKnots, rowIndex) => {
             const isOddRow = rowIndex % 2 !== 0;
-            const y = padding + rowIndex * knotSize + knotSize / 2;
+            const y = padding + rowIndex * rowHeight + knotSize / 2;
             let xOffset = padding;
             if (isOddRow && shiftOddRows) xOffset += knotSize / 2;
             
             return rowKnots.map((knot, knotIndex) => {
               const currentKnotWidth = (knot.threadSpan / 2) * knotSize;
               const x = xOffset + currentKnotWidth / 2;
-              const prevY = y - knotSize;
+              const prevY = rowIndex === 0 ? padding : y - rowHeight;
               
               const elements = [];
               const segmentWidth = currentKnotWidth / knot.threadSpan;
@@ -61,7 +63,7 @@ export function KnotDiagram() {
               // Draw incoming threads
               for (let i = 0; i < knot.threadSpan; i++) {
                 const threadX = xOffset + (i + 0.5) * segmentWidth;
-                const targetX = knot.type === 'SQUARE' ? threadX : x;
+                const targetX = (knot.type === 'SQUARE' || knot.type === 'HALF_SQUARE_L' || knot.type === 'HALF_SQUARE_R') ? threadX : x;
                 const color = knot.inColors ? knot.inColors[i] : (i < knot.threadSpan / 2 ? knot.color1 : knot.color2);
                 
                 elements.push(
@@ -82,7 +84,7 @@ export function KnotDiagram() {
         <g className={styles.nodes}>
           {grid.map((rowKnots, rowIndex) => {
             const isOddRow = rowIndex % 2 !== 0;
-            const y = padding + rowIndex * knotSize + knotSize / 2;
+            const y = padding + rowIndex * rowHeight + knotSize / 2;
             
             let xOffset = padding;
             if (isOddRow && shiftOddRows) {
@@ -95,7 +97,7 @@ export function KnotDiagram() {
               
               const element = (
                 <g key={`${rowIndex}-${knotIndex}`} className={styles.node}>
-                  {knot.type === 'SQUARE' ? (
+                  {knot.type === 'SQUARE' || knot.type === 'HALF_SQUARE_L' || knot.type === 'HALF_SQUARE_R' ? (
                     <>
                       {/* Outer border loops (Background) */}
                       <rect x={x + 2} y={y - knotSize * 0.45} width={currentKnotWidth / 2 - 4} height={knotSize * 0.45} rx={6} fill={knot.outColor2} />
@@ -127,7 +129,7 @@ export function KnotDiagram() {
                       <path d={`M ${x - (currentKnotWidth/2 - 6) + 4} ${y - knotSize * 0.45 - 6} Q ${x - (currentKnotWidth/2 - 6) - 4} ${y - knotSize * 0.45} ${x - (currentKnotWidth/2 - 6) + 4} ${y - knotSize * 0.45 + 6}`} stroke={knot.outColor2} strokeWidth="6" strokeLinecap="round" fill="none" />
                       <path d={`M ${x - (currentKnotWidth/2 - 6) + 4} ${y + knotSize * 0.45 - 6} Q ${x - (currentKnotWidth/2 - 6) - 4} ${y + knotSize * 0.45} ${x - (currentKnotWidth/2 - 6) + 4} ${y + knotSize * 0.45 + 6}`} stroke={knot.outColor2} strokeWidth="6" strokeLinecap="round" fill="none" />
                       
-                      <text x={x} y={y} fill="#fff" fontSize="10" fontWeight="bold" textAnchor="middle" dominantBaseline="central" style={{ mixBlendMode: 'difference' }}>SQ</text>
+                      <text x={x} y={y} fill="#fff" fontSize="10" fontWeight="bold" textAnchor="middle" dominantBaseline="central" style={{ mixBlendMode: 'difference' }}>{knot.type === 'HALF_SQUARE_L' ? 'HL' : knot.type === 'HALF_SQUARE_R' ? 'HR' : 'SQ'}</text>
                     </>
                   ) : (
                     <>

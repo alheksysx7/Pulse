@@ -6,9 +6,10 @@ import { ThreadControls } from '../ThreadControls/ThreadControls';
 // Code split the views for performance
 const BraceletCanvas = lazy(() => import('../BraceletCanvas/BraceletCanvas').then(m => ({ default: m.BraceletCanvas })));
 const KnotDiagram = lazy(() => import('../KnotDiagram/KnotDiagram').then(m => ({ default: m.KnotDiagram })));
+const Instructions = lazy(() => import('../Instructions/Instructions').then(m => ({ default: m.Instructions })));
 
 export function Layout() {
-  const [activeView, setActiveView] = useState<'simulation' | 'diagram'>('simulation');
+  const [activeView, setActiveView] = useState<'simulation' | 'diagram' | 'instructions'>('simulation');
 
   return (
     <div className={styles.appContainer}>
@@ -40,11 +41,19 @@ export function Layout() {
             >
               Technical Diagram
             </button>
+            <button 
+              className={`${styles.tab} ${activeView === 'instructions' ? styles.activeTab : ''}`}
+              onClick={() => setActiveView('instructions')}
+            >
+              Instrucciones
+            </button>
           </div>
 
           <div className={styles.viewContent}>
             <Suspense fallback={<div className={styles.loading}>Loading view...</div>}>
-              {activeView === 'simulation' ? <BraceletCanvas /> : <KnotDiagram />}
+              {activeView === 'simulation' && <BraceletCanvas />}
+              {activeView === 'diagram' && <KnotDiagram />}
+              {activeView === 'instructions' && <Instructions />}
             </Suspense>
           </div>
         </section>

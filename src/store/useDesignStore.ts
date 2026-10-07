@@ -17,8 +17,8 @@ export interface DesignState {
   applyPalette: (name: string, colors: string[]) => void;
 }
 
-const defaultPatternId = 'chevron';
-const defaultThreadsCount = 8;
+const defaultPatternId = 'square';
+const defaultThreadsCount = 4;
 const defaultColors = PREDEFINED_PALETTES[0].colors;
 
 // Repeat palette colors if we have more threads than palette colors

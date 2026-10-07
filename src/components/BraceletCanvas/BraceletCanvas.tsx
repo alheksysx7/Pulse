@@ -76,12 +76,11 @@ export function BraceletCanvas() {
 
       rowKnots.forEach((knot) => {
         const currentKnotWidth = (knot.threadSpan / 2) * knotSize;
-        const x = xOffset + currentKnotWidth / 2;
         const segmentWidth = currentKnotWidth / knot.threadSpan;
 
         for (let i = 0; i < knot.threadSpan; i++) {
           const threadX = xOffset + (i + 0.5) * segmentWidth;
-          const targetX = (knot.type === 'SQUARE' || knot.type === 'HALF_SQUARE_L' || knot.type === 'HALF_SQUARE_R') ? threadX : x;
+          const targetX = threadX;
           const color = knot.inColors ? knot.inColors[i] : (i < knot.threadSpan / 2 ? knot.color1 : knot.color2);
           
           ctx.beginPath();
@@ -246,17 +245,6 @@ export function BraceletCanvas() {
           ctx.lineWidth = 2;
           ctx.strokeStyle = 'rgba(255,255,255,0.3)';
           ctx.stroke();
-        } else {
-          // Draw a circle for standard knots (fill the whole space)
-          ctx.arc(x + currentKnotWidth / 2, y + knotSize / 2, knotSize / 2, 0, Math.PI * 2);
-          ctx.fillStyle = knot.outColor1;
-          ctx.fill();
-
-          const gradient = ctx.createLinearGradient(x, y, x + currentKnotWidth, y + knotSize);
-          gradient.addColorStop(0, 'rgba(255,255,255,0.4)');
-          gradient.addColorStop(1, 'rgba(0,0,0,0.2)');
-          ctx.fillStyle = gradient;
-          ctx.fill();
         }
         
         xOffset += currentKnotWidth;

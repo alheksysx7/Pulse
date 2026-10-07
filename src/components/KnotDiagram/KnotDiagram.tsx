@@ -18,30 +18,6 @@ export function KnotDiagram() {
   const width = threadsCount * (knotSize / 2) + padding * 2;
   const height = actualRowsCount * rowHeight + padding * 2;
 
-  const renderArrow = (type: string, x: number, y: number, r: number) => {
-    const size = r * 0.6;
-    if (type === 'F') {
-      return (
-        <path 
-          d={`M${x - size},${y - size} L${x + size},${y + size} M${x + size},${y + size} L${x},${y + size} M${x + size},${y + size} L${x + size},${y}`} 
-          stroke="currentColor" 
-          strokeWidth="2" 
-          fill="none" 
-        />
-      );
-    } else if (type === 'B') {
-      return (
-        <path 
-          d={`M${x + size},${y - size} L${x - size},${y + size} M${x - size},${y + size} L${x},${y + size} M${x - size},${y + size} L${x - size},${y}`} 
-          stroke="currentColor" 
-          strokeWidth="2" 
-          fill="none" 
-        />
-      );
-    }
-    return null;
-  };
-
   return (
     <div className={styles.container}>
       <svg width={width} height={height} className={styles.svg}>
@@ -97,10 +73,9 @@ export function KnotDiagram() {
               
               const element = (
                 <g key={`${rowIndex}-${knotIndex}`} className={styles.node}>
-                  {knot.type === 'SQUARE' || knot.type === 'HALF_SQUARE_L' || knot.type === 'HALF_SQUARE_R' ? (
-                    <>
-                      {/* Outer border loops (Background) */}
-                      <rect x={x + 2} y={y - knotSize * 0.45} width={currentKnotWidth / 2 - 4} height={knotSize * 0.45} rx={6} fill={knot.outColor2} />
+                  <>
+                    {/* Outer border loops (Background) */}
+                    <rect x={x + 2} y={y - knotSize * 0.45} width={currentKnotWidth / 2 - 4} height={knotSize * 0.45} rx={6} fill={knot.outColor2} />
                       <rect x={x + 2} y={y - knotSize * 0.45} width={currentKnotWidth / 2 - 4} height={knotSize * 0.45} rx={6} fill="none" stroke="rgba(0,0,0,0.2)" strokeWidth="1" />
                       
                       <rect x={x - currentKnotWidth / 2 + 2} y={y} width={currentKnotWidth / 2 - 4} height={knotSize * 0.45} rx={6} fill={knot.outColor2} />
@@ -131,15 +106,6 @@ export function KnotDiagram() {
                       
                       <text x={x} y={y} fill="#fff" fontSize="10" fontWeight="bold" textAnchor="middle" dominantBaseline="central" style={{ mixBlendMode: 'difference' }}>{knot.type === 'HALF_SQUARE_L' ? 'HL' : knot.type === 'HALF_SQUARE_R' ? 'HR' : 'SQ'}</text>
                     </>
-                  ) : (
-                    <>
-                      <circle cx={x} cy={y} r={knotSize * 0.45} fill={knot.outColor1} />
-                      <circle cx={x} cy={y} r={knotSize * 0.45} fill="none" stroke="rgba(0,0,0,0.1)" strokeWidth="1" />
-                      <g style={{ color: '#fff', mixBlendMode: 'difference' }}>
-                        {renderArrow(knot.type, x, y, knotSize * 0.45)}
-                      </g>
-                    </>
-                  )}
                 </g>
               );
               

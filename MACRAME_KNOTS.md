@@ -81,14 +81,20 @@ A nivel de software, el renderizado reutiliza el componente visual del nudo plan
 Este patrón clásico utiliza nudos festón (half-hitch knots) sobre un único hilo guía que viaja de un lado a otro en zigzag, mientras los demás hilos actúan como hilos de trabajo. Ideal para pulseras de 3 hilos donde se desea destacar franjas diagonales intercaladas.
 
 ### Anatomía Visual y Renderizado
-En el simulador, este nudo se teje usando dos nudos festón fundamentales (`F` y `B`):
-1. **Nudo Forward (`F`):** El hilo de trabajo cruza por la izquierda sobre el hilo guía que está a la derecha. El hilo guía es envuelto completamente y queda oculto, mientras que el hilo de trabajo forma las vueltas visibles del nudo.
+En el simulador, este nudo se teje usando dos nudos festón fundamentales (`F` y `B`) y técnicas visuales específicas para darle un aspecto ultra-realista:
+1. **Nudo Forward (`F`):** El hilo de trabajo cruza por la izquierda sobre el hilo guía que está a la derecha. 
 2. **Nudo Backward (`B`):** El hilo de trabajo cruza por la derecha sobre el hilo guía que está a la izquierda.
 
+**Detalles del Renderizado:**
+* **Forma:** Cada nudo festón (doble) se dibuja como una forma de "píldora" aplastada y compacta inclinada diagonalmente.
+* **Hebra Central:** En medio de las dos vueltas del nudo, se dibuja un trazo grueso del mismo color cruzando en diagonal. En los nudos `F`, la hebra sube de abajo-izquierda hacia arriba-derecha. En los nudos `B`, baja de arriba-izquierda a abajo-derecha, replicando fielmente la anatomía de un nudo real.
+* **Vértices (Ojales):** En los puntos extremos del zigzag, se dibuja un pequeño ojal del color del hilo guía asomando por debajo del nudo. Esto representa el punto exacto donde el hilo guía da la vuelta para cambiar de dirección (en el nudo `B` más a la derecha y en el nudo `F` más a la izquierda).
+* **Fondo:** Los hilos guía interiores que bajan verticalmente se dibujan por detrás, dejándose ver sutilmente en los huecos (gaps) formados al aumentar la separación de las filas, mientras que los hilos libres de los bordes externos se ocultan para mantener limpio el contorno del zigzag.
+
 La simulación (ver `zigzag-festoon.ts`) realiza un ciclo repetitivo:
-* **Fase 1 (Guía hacia la derecha):** Teje una cadena de nudos `B` (Backward), lo que significa que los hilos de trabajo a la derecha envuelven al hilo guía que se mueve desde la izquierda.
-* **Fila de descanso (`NONE`):** Un espacio vacío invisible para preparar el cambio de dirección.
-* **Fase 2 (Guía hacia la izquierda):** Teje una cadena de nudos `F` (Forward), donde los hilos de trabajo a la izquierda envuelven al hilo guía que regresa.
+* **Fase 1 (Guía hacia la derecha):** Teje una cadena de nudos `B` (Backward) inclinados hacia la derecha.
+* **Fila de descanso (`NONE`):** Un espacio vacío para escalar el movimiento.
+* **Fase 2 (Guía hacia la izquierda):** Teje una cadena de nudos `F` (Forward) inclinados hacia la izquierda.
 
 ### Instrucciones Paso a Paso (Cómo tejerlo en la vida real)
 

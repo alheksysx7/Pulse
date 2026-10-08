@@ -5,11 +5,10 @@ import { ThreadControls } from '../ThreadControls/ThreadControls';
 
 // Code split the views for performance
 const BraceletCanvas = lazy(() => import('../BraceletCanvas/BraceletCanvas').then(m => ({ default: m.BraceletCanvas })));
-const KnotDiagram = lazy(() => import('../KnotDiagram/KnotDiagram').then(m => ({ default: m.KnotDiagram })));
 const Instructions = lazy(() => import('../Instructions/Instructions').then(m => ({ default: m.Instructions })));
 
 export function Layout() {
-  const [activeView, setActiveView] = useState<'simulation' | 'diagram' | 'instructions'>('simulation');
+  const [activeView, setActiveView] = useState<'simulation' | 'instructions'>('simulation');
 
   return (
     <div className={styles.appContainer}>
@@ -36,12 +35,6 @@ export function Layout() {
               Simulation
             </button>
             <button 
-              className={`${styles.tab} ${activeView === 'diagram' ? styles.activeTab : ''}`}
-              onClick={() => setActiveView('diagram')}
-            >
-              Technical Diagram
-            </button>
-            <button 
               className={`${styles.tab} ${activeView === 'instructions' ? styles.activeTab : ''}`}
               onClick={() => setActiveView('instructions')}
             >
@@ -52,7 +45,6 @@ export function Layout() {
           <div className={styles.viewContent}>
             <Suspense fallback={<div className={styles.loading}>Loading view...</div>}>
               {activeView === 'simulation' && <BraceletCanvas />}
-              {activeView === 'diagram' && <KnotDiagram />}
               {activeView === 'instructions' && <Instructions />}
             </Suspense>
           </div>

@@ -3,7 +3,7 @@
 ## 1. Objetivo
 Aplicación web ligera y rápida para diseñar pulseras de hilos (friendship bracelets / macramé). El usuario elige el **tipo de nudo/patrón**, el **número de hilos** y el **color de cada hilo**, y ve en tiempo real:
 1. Una **simulación tejida** de la pulsera terminada.
-2. Un **diagrama técnico** de nudos (flechas adelante/atrás) para tejerla a mano.
+2. Instrucciones paso a paso para cada patrón.
 
 ## 2. Alcance (v1)
 ### Patrones
@@ -19,8 +19,7 @@ Aplicación web ligera y rápida para diseñar pulseras de hilos (friendship bra
 
 ### Visualización
 - Simulación tejida (Canvas 2D) con relieve, curvatura y textura de hilo.
-- Diagrama esquemático con nodos y flechas por nudo.
-- Pestañas/alternancia entre ambas vistas (en desktop, lado a lado).
+- Pestañas para alternar entre Simulación e Instrucciones.
 
 ### Fuera de alcance v1
 Intercalar patrones y cambios de hilo (planificados en v2 y v3, ver sección 7), exportación PNG, animación paso a paso, cuentas de usuario, backend.
@@ -35,7 +34,6 @@ Intercalar patrones y cambios de hilo (planificados en v2 y v3, ver sección 7),
 | Estado | **Zustand** (~1 KB) | Estado global mínimo, sin boilerplate |
 | Estilos | **CSS Modules + variables CSS** (vanilla) | Cero runtime, tema claro/oscuro simple |
 | Render | **Canvas 2D** nativo | Sin librerías gráficas; muy rápido para mallas de nudos |
-| Diagrama | **SVG** generado en React | Nítido, escalable, ligero |
 | Selector color | `<input type="color">` nativo | 0 KB de dependencias |
 | Tipografía | Fuente variable (Outfit/Inter) autoalojada, `font-display: swap` | Sin bloqueo de render |
 | Persistencia | `localStorage` (diseño actual) + URL hash para compartir | Sin backend |
@@ -51,7 +49,7 @@ Librerías candidatas (se incorporan en la fase donde aportan valor):
 |---|---|---|
 | Animaciones y transiciones de UI | Framer Motion | v1, microanimaciones |
 | Arrastrar para reordenar tramos | dnd-kit | v2 |
-| Gestos (zoom/pan del diagrama) | @use-gesture/react | v2–v3 |
+| Gestos (zoom/pan del canvas) | @use-gesture/react | v2–v3 |
 | Render si Canvas 2D no alcanza | PixiJS (WebGL) | Solo si se mide un problema de fluidez |
 | Selector de color avanzado | react-colorful (~3 KB) | v1, si el nativo resulta incómodo |
 | Deshacer/rehacer | Zustand middleware (zundo) | v3 |
@@ -93,7 +91,7 @@ Pulse/
 │  │  ├─ PatternPicker/
 │  │  ├─ ThreadControls/    # slider + colores + paletas
 │  │  ├─ BraceletCanvas/    # simulación tejida
-│  │  ├─ KnotDiagram/       # SVG técnico
+│  │  ├─ Instructions/      # Paso a paso
 │  │  └─ Layout/
 │  ├─ styles/ (tokens.css, global.css)
 │  └─ utils/ (hashShare.ts, color.ts)
@@ -125,7 +123,7 @@ El producto evoluciona en 3 iteraciones. Cada versión es utilizable por sí sol
 | 1 | `core/`: patrones, simulación, paletas + tests | Lógica validada |
 | 2 | Store + panel de controles (patrón, hilos, colores, paletas) | Configuración funcional |
 | 3 | `BraceletCanvas` con render tejido | Simulación en vivo |
-| 4 | `KnotDiagram` SVG | Diagrama técnico |
+| 4 | Componente `Instructions` | Paso a paso textual |
 | 5 | Pulido visual, responsive, persistencia y URL compartible | UX final de v1 |
 | 6 | Auditoría Lighthouse, optimización, deploy | v1 en producción |
 
@@ -141,7 +139,7 @@ El producto evoluciona en 3 iteraciones. Cada versión es utilizable por sí sol
 | 7 | Modelo de datos `Section[]` y `simulateSequence` (encadena tramos propagando el orden de hilos) + tests | Lógica de secuencia validada |
 | 8 | Store: acciones añadir, duplicar, reordenar y eliminar tramos | Estado de secuencia |
 | 9 | UI de tramos: lista con patrón + filas por tramo (arrastrar para reordenar) | Edición de secuencia |
-| 10 | Render continuo de todos los tramos en Canvas y SVG, con marcadores de cambio de tramo | Visualización unificada |
+| 10 | Render continuo de todos los tramos en Canvas, con marcadores de cambio de tramo | Visualización unificada |
 | 11 | Transiciones entre patrones (validar compatibilidad de hilos y avisar si hay incompatibilidad) | Secuencias robustas |
 | 12 | Persistencia y URL compartible del nuevo formato; migración desde v1 | v2 en producción |
 
@@ -163,7 +161,7 @@ Tipos de evento:
 | Fase | Contenido | Resultado |
 |---|---|---|
 | 13 | Modelo `ThreadEvent { row, position, color }` y aplicación en `simulateSequence` + tests | Lógica de eventos validada |
-| 14 | UI para añadir eventos: clic en una fila/posición del diagrama + selector de color | Edición directa sobre el diagrama |
+| 14 | UI para añadir eventos: clic en una fila/posición de la simulación + selector de color | Edición directa sobre el tejido |
 | 15 | Panel de eventos (lista ordenada, editar y eliminar) y marcadores visuales en la simulación | Gestión de eventos |
 | 16 | Soporte para acabar el hilo viejo: mostrar un extremo y el nuevo hilo entrando en la simulación | Realismo del cambio |
 | 17 | Deshacer/rehacer y plantillas de ejemplo (chevron con cambio de color) | UX de editor |
@@ -189,7 +187,7 @@ simulateSequence(design): KnotGrid  // recorre tramos, aplica eventos por fila
 
 ### Nuevos componentes por versión
 - **v2:** `SectionList`, `SectionCard`, `SectionDivider` (marcador en las vistas).
-- **v3:** `EventLayer` (capa interactiva sobre el diagrama), `EventPanel`, `HistoryControls`.
+- **v3:** `EventLayer` (capa interactiva sobre la simulación), `EventPanel`, `HistoryControls`.
 
 
 

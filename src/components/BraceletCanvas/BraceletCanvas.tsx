@@ -41,6 +41,8 @@ export function BraceletCanvas() {
       baseRowHeight = knotSize * 0.75;
     } else if (patternId === 'zigzag-festoon') {
       baseRowHeight = knotSize * 0.22;
+    } else if (patternId === 'diagonal-festoon') {
+      baseRowHeight = knotSize * 0.6;
     }
     
     // Apply user's vertical spacing multiplier
@@ -135,7 +137,7 @@ export function BraceletCanvas() {
           // Hide unknotted threads (NONE) ONLY on the extreme edges so they don't stick out.
           // Internal NONE threads should be drawn so they are visible in the zigzag gaps.
           const isEdgeThread = globalThreadIndex === 0 || globalThreadIndex === threadsCount - 1;
-          const shouldHide = knot.type === 'NONE' && isEdgeThread && patternId !== 'zigzag-festoon';
+          const shouldHide = knot.type === 'NONE' && isEdgeThread && patternId !== 'zigzag-festoon' && patternId !== 'diagonal-festoon';
 
           if (!shouldHide) {
             if (patternId === 'zigzag-festoon') {

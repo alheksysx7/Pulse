@@ -135,6 +135,53 @@ export function Instructions() {
     );
   }
 
+  if (patternId === 'diagonal-festoon') {
+    return (
+      <div className={styles.container}>
+        <h2 className={styles.title}>Instrucciones: Pulsera de Macramé (Nudo Festón en Cadena / Diagonal)</h2>
+        
+        <div className={styles.content}>
+          <section className={styles.section}>
+            <h3>Materiales Necesarios</h3>
+            <p>5 hilos de diferentes colores (por ejemplo: blanco, celeste/turquesa, lila, gris y rojo) para formar una franja diagonal multicolor.</p>
+          </section>
+
+          <section className={styles.section}>
+            <h3>Paso 1: Preparación y Orden de los Hilos</h3>
+            <ul>
+              <li>Sujeta los extremos superiores de los 5 hilos bajo el clip de la tabla.</li>
+              <li>Extiende los hilos hacia abajo y organízalos de izquierda a derecha según el orden de los colores que deseas mostrar en la diagonal (por ejemplo: blanco, celeste, lila, gris y rojo).</li>
+            </ul>
+          </section>
+
+          <section className={styles.section}>
+            <h3>Paso 2: Inicio de la Primera Hilera Diagonal (De Izquierda a Derecha)</h3>
+            <ol>
+              <li>Toma el primer hilo de la extrema izquierda (en este ejemplo, el hilo blanco); este funcionará como tu <strong>hilo guía</strong>.</li>
+              <li>Inclina el hilo guía hacia la derecha, pasándolo por encima del siguiente hilo adyacente (el celeste).</li>
+              <li>Teje dos nudos festón (doble nudo) con el hilo celeste sobre el hilo guía blanco.</li>
+            </ol>
+          </section>
+
+          <section className={styles.section}>
+            <h3>Paso 3: Continuación de la Hilera</h3>
+            <ol>
+              <li>Desplaza tu hilo guía blanco un paso más hacia la derecha, pasándolo por encima del siguiente hilo (el lila) y teje un nudo festón sobre él.</li>
+              <li>Repite el proceso avanzando hacia la derecha: haz un nudo festón con el hilo gris sobre la guía blanca, y finalmente otro nudo festón con el hilo rojo sobre la misma guía blanca.</li>
+              <li>Al terminar esta fila, el hilo blanco habrá cruzado todo el ancho hacia la derecha.</li>
+            </ol>
+          </section>
+
+          <section className={styles.section}>
+            <h3>Paso 4: Repetición del Patrón</h3>
+            <p>Una vez que completas la primera hilera diagonal, el nuevo hilo que quedó en la extrema izquierda (el celeste) se convierte en tu nuevo hilo guía. Repite exactamente el mismo procedimiento: inclínalo hacia la derecha y teje nudos festón sucesivos sobre él con cada uno de los hilos que le siguen (lila, gris, rojo y el blanco anterior).</p>
+            <p>Continúa este ciclo de manera constante para formar las franjas diagonales características de este tejido. Ajusta bien cada nudo para que el diseño quede firme, compacto y ordenado.</p>
+          </section>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.emptyState}>

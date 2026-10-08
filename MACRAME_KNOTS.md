@@ -117,3 +117,28 @@ La simulación (ver `zigzag-festoon.ts`) realiza un ciclo repetitivo:
 **Repetición del Patrón:**
 * Vuelve a repetir la Fase 1 (llevando el hilo guía blanco hacia la derecha para anudar primero el amarillo y luego el plomo).
 * Continúa alternando: guía a la derecha y guía a la izquierda para formar el diseño de franjas de festones entrelazados en zigzag.
+
+## Pulsera de Macramé (Nudo Festón en Cadena / Diagonal)
+
+### Materiales Necesarios
+5 hilos de diferentes colores (por ejemplo: blanco, celeste/turquesa, lila, gris y rojo) para formar una franja diagonal multicolor.
+
+### Paso a Paso del Patrón
+
+**1. Preparación y Orden de los Hilos:**
+* Sujeta los extremos superiores de los 5 hilos bajo el clip de la tabla.
+* Extiende los hilos hacia abajo y organízalos de izquierda a derecha según el orden de los colores que deseas mostrar en la diagonal (por ejemplo: blanco, celeste, lila, gris y rojo).
+
+**2. Inicio de la Primera Hilera Diagonal (De Izquierda a Derecha):**
+* Toma el primer hilo de la extrema izquierda (en este ejemplo, el hilo blanco); este funcionará como tu hilo guía.
+* Inclina el hilo guía hacia la derecha, pasándolo por encima del siguiente hilo adyacente (el celeste).
+* Teje dos nudos festón (doble nudo) con el hilo celeste sobre el hilo guía blanco.
+
+**3. Continuación de la Hilera:**
+* Desplaza tu hilo guía blanco un paso más hacia la derecha, pasándolo por encima del siguiente hilo (el lila) y teje un nudo festón sobre él.
+* Repite el proceso avanzando hacia la derecha: haz un nudo festón con el hilo gris sobre la guía blanca, y finalmente otro nudo festón con el hilo rojo sobre la misma guía blanca. Al terminar esta fila, el hilo blanco habrá cruzado todo el ancho hacia la derecha.
+
+**4. Repetición del Patrón con el Siguiente Hilo:**
+* Una vez que completas la primera hilera diagonal, el nuevo hilo que quedó en la extrema izquierda (el celeste) se convierte en tu nuevo hilo guía.
+* Repite exactamente el mismo procedimiento: inclínalo hacia la derecha y teje nudos festón sucesivos sobre él con cada uno de los hilos que le siguen (lila, gris, rojo y el blanco anterior).
+* Continúa este ciclo de manera constante para formar las franjas diagonales características de este tejido. Ajusta bien cada nudo para que el diseño quede firme, compacto y ordenado.

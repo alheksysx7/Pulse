@@ -17,6 +17,8 @@ export interface Pattern {
   maxThreads?: number;
   evenOnly: boolean;
   shiftOddRows?: boolean; // If false, odd rows don't shift by 1 thread (default true)
+  defaultVerticalSpacing?: number; // Custom vertical spacing for this pattern
+  lockVerticalSpacing?: boolean; // If true, the user cannot change vertical spacing
   /**
    * Generates a grid of knots (array of rows, where each row is an array of KnotTypes).
    * Also returns the positions of the knots.

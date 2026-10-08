@@ -53,7 +53,12 @@ export const useDesignStore = create<DesignState>((set) => ({
       newColors = getInitialColors(newThreadsCount, state.colors);
     }
     
-    return { patternId: id, threadsCount: newThreadsCount, colors: newColors, verticalSpacing: 1.0 };
+    return { 
+      patternId: id, 
+      threadsCount: newThreadsCount, 
+      colors: newColors, 
+      verticalSpacing: pattern.defaultVerticalSpacing ?? 1.0 
+    };
   }),
   
   setThreadsCount: (count) => set((state) => {

@@ -38,6 +38,7 @@ export function ThreadControls() {
           step={0.1}
           value={verticalSpacing}
           onChange={(e) => setVerticalSpacing(Number(e.target.value))}
+          disabled={pattern.lockVerticalSpacing}
           className={styles.slider}
         />
       </div>

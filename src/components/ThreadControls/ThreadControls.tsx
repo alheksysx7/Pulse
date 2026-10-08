@@ -36,7 +36,7 @@ export function ThreadControls() {
         <h3 className={styles.title}>Vertical Spacing: {verticalSpacing.toFixed(1)}x</h3>
         <input
           type="range"
-          min={0.5}
+          min={0.4}
           max={2.0}
           step={0.1}
           value={verticalSpacing}
@@ -73,8 +73,8 @@ export function ThreadControls() {
 
           {showBeads && (
             <div style={{ marginLeft: '26px' }}>
-              <select 
-                value={beadType} 
+              <select
+                value={beadType}
                 onChange={(e) => setBeadType(e.target.value as any)}
                 style={{ width: '100%', padding: '6px', borderRadius: '4px', border: '1px solid #ddd' }}
               >

@@ -9,7 +9,9 @@ export function ThreadControls() {
     colors, setColor,
     applyPalette,
     patternId,
-    verticalSpacing, setVerticalSpacing
+    verticalSpacing, setVerticalSpacing,
+    showBeads, setShowBeads,
+    beadType, setBeadType
   } = useDesignStore();
 
   const pattern = PATTERNS[patternId];
@@ -42,6 +44,34 @@ export function ThreadControls() {
           className={styles.slider}
         />
       </div>
+
+      {patternId === 'jumping-festoon' && (
+        <div className={styles.section}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', marginBottom: '8px' }}>
+            <input
+              type="checkbox"
+              checked={showBeads}
+              onChange={(e) => setShowBeads(e.target.checked)}
+              style={{ width: '18px', height: '18px', cursor: 'pointer' }}
+            />
+            <span style={{ fontSize: '14px', fontWeight: 500 }}>Agregar Balines (Abalorios)</span>
+          </label>
+
+          {showBeads && (
+            <div style={{ marginLeft: '26px' }}>
+              <select 
+                value={beadType} 
+                onChange={(e) => setBeadType(e.target.value as any)}
+                style={{ width: '100%', padding: '6px', borderRadius: '4px', border: '1px solid #ddd' }}
+              >
+                <option value="gold">Dorado</option>
+                <option value="silver">Plateado</option>
+                <option value="wood">Madera</option>
+              </select>
+            </div>
+          )}
+        </div>
+      )}
 
       <div className={styles.section}>
         <h3 className={styles.title}>Colors</h3>

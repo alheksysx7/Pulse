@@ -10,6 +10,8 @@ export interface DesignState {
   activePaletteName: string | null;
   paletteShift: number;
   verticalSpacing: number; // Multiplier for the vertical spacing between rows
+  showBeads: boolean;
+  beadType: 'gold' | 'silver' | 'wood';
   
   setPatternId: (id: string) => void;
   setThreadsCount: (count: number) => void;
@@ -17,6 +19,8 @@ export interface DesignState {
   setColor: (index: number, color: string) => void;
   applyPalette: (name: string, colors: string[]) => void;
   setVerticalSpacing: (spacing: number) => void;
+  setShowBeads: (show: boolean) => void;
+  setBeadType: (type: 'gold' | 'silver' | 'wood') => void;
 }
 
 const defaultPatternId = 'square';
@@ -36,6 +40,8 @@ export const useDesignStore = create<DesignState>((set) => ({
   activePaletteName: PREDEFINED_PALETTES[0].name,
   paletteShift: 0,
   verticalSpacing: 1.0,
+  showBeads: false,
+  beadType: 'gold' as 'gold' | 'silver' | 'wood',
 
   setPatternId: (id) => set((state) => {
     const pattern = PATTERNS[id];
@@ -102,5 +108,7 @@ export const useDesignStore = create<DesignState>((set) => ({
     };
   }),
   
-  setVerticalSpacing: (spacing) => set({ verticalSpacing: spacing })
+  setVerticalSpacing: (spacing) => set({ verticalSpacing: spacing }),
+  setShowBeads: (show) => set({ showBeads: show }),
+  setBeadType: (type) => set({ beadType: type })
 }));

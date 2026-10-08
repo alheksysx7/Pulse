@@ -50,7 +50,7 @@ export function BraceletCanvas() {
     // We will do a simple drawing first to test.
     const pattern = PATTERNS[patternId];
     // Canvas setup
-    const knotSize = 24;
+    const knotSize = 24; // Reduced further from 20 to 16 to decrease horizontal space
     let baseRowHeight = knotSize;
     if (patternId === 'square-alternating') {
       baseRowHeight = knotSize * 0.5;
@@ -60,11 +60,13 @@ export function BraceletCanvas() {
       baseRowHeight = knotSize * 0.22;
     } else if (patternId === 'diagonal-festoon') {
       baseRowHeight = knotSize * 0.6;
+    } else if (patternId === 'jumping-festoon') {
+      baseRowHeight = knotSize * 0.35;
     }
-    
+
     // Apply user's vertical spacing multiplier
     const rowHeight = baseRowHeight * useDesignStore.getState().verticalSpacing;
-    
+
     const paddingX = 40;
     const paddingTop = 80;
     const paddingBottom = 80;
@@ -124,6 +126,9 @@ export function BraceletCanvas() {
     // Track X positions for smooth slanting
     const prevThreadX = new Array(threadsCount).fill(0).map((_, i) => paddingX + (i + 0.5) * (knotSize / 2));
 
+    let consecutiveLeftNones = 0;
+    let consecutiveRightNones = 0;
+
     // Draw threads first
     grid.forEach((rowKnots, rowIndex) => {
       const isOddRow = rowIndex % 2 !== 0;
@@ -154,7 +159,19 @@ export function BraceletCanvas() {
           // Hide unknotted threads (NONE) ONLY on the extreme edges so they don't stick out.
           // Internal NONE threads should be drawn so they are visible in the zigzag gaps.
           const isEdgeThread = globalThreadIndex === 0 || globalThreadIndex === threadsCount - 1;
-          const shouldHide = knot.type === 'NONE' && isEdgeThread && patternId !== 'zigzag-festoon' && patternId !== 'diagonal-festoon';
+          const isLeftEdge = globalThreadIndex === 0;
+          const isRightEdge = globalThreadIndex === threadsCount - 1;
+
+          if (isLeftEdge) {
+            if (knot.type === 'NONE') consecutiveLeftNones++;
+            else consecutiveLeftNones = 0;
+          }
+          if (isRightEdge) {
+            if (knot.type === 'NONE') consecutiveRightNones++;
+            else consecutiveRightNones = 0;
+          }
+
+          const shouldHide = knot.type === 'NONE' && isEdgeThread && patternId !== 'zigzag-festoon' && patternId !== 'diagonal-festoon' && patternId !== 'jumping-festoon';
 
           if (!shouldHide) {
             if (patternId === 'zigzag-festoon') {
@@ -180,6 +197,44 @@ export function BraceletCanvas() {
             ctx.stroke();
             if (patternId === 'zigzag-festoon' && rowIndex > 0) {
               ctx.globalAlpha = 1.0;
+            }
+
+            // Draw beads if enabled (only once per segment, on the 2nd consecutive NONE row)
+            const isBeadRow = (isLeftEdge && consecutiveLeftNones === 2) || (isRightEdge && consecutiveRightNones === 2);
+
+            if (useDesignStore.getState().showBeads && patternId === 'jumping-festoon' && isBeadRow && rowIndex >= threadsCount - 1) {
+              const beadRadius = 7;
+              const beadY = (prevY + y) / 2;
+              const beadType = useDesignStore.getState().beadType;
+
+              let baseColor = '#FFD700';
+              let strokeColor = '#B8860B';
+              let highlightColor = 'rgba(255, 255, 255, 0.8)';
+
+              if (beadType === 'silver') {
+                baseColor = '#E0E0E0';
+                strokeColor = '#9E9E9E';
+                highlightColor = 'rgba(255, 255, 255, 0.9)';
+              } else if (beadType === 'wood') {
+                baseColor = '#8B5A2B';
+                strokeColor = '#3e2710';
+                highlightColor = 'rgba(255, 255, 255, 0.2)';
+              }
+
+              // Bead base color
+              ctx.beginPath();
+              ctx.arc(targetX, beadY, beadRadius, 0, Math.PI * 2);
+              ctx.fillStyle = baseColor;
+              ctx.fill();
+              ctx.lineWidth = 1;
+              ctx.strokeStyle = strokeColor;
+              ctx.stroke();
+
+              // Small highlight for a metallic/spherical look
+              ctx.beginPath();
+              ctx.arc(targetX - 2.5, beadY - 2.5, beadRadius * 0.35, 0, Math.PI * 2);
+              ctx.fillStyle = highlightColor;
+              ctx.fill();
             }
           }
 
@@ -231,7 +286,7 @@ export function BraceletCanvas() {
       });
     });
 
-  }, [patternId, threadsCount, colors, containerHeight, verticalSpacing]);
+  }, [patternId, threadsCount, colors, containerHeight, verticalSpacing, useDesignStore.getState().showBeads, useDesignStore.getState().beadType]);
 
   return (
     <div ref={containerRef} className={`${styles.container} ${isLightPalette ? styles.darkBackground : ''}`}>

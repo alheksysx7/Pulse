@@ -182,6 +182,55 @@ export function Instructions() {
     );
   }
 
+  if (patternId === 'jumping-festoon') {
+    return (
+      <div className={styles.container}>
+        <h2 className={styles.title}>Instrucciones: Pulsera de Macramé (Patrón de Festón con Saltos)</h2>
+        
+        <div className={styles.content}>
+          <section className={styles.section}>
+            <h3>Preparación Inicial</h3>
+            <ul>
+              <li>Sujeta los 5 hilos juntos en la parte superior con el clip de la tabla.</li>
+              <li>Extiende los hilos hacia abajo para organizarlos y comenzar el tejido.</li>
+            </ul>
+          </section>
+
+          <section className={styles.section}>
+            <h3>Paso 1: Primera Hilera Completa hacia la Derecha</h3>
+            <ol>
+              <li>Toma el primer hilo de la extrema izquierda y pásalo sobre los demás hilos hacia la derecha para usarlo como hilo guía.</li>
+              <li>Cada uno de los hilos restantes hace un nudo festón sobre este hilo guía.</li>
+            </ol>
+          </section>
+
+          <section className={styles.section}>
+            <h3>Paso 2: Segunda Hilera (Saltando el Cuarto Hilo)</h3>
+            <ol>
+              <li>Toma el nuevo hilo que quedó en el borde izquierdo y pásalo sobre los otros hilos para que sea el nuevo hilo guía.</li>
+              <li>Teje nudos festón con los siguientes 3 hilos, pero <strong>deja el 4to hilo libre</strong> sin anudar.</li>
+            </ol>
+          </section>
+
+          <section className={styles.section}>
+            <h3>Paso 3: Tercera Hilera (Desplazamiento)</h3>
+            <ol>
+              <li>Aparta el primer hilo de la izquierda.</li>
+              <li>Utiliza el 2do hilo como el nuevo hilo guía.</li>
+              <li>Con los otros 3 hilos restantes, haz nudos festón sobre este hilo guía.</li>
+            </ol>
+          </section>
+
+          <section className={styles.section}>
+            <h3>Repetición del Patrón</h3>
+            <p>Vuelve a repetir el <strong>Paso 2</strong>. Luego, repite el <strong>Paso 3</strong>.</p>
+            <p>Continúa alternando y repitiendo este ciclo constante para formar la estructura característica de la pulsera.</p>
+          </section>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.emptyState}>

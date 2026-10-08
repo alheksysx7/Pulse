@@ -24,7 +24,7 @@ export function BraceletCanvas() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerHeight, setContainerHeight] = useState(0);
 
-  const { patternId, threadsCount, colors, verticalSpacing } = useDesignStore();
+  const { patternId, threadsCount, colors, verticalSpacing, knotSize } = useDesignStore();
 
   const avgBrightness = colors.reduce((acc, c) => acc + getBrightness(c), 0) / colors.length;
   const isLightPalette = avgBrightness > 200;
@@ -49,8 +49,7 @@ export function BraceletCanvas() {
 
     // We will do a simple drawing first to test.
     const pattern = PATTERNS[patternId];
-    // Canvas setup
-    const knotSize = 24; // Reduced further from 20 to 16 to decrease horizontal space
+    // Canvas setup using knotSize from store
     let baseRowHeight = knotSize;
     if (patternId === 'square-alternating') {
       baseRowHeight = knotSize * 0.5;
@@ -286,7 +285,7 @@ export function BraceletCanvas() {
       });
     });
 
-  }, [patternId, threadsCount, colors, containerHeight, verticalSpacing, useDesignStore.getState().showBeads, useDesignStore.getState().beadType]);
+  }, [patternId, threadsCount, colors, containerHeight, verticalSpacing, knotSize, useDesignStore.getState().showBeads, useDesignStore.getState().beadType]);
 
   return (
     <div ref={containerRef} className={`${styles.container} ${isLightPalette ? styles.darkBackground : ''}`}>

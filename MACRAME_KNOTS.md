@@ -142,3 +142,39 @@ La simulación (ver `zigzag-festoon.ts`) realiza un ciclo repetitivo:
 * Una vez que completas la primera hilera diagonal, el nuevo hilo que quedó en la extrema izquierda (el celeste) se convierte en tu nuevo hilo guía.
 * Repite exactamente el mismo procedimiento: inclínalo hacia la derecha y teje nudos festón sucesivos sobre él con cada uno de los hilos que le siguen (lila, gris, rojo y el blanco anterior).
 * Continúa este ciclo de manera constante para formar las franjas diagonales características de este tejido. Ajusta bien cada nudo para que el diseño quede firme, compacto y ordenado.
+
+## Pulsera de Macramé (Patrón de Festón con Saltos)
+
+Este diseño especializado utiliza nudos festón sobre un hilo guía móvil, pero a diferencia del festón clásico, se caracteriza por omitir (saltar) de manera intencional el anudado en los hilos de los extremos durante ciertas hileras. Al hacerlo, el hilo de trabajo queda "en espera" (tensado verticalmente en el borde) hasta que el tejido regresa a él. 
+
+### Anatomía Visual y Renderizado
+En el simulador (`jumping-festoon.ts`), este patrón presenta desafíos visuales únicos debido a los hilos tensados en los bordes y la posibilidad de añadirles adornos:
+1. **Barrido de Inicialización:** El tejido siempre comienza con un barrido completo de todos los hilos (`K+1` nudos) para establecer una base firme.
+2. **Ciclo Asimétrico (Saltos):** Después de la base, el tejido entra en un ciclo de saltos. El hilo en el extremo opuesto a la dirección de tejido se salta intencionalmente (renderizado como `NONE`), formándose una línea vertical tensa a lo largo del borde por múltiples filas.
+3. **Nudos Backward (`B`):** Todo el patrón se simula utilizando nudos de tipo `B`. Esto asegura que el hilo transversal actúe como una guía "pasiva" oculta por debajo, mientras que los hilos verticales que lo envuelven dictan el color real del nudo visible en la pulsera (tal como lo reportó el usuario).
+4. **Visibilidad de Hilos Libres:** A diferencia de otros patrones donde los hilos `NONE` en los bordes se ocultan automáticamente, en este diseño se desactivó el ocultamiento preventivo (en `BraceletCanvas.tsx`) para permitir que la línea vertical tensa sea completamente visible.
+5. **Abalorios / Balines en los Bordes:**
+   * Al tener un hilo vertical tensado durante varias filas, se aprovecha ese espacio "hueco" para insertar abalorios. 
+   * **Prevención de Superposición:** En lugar de dibujar un abalorio por cada fila inactiva o saltada, la lógica de simulación rastrea las secuencias continuas de inactividad (conteo de `consecutiveLeftNones` y `consecutiveRightNones`) y dibuja exactamente **un solo abalorio perfectamente centrado** en el punto medio del salto de cada segmento.
+   * **Supresión en el Arranque:** Para evitar que el primer abalorio quede flotando de forma antinatural sin soporte visual, el simulador omite su dibujo en las primeras filas de inicialización comprobando que se haya pasado la base (`rowIndex >= threadsCount - 1`).
+   * **Tipos de Materiales:** Se implementaron tres estilos de renderizado que modifican el color base, el trazo perimetral y el tipo de luz especular para simular distintos materiales físicos: Dorado (metálico y amarillo), Plateado (metálico con reflejos blancos intensos) y Madera (colores café mate con un brillo especular muy tenue).
+
+### Instrucciones Paso a Paso (Cómo tejerlo en la vida real)
+
+**Preparación Inicial:**
+* Corta 5 hilos y sujétalos juntos en la parte superior con el clip de la tabla. 
+* Extiéndelos hacia abajo para organizarlos de izquierda a derecha y comenzar el tejido.
+
+**Paso 1: Primera Hilera Completa hacia la Derecha:**
+* Toma el primer hilo de la extrema izquierda (ej. rojo) y pásalo sobre los demás hilos hacia la derecha para usarlo como hilo guía. 
+* Cada uno de los hilos restantes hace un nudo festón doble sobre este hilo guía. 
+
+**Paso 2: Segunda Hilera (Saltando el Cuarto Hilo):**
+* Toma el nuevo hilo que quedó en el borde izquierdo y pásalo sobre los otros hilos para que sea el nuevo hilo guía. 
+* Teje nudos festón con los siguientes 3 hilos, pero **deja el 4to hilo (el último a la derecha) libre sin anudar**. Al quedar tenso y libre, aquí es donde podrás ensartar físicamente un abalorio real.
+
+**Paso 3: Tercera Hilera (Desplazamiento a la Izquierda):**
+* Aparta el primer hilo de la izquierda (déjalo libre y ensarta otro abalorio si lo deseas). 
+* Utiliza el 2do hilo de la izquierda como el nuevo hilo guía. 
+* Con los otros 3 hilos restantes, haz nudos festón dobles en sentido contrario.
+* El patrón continúa alternando entre estos "saltos" asimétricos por el resto de la pulsera, uniendo y liberando hilos en los extremos, logrando encapsular los abalorios entre el tejido central.

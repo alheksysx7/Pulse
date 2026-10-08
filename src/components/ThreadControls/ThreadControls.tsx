@@ -11,7 +11,8 @@ export function ThreadControls() {
     patternId,
     verticalSpacing, setVerticalSpacing,
     showBeads, setShowBeads,
-    beadType, setBeadType
+    beadType, setBeadType,
+    knotSize, setKnotSize
   } = useDesignStore();
 
   const pattern = PATTERNS[patternId];
@@ -41,6 +42,19 @@ export function ThreadControls() {
           value={verticalSpacing}
           onChange={(e) => setVerticalSpacing(Number(e.target.value))}
           disabled={pattern.lockVerticalSpacing}
+          className={styles.slider}
+        />
+      </div>
+
+      <div className={styles.section}>
+        <h3 className={styles.title}>Knot Size: {knotSize}px</h3>
+        <input
+          type="range"
+          min={10}
+          max={40}
+          step={1}
+          value={knotSize}
+          onChange={(e) => setKnotSize(Number(e.target.value))}
           className={styles.slider}
         />
       </div>

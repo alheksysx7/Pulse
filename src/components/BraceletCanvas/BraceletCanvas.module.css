@@ -20,3 +20,8 @@
   /* Apply a drop shadow to the drawn paths on the canvas */
   filter: drop-shadow(0 12px 16px rgba(0, 0, 0, 0.25)) drop-shadow(0 4px 6px rgba(0, 0, 0, 0.15));
 }
+
+.darkBackground {
+  background-color: #3b3a38; 
+  background-image: radial-gradient(#5a5855 1px, transparent 1px);
+}

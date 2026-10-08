@@ -5,12 +5,29 @@ import { simulateSequence } from '../../core/simulate';
 import { KNOT_RENDERERS } from '../../core/renderers/knotRenderers';
 import styles from './BraceletCanvas.module.css';
 
+const getBrightness = (hex: string) => {
+  let r = 0, g = 0, b = 0;
+  if (hex.length === 4) {
+    r = parseInt(hex[1] + hex[1], 16);
+    g = parseInt(hex[2] + hex[2], 16);
+    b = parseInt(hex[3] + hex[3], 16);
+  } else if (hex.length === 7) {
+    r = parseInt(hex.substring(1, 3), 16);
+    g = parseInt(hex.substring(3, 5), 16);
+    b = parseInt(hex.substring(5, 7), 16);
+  }
+  return (r * 299 + g * 587 + b * 114) / 1000;
+};
+
 export function BraceletCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerHeight, setContainerHeight] = useState(0);
 
   const { patternId, threadsCount, colors, verticalSpacing } = useDesignStore();
+
+  const avgBrightness = colors.reduce((acc, c) => acc + getBrightness(c), 0) / colors.length;
+  const isLightPalette = avgBrightness > 200;
 
   useEffect(() => {
     const observer = new ResizeObserver((entries) => {
@@ -227,7 +244,7 @@ export function BraceletCanvas() {
   }, [patternId, threadsCount, colors, containerHeight, verticalSpacing]);
 
   return (
-    <div ref={containerRef} className={styles.container}>
+    <div ref={containerRef} className={`${styles.container} ${isLightPalette ? styles.darkBackground : ''}`}>
       <canvas ref={canvasRef} className={styles.canvas} />
     </div>
   );

@@ -9,12 +9,14 @@ export interface DesignState {
   colors: string[];
   activePaletteName: string | null;
   paletteShift: number;
+  verticalSpacing: number; // Multiplier for the vertical spacing between rows
   
   setPatternId: (id: string) => void;
   setThreadsCount: (count: number) => void;
   setRowsCount: (count: number) => void;
   setColor: (index: number, color: string) => void;
   applyPalette: (name: string, colors: string[]) => void;
+  setVerticalSpacing: (spacing: number) => void;
 }
 
 const defaultPatternId = 'square';
@@ -33,6 +35,7 @@ export const useDesignStore = create<DesignState>((set) => ({
   colors: getInitialColors(defaultThreadsCount, defaultColors),
   activePaletteName: PREDEFINED_PALETTES[0].name,
   paletteShift: 0,
+  verticalSpacing: 1.0,
 
   setPatternId: (id) => set((state) => {
     const pattern = PATTERNS[id];
@@ -50,7 +53,7 @@ export const useDesignStore = create<DesignState>((set) => ({
       newColors = getInitialColors(newThreadsCount, state.colors);
     }
     
-    return { patternId: id, threadsCount: newThreadsCount, colors: newColors };
+    return { patternId: id, threadsCount: newThreadsCount, colors: newColors, verticalSpacing: 1.0 };
   }),
   
   setThreadsCount: (count) => set((state) => {
@@ -92,5 +95,7 @@ export const useDesignStore = create<DesignState>((set) => ({
       paletteShift: newShift,
       colors: getInitialColors(state.threadsCount, shiftedPalette)
     };
-  })
+  }),
+  
+  setVerticalSpacing: (spacing) => set({ verticalSpacing: spacing })
 }));

@@ -10,7 +10,7 @@ export function BraceletCanvas() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerHeight, setContainerHeight] = useState(0);
 
-  const { patternId, threadsCount, colors } = useDesignStore();
+  const { patternId, threadsCount, colors, verticalSpacing } = useDesignStore();
 
   useEffect(() => {
     const observer = new ResizeObserver((entries) => {
@@ -34,14 +34,18 @@ export function BraceletCanvas() {
     const pattern = PATTERNS[patternId];
     // Canvas setup
     const knotSize = 24;
-    let rowHeight = knotSize;
+    let baseRowHeight = knotSize;
     if (patternId === 'square-alternating') {
-      rowHeight = knotSize * 0.5;
+      baseRowHeight = knotSize * 0.5;
     } else if (patternId === 'square' && threadsCount === 2) {
-      rowHeight = knotSize * 0.75;
+      baseRowHeight = knotSize * 0.75;
     } else if (patternId === 'zigzag-festoon') {
-      rowHeight = knotSize * 0.22;
+      baseRowHeight = knotSize * 0.22;
     }
+    
+    // Apply user's vertical spacing multiplier
+    const rowHeight = baseRowHeight * useDesignStore.getState().verticalSpacing;
+    
     const paddingX = 40;
     const paddingTop = 80;
     const paddingBottom = 80;
@@ -218,7 +222,7 @@ export function BraceletCanvas() {
       });
     });
 
-  }, [patternId, threadsCount, colors, containerHeight]);
+  }, [patternId, threadsCount, colors, containerHeight, verticalSpacing]);
 
   return (
     <div ref={containerRef} className={styles.container}>

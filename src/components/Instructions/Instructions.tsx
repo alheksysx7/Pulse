@@ -94,11 +94,52 @@ export function Instructions() {
     );
   }
 
+  if (patternId === 'zigzag-festoon') {
+    return (
+      <div className={styles.container}>
+        <h2 className={styles.title}>Instrucciones: Nudo Festón Zigzag Alterno</h2>
+        
+        <div className={styles.content}>
+          <section className={styles.section}>
+            <h3>Materiales Necesarios</h3>
+            <p>Necesitarás 3 hilos para este patrón básico. Cada hilo debe ser de diferente color para facilitar la guía (por ejemplo: hilo 1 izquierdo, hilo 2 central e hilo 3 derecho).</p>
+            <p>Una tabla con clip (portapapeles) para sujetar y tensar los hilos desde la parte superior.</p>
+          </section>
+
+          <section className={styles.section}>
+            <h3>Fase 1: Zigzag hacia la derecha</h3>
+            <ol>
+              <li>Toma el <strong>hilo de la extrema izquierda (hilo 1)</strong>. Este será tu <strong>hilo guía</strong> para esta fase. Sosténlo diagonalmente hacia abajo y a la derecha, por encima de los otros dos hilos.</li>
+              <li>Con el hilo siguiente (hilo 2), teje un <strong>nudo festón doble</strong> sobre el hilo guía. (Pasa el hilo 2 por encima del guía, rodeándolo por debajo y sacándolo por el bucle hacia arriba, repite este paso dos veces para completar un nudo festón).</li>
+              <li>A continuación, toma el hilo de la extrema derecha (hilo 3) y teje otro nudo festón doble sobre el mismo hilo guía.</li>
+              <li>Ahora tu hilo guía original (hilo 1) ha quedado en la posición de la extrema derecha.</li>
+            </ol>
+          </section>
+
+          <section className={styles.section}>
+            <h3>Fase 2: Zigzag hacia la izquierda</h3>
+            <ol>
+              <li>Toma el hilo que ahora está en la extrema derecha (tu hilo guía original) y sostenlo diagonalmente hacia abajo y a la izquierda, por encima de los otros dos hilos.</li>
+              <li>Con el hilo que quedó en el centro, teje un nudo festón doble sobre el hilo guía, apretando bien hacia la izquierda.</li>
+              <li>Toma el hilo de la extrema izquierda y teje el siguiente nudo festón doble sobre el hilo guía.</li>
+              <li>Tu hilo guía original ha regresado a la extrema izquierda.</li>
+            </ol>
+          </section>
+
+          <section className={styles.section}>
+            <h3>Continuación</h3>
+            <p><strong>Alterna:</strong> Repite constantemente la Fase 1 y la Fase 2. Verás cómo el hilo guía va rebotando de izquierda a derecha formando el patrón en zigzag, mientras que los hilos interiores se asoman llenando el tejido.</p>
+          </section>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.emptyState}>
         <h2>Instrucciones no disponibles</h2>
-        <p>Aún no tenemos instrucciones detalladas para este patrón. Por favor, selecciona el patrón "Tejido nudo plano" o "Tejido nudo plano alternado" para ver un ejemplo.</p>
+        <p>Aún no tenemos instrucciones detalladas para este patrón. Por favor, selecciona el patrón "Tejido nudo plano", "Tejido nudo plano alternado" o "Nudo festón zigzag alterno" para ver un ejemplo.</p>
       </div>
     </div>
   );

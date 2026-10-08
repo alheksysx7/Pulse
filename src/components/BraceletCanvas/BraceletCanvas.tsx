@@ -202,7 +202,7 @@ export function BraceletCanvas() {
             const isBeadRow = (isLeftEdge && consecutiveLeftNones === 2) || (isRightEdge && consecutiveRightNones === 2);
 
             if (useDesignStore.getState().showBeads && patternId === 'jumping-festoon' && isBeadRow && rowIndex >= threadsCount - 1) {
-              const beadRadius = 7;
+              const beadRadius = 6;
               const beadY = (prevY + y) / 2;
               const beadType = useDesignStore.getState().beadType;
 

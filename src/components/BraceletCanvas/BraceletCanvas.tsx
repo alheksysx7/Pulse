@@ -212,21 +212,11 @@ export function BraceletCanvas() {
     const reversedGrid = [...grid].reverse();
     reversedGrid.forEach((rowKnots, reverseIndex) => {
       const rowIndex = grid.length - 1 - reverseIndex;
-      const isOddRow = rowIndex % 2 !== 0;
       const y = rowY[rowIndex];
 
       let xOffset = paddingX;
 
-      let firstNonEmptyIndex = -1;
-      let lastNonEmptyIndex = -1;
-      rowKnots.forEach((k, i) => {
-        if (k.type !== 'NONE') {
-          if (firstNonEmptyIndex === -1) firstNonEmptyIndex = i;
-          lastNonEmptyIndex = i;
-        }
-      });
-
-      rowKnots.forEach((knot, knotIndex) => {
+      rowKnots.forEach((knot) => {
         const x = xOffset;
         const currentKnotWidth = (knot.threadSpan / 2) * knotSize;
         const isLeftEdge = Math.abs(x - paddingX) < 1;

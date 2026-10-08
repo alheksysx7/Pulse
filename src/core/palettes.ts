@@ -29,7 +29,11 @@ export const PREDEFINED_PALETTES: Palette[] = [
     colors: ['#D2A3A9', '#C1B4D5', '#A8D5BA', '#B5D8EB', '#FDF5E6']
   },
   {
-    name: 'Rústico y Natural',
-    colors: ['#E8E3D9', '#C2A88D', '#DDA74F', '#B65C45', '#6A7045']
+    name: 'Degradado Oceánico',
+    colors: ['#03045E', '#0077B6', '#00B4D8', '#90E0EF', '#CAF0F8']
+  },
+  {
+    name: 'Degradado Fuego',
+    colors: ['#370617', '#9D0208', '#DC2F02', '#F48C06', '#FFBA08']
   }
 ];

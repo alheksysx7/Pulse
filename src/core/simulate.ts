@@ -17,8 +17,20 @@ export function simulateSequence(initialColors: string[], rowKnotTypes: KnotType
     const nextColors = [...currentColors];
     const rowKnots: Knot[] = [];
     
-    // In an odd row, the first thread (index 0) is skipped, unless shiftOddRows is false
     let threadOffset = (isOddRow && shiftOddRows) ? 1 : 0;
+
+    // Add leading unknotted thread if shifted
+    if (threadOffset === 1) {
+      rowKnots.push({
+        type: 'NONE',
+        color1: currentColors[0],
+        color2: currentColors[0],
+        inColors: [currentColors[0]],
+        outColor1: currentColors[0],
+        outColor2: currentColors[0],
+        threadSpan: 1
+      });
+    }
 
     for (let k = 0; k < knotTypes.length; k++) {
       const type = knotTypes[k];
@@ -103,6 +115,20 @@ export function simulateSequence(initialColors: string[], rowKnotTypes: KnotType
       });
       
       threadOffset += threadSpan;
+    }
+
+    // Add trailing unknotted threads
+    while (threadOffset < currentColors.length) {
+      rowKnots.push({
+        type: 'NONE',
+        color1: currentColors[threadOffset],
+        color2: currentColors[threadOffset],
+        inColors: [currentColors[threadOffset]],
+        outColor1: currentColors[threadOffset],
+        outColor2: currentColors[threadOffset],
+        threadSpan: 1
+      });
+      threadOffset++;
     }
 
     grid.push(rowKnots);

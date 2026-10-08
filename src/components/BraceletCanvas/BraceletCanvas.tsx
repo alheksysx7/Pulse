@@ -104,7 +104,6 @@ export function BraceletCanvas() {
       const y = rowY[rowIndex] + knotSize / 2;
       const prevY = rowIndex === 0 ? 20 : rowY[rowIndex - 1] + knotSize / 2;
       let xOffset = paddingX;
-      if (isOddRow && shiftOddRows) xOffset += knotSize / 2;
 
       let globalThreadIndex = 0;
 
@@ -120,7 +119,7 @@ export function BraceletCanvas() {
           // Hide unknotted threads (NONE) ONLY on the extreme edges so they don't stick out.
           // Internal NONE threads should be drawn so they are visible in the zigzag gaps.
           const isEdgeThread = globalThreadIndex === 0 || globalThreadIndex === threadsCount - 1;
-          const shouldHide = knot.type === 'NONE' && isEdgeThread;
+          const shouldHide = knot.type === 'NONE' && isEdgeThread && patternId !== 'zigzag-festoon';
 
           if (!shouldHide) {
             ctx.beginPath();
@@ -159,9 +158,6 @@ export function BraceletCanvas() {
       const y = rowY[rowIndex];
       
       let xOffset = paddingX;
-      if (isOddRow && shiftOddRows) {
-        xOffset += knotSize / 2;
-      }
 
       let firstNonEmptyIndex = -1;
       let lastNonEmptyIndex = -1;
@@ -175,8 +171,8 @@ export function BraceletCanvas() {
       rowKnots.forEach((knot, knotIndex) => {
         const x = xOffset;
         const currentKnotWidth = (knot.threadSpan / 2) * knotSize;
-        const isLeftEdge = knotIndex === firstNonEmptyIndex;
-        const isRightEdge = knotIndex === lastNonEmptyIndex;
+        const isLeftEdge = Math.abs(x - paddingX) < 1;
+        const isRightEdge = Math.abs((x + currentKnotWidth) - (paddingX + threadsCount * (knotSize / 2))) < 1;
         
         const renderer = KNOT_RENDERERS[knot.type];
         if (renderer) {

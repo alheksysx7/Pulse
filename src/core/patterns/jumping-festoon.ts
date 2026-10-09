@@ -7,7 +7,7 @@ export const jumpingFestoonPattern: Pattern = {
   maxThreads: 5,
   evenOnly: false,
   shiftOddRows: true,
-  defaultVerticalSpacing: 0.4,
+  defaultVerticalSpacing: 0.9,
   defaultKnotSize: 20,
   generateSequence: (threadsCount: number, rows: number) => {
     const sequence: KnotType[][] = [];
@@ -22,31 +22,39 @@ export const jumpingFestoonPattern: Pattern = {
 
       const row: KnotType[] = new Array(knotsCount).fill('NONE');
 
-      const initRows = effectiveThreads - 1;
-      let targetPos = -1;
+      const getSweepStart = (n: number) => {
+        if (n === -1) return 0;
+        if (n === 0) return 2;
+        const pairs = Math.floor((n - 1) / 2);
+        const remainder = (n - 1) % 2;
+        return 5 + pairs * 4 + remainder;
+      };
 
-      if (r < initRows) {
-        // Initial full sweep across all threads
-        targetPos = r;
-      } else {
-        const rCycle = r - initRows;
-        const sweepIndex = Math.floor(rCycle / K);
-        const step = rCycle % K;
+      for (let n = -1; n <= r; n++) {
+        const start = getSweepStart(n);
+        const len = (n === -1) ? effectiveThreads - 1 : K;
 
-        if (sweepIndex % 2 === 0) {
-          // Left-aligned sweep
-          targetPos = step;
-        } else {
-          // Right-aligned sweep
-          targetPos = 1 + step;
-        }
-      }
+        if (r >= start && r < start + len) {
+          const step = r - start;
+          let targetPos = -1;
 
-      // Ensure the target position matches the row's parity
-      if ((targetPos % 2 !== 0) === isOddRow) {
-        const col = Math.floor(targetPos / 2);
-        if (col >= 0 && col < knotsCount) {
-          row[col] = 'B';
+          if (n === -1) {
+            targetPos = step;
+          } else {
+            if (n % 2 === 0) {
+              targetPos = step;
+            } else {
+              targetPos = 1 + step;
+            }
+          }
+
+          // Ensure the target position matches the row's parity
+          if ((targetPos % 2 !== 0) === isOddRow) {
+            const col = Math.floor(targetPos / 2);
+            if (col >= 0 && col < knotsCount) {
+              row[col] = 'B';
+            }
+          }
         }
       }
 

@@ -158,6 +158,7 @@ En el simulador (`jumping-festoon.ts`), este patrón presenta desafíos visuales
    * **Prevención de Superposición:** En lugar de dibujar un abalorio por cada fila inactiva o saltada, la lógica de simulación rastrea las secuencias continuas de inactividad (conteo de `consecutiveLeftNones` y `consecutiveRightNones`) y dibuja exactamente **un solo abalorio perfectamente centrado** en el punto medio del salto de cada segmento.
    * **Supresión en el Arranque:** Para evitar que el primer abalorio quede flotando de forma antinatural sin soporte visual, el simulador omite su dibujo en las primeras filas de inicialización comprobando que se haya pasado la base (`rowIndex >= threadsCount - 1`).
    * **Tipos de Materiales:** Se implementaron tres estilos de renderizado que modifican el color base, el trazo perimetral y el tipo de luz especular para simular distintos materiales físicos: Dorado (metálico y amarillo), Plateado (metálico con reflejos blancos intensos) y Madera (colores café mate con un brillo especular muy tenue).
+6. **Anidación de Hileras (Nesting):** Al igual que en las variantes de Chevron, para asegurar la densidad y evitar largos "vacíos" verticales, los barridos o hileras consecutivas no esperan a que termine el anterior. Se superponen utilizando un algoritmo de entrelazado donde cada nuevo ciclo inicia mientras el ciclo previo sigue activo, respetando los patrones de salto para no colisionar los hilos.
 
 ### Instrucciones Paso a Paso (Cómo tejerlo en la vida real)
 
@@ -182,6 +183,9 @@ En el simulador (`jumping-festoon.ts`), este patrón presenta desafíos visuales
 ## Festón en V (Variante Chevron)
 
 Este patrón es una variante del popular diseño "Chevron". En el Chevron tradicional, los hilos de colores se entrelazan usando los hilos activos como guías y moviéndolos hacia el centro. En esta **variante**, los hilos de los extremos funcionan como guías estáticas ("Festón Cruzado" o "Convergente"), mientras que los hilos interiores se anudan sobre ellas, formando una característica V o flecha, pero con una técnica estructuralmente diferente.
+
+### Anatomía Visual y Renderizado
+Para lograr el aspecto de un tejido denso, el patrón aplica **anidación de filas (nesting)**. En lugar de tejer una 'V' por completo y luego dejar un gran espacio vertical para iniciar la siguiente, la siguiente 'V' comienza a formarse en las filas superiores mientras la primera 'V' aún se está cerrando en el centro. Esto se logra superponiendo la secuencia para que inicie una nueva forma cada 3 filas (`offset = 3`), permitiendo entrelazar múltiples V's de forma compacta y continua sin colisiones en los hilos.
 
 ### Materiales Necesarios
 5 hilos de diferentes colores (o más, siempre que sea un número impar o se dividan en dos grupos con un centro claro).
@@ -209,6 +213,9 @@ Este patrón es una variante del popular diseño "Chevron". En el Chevron tradic
 ## Patrón Chevron Clásico
 
 Este patrón es uno de los más populares en pulseras de hilo. Utiliza nudos festón que convergen hacia el centro desde ambos lados, formando una característica V o flecha, entrelazando los hilos activos como guías y moviéndolos hacia el centro.
+
+### Anatomía Visual y Renderizado
+Para representar el apretado entramado de este patrón, la simulación utiliza un sistema de **anidación (nesting)** de nudos. En un tejido real, las V's no se tejen una debajo de la otra como bloques aislados, sino que se inician continuamente conforme los hilos exteriores se desocupan. El algoritmo de la secuencia (`chevron.ts`) empieza una nueva forma de 'V' cada 2 filas, solapando el trabajo exterior de la nueva V con la conclusión en el centro de la anterior. Esto elimina los vacíos verticales (los hilos sueltos o "slacks") y produce el clásico entramado continuo de las pulseras Chevron. Además, los nudos festón se dibujan con un ángulo inclinado (~55 grados) para pronunciar visualmente el efecto de caída diagonal ("escalera").
 
 ### Materiales Necesarios
 8 hilos de diferentes colores (puedes usar 4 colores repetidos simétricamente a cada lado, o 8 colores completamente distintos).

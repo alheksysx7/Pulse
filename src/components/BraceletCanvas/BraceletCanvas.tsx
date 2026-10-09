@@ -175,7 +175,7 @@ export function BraceletCanvas() {
             else consecutiveRightNones = 0;
           }
 
-          let shouldHide = (knot.type === 'NONE' || knot.type === 'NONE_1') && isEdgeThread && patternId !== 'zigzag-festoon' && patternId !== 'diagonal-festoon' && patternId !== 'jumping-festoon' && patternId !== 'alternating-half-hitch' && patternId !== 'chevron';
+          let shouldHide = (knot.type === 'NONE' || knot.type === 'NONE_1') && isEdgeThread && patternId !== 'zigzag-festoon' && patternId !== 'diagonal-festoon' && patternId !== 'jumping-festoon' && patternId !== 'alternating-half-hitch' && patternId !== 'v-festoon-chevron';
 
           if (patternId === 'alternating-half-hitch') {
             // Hide the straight background line for the working threads, because the renderer will draw the diagonal inward/outward loops
@@ -203,7 +203,7 @@ export function BraceletCanvas() {
 
             if (patternId === 'zigzag-festoon' && rowIndex > 0) {
               ctx.globalAlpha = 0.3;
-            } else if (patternId === 'chevron' && (knot.type === 'NONE' || knot.type === 'NONE_1')) {
+            } else if (patternId === 'v-festoon-chevron' && (knot.type === 'NONE' || knot.type === 'NONE_1')) {
               ctx.globalAlpha = 0.5;
             }
             ctx.stroke();

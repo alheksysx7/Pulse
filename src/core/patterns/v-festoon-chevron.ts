@@ -1,8 +1,8 @@
 import type { Pattern, KnotType } from '../types';
 
-export const chevronPattern: Pattern = {
-  id: 'chevron',
-  name: 'Chevron',
+export const vFestoonChevronPattern: Pattern = {
+  id: 'v-festoon-chevron',
+  name: 'Festón en V (Variante Chevron)',
   minThreads: 3,
   defaultThreads: 5,
   evenOnly: false,

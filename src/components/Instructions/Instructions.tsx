@@ -232,10 +232,10 @@ export function Instructions() {
       </div>
     );
   }
-  if (patternId === 'chevron') {
+  if (patternId === 'v-festoon-chevron') {
     return (
       <div className={styles.container}>
-        <h2 className={styles.title}>Instrucciones: Patrón Chevron / Festón Cruzado</h2>
+        <h2 className={styles.title}>Instrucciones: Festón en V (Variante Chevron)</h2>
         
         <div className={styles.content}>
           <section className={styles.section}>
@@ -254,18 +254,18 @@ export function Instructions() {
           <section className={styles.section}>
             <h3>Paso 1 (Lado Izquierdo hacia el Centro)</h3>
             <ol>
-              <li>Toma el primer hilo de la extrema izquierda y úsalo como hilo guía, pasándolo sobre los demás hilos hacia la derecha.</li>
-              <li>Haz un nudo festón con el 2do hilo sobre esta guía.</li>
-              <li>Haz un segundo nudo festón con el 3er hilo sobre la misma guía, deteniéndote en el centro.</li>
+              <li>Toma el primer hilo de la extrema izquierda y úsalo como hilo guía estático, cruzándolo por encima de los demás hilos hacia la derecha.</li>
+              <li>Toma el 2do hilo (que queda a la derecha del guía) y haz un <strong>Nudo Festón Hacia Atrás (Backward Knot)</strong> sobre el hilo guía.</li>
+              <li>Toma el 3er hilo y repite el nudo hacia atrás sobre la misma guía, deteniéndote en el centro.</li>
             </ol>
           </section>
 
           <section className={styles.section}>
             <h3>Paso 2 (Lado Derecho hacia el Centro)</h3>
             <ol>
-              <li>Toma el hilo del extremo derecho y úsalo como hilo guía, pasándolo sobre los otros hilos hacia la izquierda.</li>
-              <li>Haz el primer nudo festón con el 4to hilo sobre esta guía.</li>
-              <li>Haz el siguiente nudo festón con el 3er hilo (que ahora es el centro) sobre la misma guía para cerrar el centro y unir ambas mitades.</li>
+              <li>Toma el hilo del extremo derecho y úsalo como hilo guía estático, cruzándolo por encima de los otros hilos hacia la izquierda.</li>
+              <li>Toma el 4to hilo (que queda a la izquierda del guía) y haz un <strong>Nudo Festón Hacia Adelante (Forward Knot)</strong> sobre esta guía.</li>
+              <li>Toma el 3er hilo (que ahora es el centro) y haz el siguiente nudo hacia adelante sobre la misma guía para cerrar el centro y unir ambas mitades.</li>
             </ol>
           </section>
 

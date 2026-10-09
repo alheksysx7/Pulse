@@ -179,9 +179,9 @@ En el simulador (`jumping-festoon.ts`), este patrón presenta desafíos visuales
 * Con los otros 3 hilos restantes, haz nudos festón dobles en sentido contrario.
 * El patrón continúa alternando entre estos "saltos" asimétricos por el resto de la pulsera, uniendo y liberando hilos en los extremos, logrando encapsular los abalorios entre el tejido central.
 
-## Patrón Chevron / Festón Cruzado
+## Festón en V (Variante Chevron)
 
-Este patrón es uno de los más populares en pulseras de hilo. Utiliza nudos festón que convergen hacia el centro desde ambos lados, formando una característica V o flecha.
+Este patrón es una variante del popular diseño "Chevron". En el Chevron tradicional, los hilos de colores se entrelazan usando los hilos activos como guías y moviéndolos hacia el centro. En esta **variante**, los hilos de los extremos funcionan como guías estáticas ("Festón Cruzado" o "Convergente"), mientras que los hilos interiores se anudan sobre ellas, formando una característica V o flecha, pero con una técnica estructuralmente diferente.
 
 ### Materiales Necesarios
 5 hilos de diferentes colores (o más, siempre que sea un número impar o se dividan en dos grupos con un centro claro).
@@ -193,14 +193,14 @@ Este patrón es uno de los más populares en pulseras de hilo. Utiliza nudos fes
 * Extiende los hilos hacia abajo para organizarlos antes de comenzar el tejido.
 
 **Paso 1 (Lado Izquierdo hacia el Centro):**
-* Toma el primer hilo de la extrema izquierda y úsalo como hilo guía, pasándolo sobre los demás hilos hacia la derecha.
-* Haz un nudo festón con el 2do hilo sobre esta guía.
-* Haz un segundo nudo festón con el 3er hilo sobre la misma guía, deteniéndote en el centro.
+* Toma el primer hilo de la extrema izquierda y úsalo como hilo guía estático, cruzándolo por encima de los demás hilos hacia la derecha.
+* Toma el 2do hilo (que queda a la derecha del guía) y haz un **Nudo Festón Hacia Atrás (Backward Knot)** sobre el hilo guía.
+* Toma el 3er hilo y repite el nudo hacia atrás sobre la misma guía, deteniéndote en el centro.
 
 **Paso 2 (Lado Derecho hacia el Centro):**
-* Toma el hilo del extremo derecho y úsalo como hilo guía, pasándolo sobre los otros hilos hacia la izquierda.
-* Haz el primer nudo festón con el 4to hilo sobre esta guía.
-* Haz el siguiente nudo festón con el 3er hilo (que ahora es el centro) sobre la misma guía para cerrar el centro y unir ambas mitades.
+* Toma el hilo del extremo derecho y úsalo como hilo guía estático, cruzándolo por encima de los otros hilos hacia la izquierda.
+* Toma el 4to hilo (que queda a la izquierda del guía) y haz un **Nudo Festón Hacia Adelante (Forward Knot)** sobre esta guía.
+* Toma el 3er hilo (que ahora es el centro) y haz el siguiente nudo hacia adelante sobre la misma guía para cerrar el centro y unir ambas mitades.
 
 **Repetición:**
 * Vuelve a repetir el ciclo completo desde el Paso 1 alternando los lados para formar el patrón continuo. 

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useDesignStore } from '../../store/useDesignStore';
 import { PATTERNS } from '../../core/patterns';
 import { simulateSequence } from '../../core/simulate';
-import { KNOT_RENDERERS } from '../../core/renderers/knotRenderers';
+import { KNOT_RENDERERS, getTexture } from '../../core/renderers/knotRenderers';
 import styles from './BraceletCanvas.module.css';
 
 const getBrightness = (hex: string) => {
@@ -175,7 +175,7 @@ export function BraceletCanvas() {
             else consecutiveRightNones = 0;
           }
 
-          let shouldHide = (knot.type === 'NONE' || knot.type === 'NONE_1') && isEdgeThread && patternId === 'square';
+          let shouldHide = false;
 
           if (patternId === 'alternating-half-hitch') {
             // Hide the straight background line for the working threads, because the renderer will draw the diagonal inward/outward loops
@@ -207,6 +207,12 @@ export function BraceletCanvas() {
               ctx.globalAlpha = 0.5;
             }
             ctx.stroke();
+            
+            const tex = getTexture(ctx);
+            if (tex) {
+              ctx.strokeStyle = tex;
+              ctx.stroke();
+            }
             ctx.globalAlpha = 1.0;
 
             // Draw beads if enabled (only once per segment, on the 2nd consecutive NONE row)

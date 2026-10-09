@@ -15,144 +15,121 @@ export interface RenderContext {
 
 export type KnotRenderer = (params: RenderContext) => void;
 
-const drawSquareKnot: KnotRenderer = ({ ctx, knot, x, y, knotSize, currentKnotWidth }) => {
-  const centerX = x + currentKnotWidth / 2;
+let texturePattern: CanvasPattern | null = null;
+export const getTexture = (ctx: CanvasRenderingContext2D) => {
+  if (!texturePattern) {
+    const canvas = document.createElement('canvas');
+    canvas.width = 6;
+    canvas.height = 6;
+    const tCtx = canvas.getContext('2d')!;
+    
+    // Transparent background
+    tCtx.clearRect(0, 0, 6, 6);
+    
+    // Dark diagonal (shadow twist)
+    tCtx.fillStyle = 'rgba(0,0,0,0.15)';
+    tCtx.beginPath();
+    tCtx.moveTo(0, 6);
+    tCtx.lineTo(6, 0);
+    tCtx.lineTo(6, 2);
+    tCtx.lineTo(2, 6);
+    tCtx.fill();
 
-  // 1. Draw border/background loops (right thread = outColor2)
-  ctx.beginPath();
-  ctx.roundRect(centerX, y, currentKnotWidth / 2, knotSize / 2, 6);
-  ctx.fillStyle = knot.outColor2;
-  ctx.fill();
+    // Light diagonal (highlight twist)
+    tCtx.fillStyle = 'rgba(255,255,255,0.15)';
+    tCtx.beginPath();
+    tCtx.moveTo(0, 2);
+    tCtx.lineTo(2, 0);
+    tCtx.lineTo(0, 0);
+    tCtx.fill();
+    tCtx.beginPath();
+    tCtx.moveTo(4, 6);
+    tCtx.lineTo(6, 4);
+    tCtx.lineTo(6, 6);
+    tCtx.fill();
 
-  ctx.beginPath();
-  ctx.roundRect(x, y + knotSize / 2, currentKnotWidth / 2, knotSize / 2, 6);
-  ctx.fillStyle = knot.outColor2;
-  ctx.fill();
-
-  // 2. Inner zigzag (left thread = outColor1)
-  const slant = currentKnotWidth / 2 - 6;
-  ctx.beginPath();
-  ctx.moveTo(centerX - slant, y);
-  ctx.lineTo(centerX + slant, y + knotSize / 2);
-  ctx.lineTo(centerX - slant, y + knotSize);
-
-  ctx.lineWidth = 12;
-  ctx.lineCap = 'round';
-  ctx.lineJoin = 'round';
-  ctx.strokeStyle = knot.outColor1;
-  ctx.stroke();
-
-  // Highlight for zigzag
-  ctx.beginPath();
-  ctx.moveTo(centerX - slant, y);
-  ctx.lineTo(centerX + slant, y + knotSize / 2);
-  ctx.lineTo(centerX - slant, y + knotSize);
-
-  ctx.lineWidth = 4;
-  ctx.strokeStyle = 'rgba(255,255,255,0.3)';
-  ctx.stroke();
-
-  // 3. Foreground wrapping curves (border thread wrapping OVER the zigzag elbows)
-  ctx.lineWidth = 8;
-  ctx.lineCap = 'round';
-  ctx.strokeStyle = knot.outColor2;
-
-  // Right elbow wrap
-  ctx.beginPath();
-  ctx.moveTo(centerX + slant - 4, y + knotSize / 2 - 8);
-  ctx.quadraticCurveTo(centerX + slant + 6, y + knotSize / 2, centerX + slant - 4, y + knotSize / 2 + 8);
-  ctx.stroke();
-
-  // Left elbow wrap (Top)
-  ctx.beginPath();
-  ctx.moveTo(centerX - slant + 4, y - 8);
-  ctx.quadraticCurveTo(centerX - slant - 6, y, centerX - slant + 4, y + 8);
-  ctx.stroke();
-
-  // Left elbow wrap (Bottom)
-  ctx.beginPath();
-  ctx.moveTo(centerX - slant + 4, y + knotSize - 8);
-  ctx.quadraticCurveTo(centerX - slant - 6, y + knotSize, centerX - slant + 4, y + knotSize + 8);
-  ctx.stroke();
-
-  // Add highlight to wraps
-  ctx.lineWidth = 3;
-  ctx.strokeStyle = 'rgba(255,255,255,0.3)';
-  ctx.beginPath();
-  ctx.moveTo(centerX + slant - 4, y + knotSize / 2 - 8);
-  ctx.quadraticCurveTo(centerX + slant + 6, y + knotSize / 2, centerX + slant - 4, y + knotSize / 2 + 8);
-  ctx.stroke();
-
-  ctx.beginPath();
-  ctx.moveTo(centerX - slant + 4, y - 8);
-  ctx.quadraticCurveTo(centerX - slant - 6, y, centerX - slant + 4, y + 8);
-  ctx.stroke();
-
-  ctx.beginPath();
-  ctx.moveTo(centerX - slant + 4, y + knotSize - 8);
-  ctx.quadraticCurveTo(centerX - slant - 6, y + knotSize, centerX - slant + 4, y + knotSize + 8);
-  ctx.stroke();
+    texturePattern = ctx.createPattern(canvas, 'repeat');
+  }
+  return texturePattern;
 };
 
+
 const drawHalfSquareKnot: KnotRenderer = ({ ctx, knot, x, y, knotSize, currentKnotWidth }) => {
-  const segmentWidth = currentKnotWidth / knot.threadSpan;
-  const centerX = x + segmentWidth * 1.5; // Center of the core thread
+  const centerX = x + currentKnotWidth / 2;
+  const barWidth = currentKnotWidth - knotSize * 0.5; 
+  const barY = y + knotSize / 2;
+  
+  const isLeft = knot.type === 'HALF_SQUARE_L';
 
-  // Draw the horizontal wrap (bump) over the core
+  // For the second half (R), the user requested it to be slightly inclined downwards
+  const slantY = isLeft ? 0 : knotSize * 0.15;
+  
+  // 1. Draw the horizontal bar (outColor1, thread going OVER the core)
   ctx.beginPath();
-  ctx.moveTo(centerX - segmentWidth / 1.2, y + knotSize / 2);
-  ctx.lineTo(centerX + segmentWidth / 1.2, y + knotSize / 2);
-  ctx.lineWidth = knotSize * 0.6; // Thick horizontal bump covering the core
+  ctx.moveTo(centerX - barWidth / 2, barY - slantY);
+  ctx.lineTo(centerX + barWidth / 2, barY + slantY);
+  ctx.lineWidth = knotSize * 0.6;
   ctx.lineCap = 'round';
   ctx.strokeStyle = knot.outColor1;
   ctx.stroke();
-
-  // Highlight on the horizontal bump
-  ctx.beginPath();
-  ctx.moveTo(centerX - segmentWidth / 1.5, y + knotSize / 2 - 2);
-  ctx.lineTo(centerX + segmentWidth / 1.5, y + knotSize / 2 - 2);
-  ctx.lineWidth = 2;
-  ctx.strokeStyle = 'rgba(255,255,255,0.4)';
-  ctx.stroke();
-
-  // Shadow under the bump
-  ctx.beginPath();
-  ctx.moveTo(centerX - segmentWidth / 1.2, y + knotSize / 2 + 4);
-  ctx.lineTo(centerX + segmentWidth / 1.2, y + knotSize / 2 + 4);
-  ctx.lineWidth = 2;
-  ctx.strokeStyle = 'rgba(0,0,0,0.3)';
-  ctx.stroke();
-
-  // Draw the side loop connecting to the outer thread
-  ctx.beginPath();
-  if (knot.type === 'HALF_SQUARE_L') {
-    // Loop on the left
-    ctx.moveTo(centerX - segmentWidth / 1.2 + 2, y + knotSize / 2);
-    ctx.quadraticCurveTo(x - 2, y + knotSize / 2, x + 2, y + 2);
-    ctx.quadraticCurveTo(x + 4, y - knotSize / 4, centerX - segmentWidth, y - 2);
-  } else {
-    // Loop on the right
-    ctx.moveTo(centerX + segmentWidth / 1.2 - 2, y + knotSize / 2);
-    ctx.quadraticCurveTo(x + segmentWidth * 3 + 2, y + knotSize / 2, x + segmentWidth * 3 - 2, y + 2);
-    ctx.quadraticCurveTo(x + segmentWidth * 3 - 4, y - knotSize / 4, centerX + segmentWidth, y - 2);
+  const pattern = getTexture(ctx);
+  if (pattern) {
+    ctx.strokeStyle = pattern;
+    ctx.stroke();
   }
 
-  ctx.lineWidth = knotSize * 0.35;
-  ctx.lineCap = 'round';
-  ctx.strokeStyle = knot.outColor1;
+  // Shadow under the bar
+  ctx.beginPath();
+  ctx.moveTo(centerX - barWidth / 2 + 2, barY - slantY + 3);
+  ctx.lineTo(centerX + barWidth / 2 - 2, barY + slantY + 3);
+  ctx.lineWidth = 3;
+  ctx.strokeStyle = 'rgba(0,0,0,0.2)';
   ctx.stroke();
 
-  // Highlight for the side loop
+  // Highlight on the bar
   ctx.beginPath();
-  if (knot.type === 'HALF_SQUARE_L') {
-    ctx.moveTo(centerX - segmentWidth / 1.2 + 2, y + knotSize / 2 - 2);
-    ctx.quadraticCurveTo(x, y + knotSize / 2 - 2, x + 2, y + 2);
-  } else {
-    ctx.moveTo(centerX + segmentWidth / 1.2 - 2, y + knotSize / 2 - 2);
-    ctx.quadraticCurveTo(x + segmentWidth * 3, y + knotSize / 2 - 2, x + segmentWidth * 3 - 2, y + 2);
-  }
+  ctx.moveTo(centerX - barWidth / 2 + 4, barY - slantY - 2);
+  ctx.lineTo(centerX + barWidth / 2 - 4, barY + slantY - 2);
   ctx.lineWidth = 2;
   ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+  ctx.stroke();
+
+  // 2. Draw the vertical edge loop (outColor2)
+  // Only ONE loop per half knot: Left loop for L, Right loop for R.
+  ctx.beginPath();
+  
+  if (isLeft) {
+    // Left loop
+    ctx.moveTo(x + knotSize * 0.2, y);
+    ctx.quadraticCurveTo(x - knotSize * 0.1, barY, x + knotSize * 0.3, y + knotSize);
+  } else {
+    // Right loop
+    ctx.moveTo(x + currentKnotWidth - knotSize * 0.2, y);
+    ctx.quadraticCurveTo(x + currentKnotWidth + knotSize * 0.1, barY, x + currentKnotWidth - knotSize * 0.3, y + knotSize);
+  }
+  
+  ctx.lineWidth = knotSize * 0.45;
+  ctx.lineCap = 'round';
+  ctx.strokeStyle = knot.outColor2;
+  ctx.stroke();
+  const pattern2 = getTexture(ctx);
+  if (pattern2) {
+    ctx.strokeStyle = pattern2;
+    ctx.stroke();
+  }
+
+  // Highlight for the single edge loop
+  ctx.beginPath();
+  if (isLeft) {
+    ctx.moveTo(x + knotSize * 0.2, y + 2);
+    ctx.quadraticCurveTo(x, barY, x + knotSize * 0.25, y + knotSize - 4);
+  } else {
+    ctx.moveTo(x + currentKnotWidth - knotSize * 0.2, y + 2);
+    ctx.quadraticCurveTo(x + currentKnotWidth, barY, x + currentKnotWidth - knotSize * 0.25, y + knotSize - 4);
+  }
+  
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = 'rgba(255,255,255,0.4)';
   ctx.stroke();
 };
 
@@ -330,6 +307,11 @@ const drawHalfFestoonKnot: KnotRenderer = ({ ctx, knot, x, y, knotSize, currentK
     ctx.lineWidth = 3;
     ctx.strokeStyle = knotColor;
     ctx.stroke();
+    const pattern = getTexture(ctx);
+    if (pattern) {
+      ctx.strokeStyle = pattern;
+      ctx.stroke();
+    }
   }
 
   ctx.save();
@@ -349,6 +331,11 @@ const drawHalfFestoonKnot: KnotRenderer = ({ ctx, knot, x, y, knotSize, currentK
   ctx.roundRect(-pillWidth / 2, -pillHeight / 2, pillWidth, pillHeight, pillHeight / 2);
   ctx.fillStyle = knotColor;
   ctx.fill();
+  const pattern2 = getTexture(ctx);
+  if (pattern2) {
+    ctx.fillStyle = pattern2;
+    ctx.fill();
+  }
 
   // Outline
   ctx.lineWidth = 1;
@@ -367,7 +354,6 @@ const drawHalfFestoonKnot: KnotRenderer = ({ ctx, knot, x, y, knotSize, currentK
 };
 
 export const KNOT_RENDERERS: Record<string, KnotRenderer> = {
-  SQUARE: drawSquareKnot,
   HALF_SQUARE_L: drawHalfSquareKnot,
   HALF_SQUARE_R: drawHalfSquareKnot,
   F: drawFestoonKnot,

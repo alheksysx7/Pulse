@@ -27,8 +27,8 @@ export interface DesignState {
   setThreadSlack: (slack: number) => void;
 }
 
-const defaultPatternId = 'square';
-const defaultThreadsCount = 4;
+const defaultPatternId = 'diagonal-festoon';
+const defaultThreadsCount = PATTERNS[defaultPatternId].defaultThreads ?? 4;
 const defaultColors = PREDEFINED_PALETTES[0].colors;
 
 // Repeat palette colors if we have more threads than palette colors
@@ -43,10 +43,10 @@ export const useDesignStore = create<DesignState>((set) => ({
   colors: getInitialColors(defaultThreadsCount, defaultColors),
   activePaletteName: PREDEFINED_PALETTES[0].name,
   paletteShift: 0,
-  verticalSpacing: 1.0,
+  verticalSpacing: PATTERNS[defaultPatternId].defaultVerticalSpacing ?? 1.0,
   showBeads: false,
   beadType: 'gold' as 'gold' | 'silver' | 'wood',
-  knotSize: 24,
+  knotSize: PATTERNS[defaultPatternId].defaultKnotSize ?? 24,
   threadSlack: 0,
 
   setPatternId: (id) => set((state) => {

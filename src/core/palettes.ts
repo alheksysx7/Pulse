@@ -5,8 +5,8 @@ export interface Palette {
 
 export const PREDEFINED_PALETTES: Palette[] = [
   {
-    name: 'Atardecer Cálido',
-    colors: ['#5B2333', '#9A2A54', '#D96C4A', '#ECA42E', '#E8E3D9']
+    name: 'Clásica Marinera',
+    colors: ['#1B2A49', '#005C97', '#F4F4F0', '#A1232B', '#D7C4A5']
   },
   {
     name: 'Rústico y Natural',
@@ -17,8 +17,8 @@ export const PREDEFINED_PALETTES: Palette[] = [
     colors: ['#2C4C3B', '#596A48', '#4A3525', '#8B3A33', '#888C8D']
   },
   {
-    name: 'Clásica Marinera',
-    colors: ['#1B2A49', '#005C97', '#F4F4F0', '#A1232B', '#D7C4A5']
+    name: 'Atardecer Cálido',
+    colors: ['#5B2333', '#9A2A54', '#D96C4A', '#ECA42E', '#E8E3D9']
   },
   {
     name: 'Sólidos Vivos',

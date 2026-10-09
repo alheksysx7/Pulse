@@ -1,4 +1,4 @@
-export type KnotType = 'SQUARE' | 'HALF_SQUARE_L' | 'HALF_SQUARE_R' | 'F' | 'B' | 'F_NO_SWAP' | 'B_NO_SWAP' | 'NONE' | 'NONE_1';
+export type KnotType = 'HALF_SQUARE_L' | 'HALF_SQUARE_R' | 'F' | 'B' | 'F_NO_SWAP' | 'B_NO_SWAP' | 'NONE' | 'NONE_1';
 
 export interface Knot {
   type: KnotType;

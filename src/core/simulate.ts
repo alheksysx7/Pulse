@@ -38,7 +38,7 @@ export function simulateSequence(initialColors: string[], rowKnotTypes: KnotType
       const rightIdx = leftIdx + 1;
       let threadSpan = 2;
       
-      if (type === 'SQUARE' || type === 'HALF_SQUARE_L' || type === 'HALF_SQUARE_R') {
+      if (type === 'HALF_SQUARE_L' || type === 'HALF_SQUARE_R') {
         threadSpan = Math.min(4, currentColors.length - leftIdx); // Spans up to 4 threads
       } else if (type === 'NONE_1') {
         threadSpan = 1;
@@ -81,7 +81,7 @@ export function simulateSequence(initialColors: string[], rowKnotTypes: KnotType
         outColor2 = color2;
         nextColors[leftIdx] = color1;
         if (threadSpan > 1) nextColors[rightIdx] = color2;
-      } else if (type === 'SQUARE' || type === 'HALF_SQUARE_L' || type === 'HALF_SQUARE_R') {
+      } else if (type === 'HALF_SQUARE_L' || type === 'HALF_SQUARE_R') {
         // Square knot spans 3 or 4 threads: outer threads tie around inner core(s)
         const outerLeft = currentColors[leftIdx];
         const outerRight = currentColors[leftIdx + threadSpan - 1];
@@ -104,9 +104,15 @@ export function simulateSequence(initialColors: string[], rowKnotTypes: KnotType
           }
         }
         
-        // Colors don't swap position in a flat square knot
-        nextColors[leftIdx] = outerLeft;
-        nextColors[leftIdx + threadSpan - 1] = outerRight;
+        // Colors swap position in a HALF square knot, but not in a full SQUARE knot
+        if (type === 'HALF_SQUARE_L' || type === 'HALF_SQUARE_R') {
+          nextColors[leftIdx] = outerRight;
+          nextColors[leftIdx + threadSpan - 1] = outerLeft;
+        } else {
+          nextColors[leftIdx] = outerLeft;
+          nextColors[leftIdx + threadSpan - 1] = outerRight;
+        }
+        
         for (let i = 1; i < threadSpan - 1; i++) {
           nextColors[leftIdx + i] = currentColors[leftIdx + i]; // core threads
         }

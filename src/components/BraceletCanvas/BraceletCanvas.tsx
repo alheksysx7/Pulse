@@ -175,7 +175,7 @@ export function BraceletCanvas() {
             else consecutiveRightNones = 0;
           }
 
-          let shouldHide = (knot.type === 'NONE' || knot.type === 'NONE_1') && isEdgeThread && patternId !== 'zigzag-festoon' && patternId !== 'diagonal-festoon' && patternId !== 'jumping-festoon' && patternId !== 'alternating-half-hitch' && patternId !== 'v-festoon-chevron';
+          let shouldHide = (knot.type === 'NONE' || knot.type === 'NONE_1') && isEdgeThread && patternId === 'square';
 
           if (patternId === 'alternating-half-hitch') {
             // Hide the straight background line for the working threads, because the renderer will draw the diagonal inward/outward loops

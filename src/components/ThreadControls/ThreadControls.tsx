@@ -12,7 +12,8 @@ export function ThreadControls() {
     verticalSpacing, setVerticalSpacing,
     showBeads, setShowBeads,
     beadType, setBeadType,
-    knotSize, setKnotSize
+    knotSize, setKnotSize,
+    setAllColors
   } = useDesignStore();
 
   const pattern = PATTERNS[patternId];
@@ -36,12 +37,11 @@ export function ThreadControls() {
         <h3 className={styles.title}>Vertical Spacing: {verticalSpacing.toFixed(1)}x</h3>
         <input
           type="range"
-          min={0.4}
+          min={pattern.minVerticalSpacing ?? 0.6}
           max={2.0}
           step={0.1}
           value={verticalSpacing}
           onChange={(e) => setVerticalSpacing(Number(e.target.value))}
-          disabled={pattern.lockVerticalSpacing}
           className={styles.slider}
         />
       </div>
@@ -91,7 +91,12 @@ export function ThreadControls() {
         <h3 className={styles.title}>Colors</h3>
         <div className={styles.colorGrid}>
           {colors.map((color, index) => (
-            <div key={index} className={styles.colorItem}>
+            <div 
+              key={index} 
+              className={styles.colorItem} 
+              onDoubleClick={() => setAllColors(color)}
+              title="Doble clic para aplicar este color a todos los hilos"
+            >
               <span className={styles.colorLabel}>{index + 1}</span>
               <input
                 type="color"

@@ -1,4 +1,4 @@
-export type KnotType = 'SQUARE' | 'HALF_SQUARE_L' | 'HALF_SQUARE_R' | 'F' | 'B' | 'F_NO_SWAP' | 'B_NO_SWAP' | 'NONE';
+export type KnotType = 'SQUARE' | 'HALF_SQUARE_L' | 'HALF_SQUARE_R' | 'F' | 'B' | 'F_NO_SWAP' | 'B_NO_SWAP' | 'NONE' | 'NONE_1';
 
 export interface Knot {
   type: KnotType;
@@ -15,11 +15,12 @@ export interface Pattern {
   name: string;
   minThreads: number;
   maxThreads?: number;
+  defaultThreads?: number; // Default number of threads for this pattern
   evenOnly: boolean;
   shiftOddRows?: boolean; // If false, odd rows don't shift by 1 thread (default true)
   defaultVerticalSpacing?: number; // Custom vertical spacing for this pattern
+  minVerticalSpacing?: number; // Minimum allowed vertical spacing
   defaultKnotSize?: number; // Custom knot size for this pattern
-  lockVerticalSpacing?: boolean; // If true, the user cannot change vertical spacing
   /**
    * Generates a grid of knots (array of rows, where each row is an array of KnotTypes).
    * Also returns the positions of the knots.

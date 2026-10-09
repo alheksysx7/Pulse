@@ -5,10 +5,10 @@ export const diagonalFestoonPattern: Pattern = {
   name: 'Festón Diagonal',
   minThreads: 3,
   maxThreads: 7,
+  defaultThreads: 4,
   evenOnly: false,
   shiftOddRows: true,
   defaultVerticalSpacing: 0.5,
-  lockVerticalSpacing: true,
   defaultKnotSize: 24,
   generateSequence: (threadsCount: number, rows: number) => {
     const sequence: KnotType[][] = [];

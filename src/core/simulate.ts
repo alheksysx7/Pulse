@@ -34,19 +34,20 @@ export function simulateSequence(initialColors: string[], rowKnotTypes: KnotType
 
     for (let k = 0; k < knotTypes.length; k++) {
       const type = knotTypes[k];
+      const leftIdx = threadOffset;
+      const rightIdx = leftIdx + 1;
       let threadSpan = 2;
       
       if (type === 'SQUARE' || type === 'HALF_SQUARE_L' || type === 'HALF_SQUARE_R') {
-        threadSpan = currentColors.length; // Spans all available threads (3 or 4)
+        threadSpan = Math.min(4, currentColors.length - leftIdx); // Spans up to 4 threads
+      } else if (type === 'NONE_1') {
+        threadSpan = 1;
       }
-      
-      const leftIdx = threadOffset;
-      const rightIdx = leftIdx + 1;
       
       if (leftIdx + threadSpan > currentColors.length) break; // Safety check
 
       const color1 = currentColors[leftIdx];
-      const color2 = currentColors[rightIdx];
+      const color2 = threadSpan > 1 ? currentColors[rightIdx] : currentColors[leftIdx];
       let outColor1 = color1;
       let outColor2 = color2;
 
@@ -74,12 +75,12 @@ export function simulateSequence(initialColors: string[], rowKnotTypes: KnotType
         outColor2 = color2;
         nextColors[leftIdx] = color1;
         nextColors[rightIdx] = color2;
-      } else if (type === 'NONE') {
+      } else if (type === 'NONE' || type === 'NONE_1') {
         // No knot: threads drop straight down
         outColor1 = color1;
         outColor2 = color2;
         nextColors[leftIdx] = color1;
-        nextColors[rightIdx] = color2;
+        if (threadSpan > 1) nextColors[rightIdx] = color2;
       } else if (type === 'SQUARE' || type === 'HALF_SQUARE_L' || type === 'HALF_SQUARE_R') {
         // Square knot spans 3 or 4 threads: outer threads tie around inner core(s)
         const outerLeft = currentColors[leftIdx];

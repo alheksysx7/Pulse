@@ -47,10 +47,10 @@ Para lograr una simulación fotorrealista de este nudo, la aplicación lo render
 Este patrón se crea utilizando filas entrelazadas de nudos planos. En lugar de tejer nudos planos en una sola columna vertical, los nudos se desplazan horizontalmente en cada fila, uniendo grupos de hilos adyacentes para formar una malla o red. Requiere un mínimo de 4 hilos, pero es ideal para pulseras anchas con 6, 8 o más hilos.
 
 ### Anatomía Visual y Renderizado
-A nivel de software, el renderizado reutiliza el componente visual del nudo plano normal (`SQUARE`), pero la lógica de simulación (`square-alternating.ts`) aplica un desfase en las filas impares:
-1. **Fila Par (0, 2, 4...):** Se tejen nudos planos usando los hilos en grupos de 4, comenzando desde el borde izquierdo (hilos 1-4, 5-8, etc.).
-2. **Fila Impar (1, 3, 5...):** Se ignora un par de hilos en los bordes. Se tejen nudos planos con los hilos restantes (hilos 3-6, 7-10, etc.). Esto crea la conexión diagonal entre las columnas de nudos, produciendo el patrón de red.
-3. **Medios Nudos Laterales (Simulación):** En nuestra simulación (`HALF_SQUARE_L` y `HALF_SQUARE_R`), para mantener bordes visualmente alineados y evitar que los hilos se crucen sobre el vacío de manera abrupta, se dibuja un bucle grueso sobre los hilos de borde inactivos de las filas impares.
+A nivel de software, la lógica de simulación (`square-alternating.ts`) genera una malla real utilizando nudos planos completos (`SQUARE`), exigiendo un mínimo de 8 hilos (número par) para garantizar que el efecto de entrelazado sea visible y no se degrade a una columna simple.
+1. **Fila Par (0, 2, 4...):** El simulador agrupa los hilos de 4 en 4, tejiendo múltiples nudos `SQUARE` uno al lado del otro. Para lograr esto, `simulate.ts` está programado para limitar la envergadura (`threadSpan`) del nudo plano a un máximo de 4 hilos cuando forma parte de una secuencia, evitando que un solo nudo se apropie de todo el ancho de la pulsera.
+2. **Fila Impar (1, 3, 5...):** La secuencia inserta explícitamente un nudo vacío (`NONE`) al inicio de la fila, lo que provoca un desfase estructural de 2 hilos. Los hilos centrales restantes se agrupan en nudos `SQUARE` de 4 hilos. Al llegar al extremo derecho, los hilos sobrantes también se dejan libres. Esto enlaza los nudos de la fila anterior, produciendo la red.
+3. **Conexiones Orgánicas (Curvas de Bezier):** Para evitar que el desfase diagonal luzca rígido o artificial (como un cableado recto), el renderizador de la pulsera (`BraceletCanvas.tsx`) dibuja los hilos que viajan entre las filas utilizando curvas de Bezier cúbicas (`ctx.bezierCurveTo`). Esto otorga a los enlaces diagonales una caída y tensión natural.
 
 ### Instrucciones Paso a Paso (Cómo tejerlo en la vida real)
 
@@ -178,3 +178,30 @@ En el simulador (`jumping-festoon.ts`), este patrón presenta desafíos visuales
 * Utiliza el 2do hilo de la izquierda como el nuevo hilo guía. 
 * Con los otros 3 hilos restantes, haz nudos festón dobles en sentido contrario.
 * El patrón continúa alternando entre estos "saltos" asimétricos por el resto de la pulsera, uniendo y liberando hilos en los extremos, logrando encapsular los abalorios entre el tejido central.
+
+## Patrón Chevron / Festón Cruzado
+
+Este patrón es uno de los más populares en pulseras de hilo. Utiliza nudos festón que convergen hacia el centro desde ambos lados, formando una característica V o flecha.
+
+### Materiales Necesarios
+5 hilos de diferentes colores (o más, siempre que sea un número impar o se dividan en dos grupos con un centro claro).
+
+### Paso a Paso del Patrón
+
+**Preparación Inicial:**
+* Sujeta los 5 hilos juntos en la parte superior con el clip de la tabla.
+* Extiende los hilos hacia abajo para organizarlos antes de comenzar el tejido.
+
+**Paso 1 (Lado Izquierdo hacia el Centro):**
+* Toma el primer hilo de la extrema izquierda y úsalo como hilo guía, pasándolo sobre los demás hilos hacia la derecha.
+* Haz un nudo festón con el 2do hilo sobre esta guía.
+* Haz un segundo nudo festón con el 3er hilo sobre la misma guía, deteniéndote en el centro.
+
+**Paso 2 (Lado Derecho hacia el Centro):**
+* Toma el hilo del extremo derecho y úsalo como hilo guía, pasándolo sobre los otros hilos hacia la izquierda.
+* Haz el primer nudo festón con el 4to hilo sobre esta guía.
+* Haz el siguiente nudo festón con el 3er hilo (que ahora es el centro) sobre la misma guía para cerrar el centro y unir ambas mitades.
+
+**Repetición:**
+* Vuelve a repetir el ciclo completo desde el Paso 1 alternando los lados para formar el patrón continuo. 
+* Ajusta firmemente cada nudo para mantener la forma simétrica de "V".

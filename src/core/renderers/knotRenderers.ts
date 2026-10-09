@@ -368,4 +368,5 @@ export const KNOT_RENDERERS: Record<string, KnotRenderer> = {
   F_NO_SWAP: drawHalfFestoonKnot,
   B_NO_SWAP: drawHalfFestoonKnot,
   NONE: () => {}, // Draw nothing
+  NONE_1: () => {}, // Draw nothing
 };

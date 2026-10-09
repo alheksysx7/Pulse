@@ -232,6 +232,51 @@ export function Instructions() {
       </div>
     );
   }
+  if (patternId === 'chevron') {
+    return (
+      <div className={styles.container}>
+        <h2 className={styles.title}>Instrucciones: Patrón Chevron / Festón Cruzado</h2>
+        
+        <div className={styles.content}>
+          <section className={styles.section}>
+            <h3>Materiales Necesarios</h3>
+            <p>5 hilos de diferentes colores (o más, siempre que sea un número impar o se dividan en dos grupos con un centro claro).</p>
+          </section>
+
+          <section className={styles.section}>
+            <h3>Preparación Inicial</h3>
+            <ul>
+              <li>Sujeta los 5 hilos juntos en la parte superior con el clip de la tabla.</li>
+              <li>Extiende los hilos hacia abajo para organizarlos antes de comenzar el tejido.</li>
+            </ul>
+          </section>
+
+          <section className={styles.section}>
+            <h3>Paso 1 (Lado Izquierdo hacia el Centro)</h3>
+            <ol>
+              <li>Toma el primer hilo de la extrema izquierda y úsalo como hilo guía, pasándolo sobre los demás hilos hacia la derecha.</li>
+              <li>Haz un nudo festón con el 2do hilo sobre esta guía.</li>
+              <li>Haz un segundo nudo festón con el 3er hilo sobre la misma guía, deteniéndote en el centro.</li>
+            </ol>
+          </section>
+
+          <section className={styles.section}>
+            <h3>Paso 2 (Lado Derecho hacia el Centro)</h3>
+            <ol>
+              <li>Toma el hilo del extremo derecho y úsalo como hilo guía, pasándolo sobre los otros hilos hacia la izquierda.</li>
+              <li>Haz el primer nudo festón con el 4to hilo sobre esta guía.</li>
+              <li>Haz el siguiente nudo festón con el 3er hilo (que ahora es el centro) sobre la misma guía para cerrar el centro y unir ambas mitades.</li>
+            </ol>
+          </section>
+
+          <section className={styles.section}>
+            <h3>Repetición</h3>
+            <p>Vuelve a repetir el ciclo completo desde el Paso 1 alternando los lados para formar el patrón continuo. Ajusta firmemente cada nudo para mantener la forma simétrica de "V".</p>
+          </section>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.container}>

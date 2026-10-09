@@ -95,8 +95,8 @@ export function BraceletCanvas() {
         currentY += rowHeight;
       }
 
-      // If we've reached the bottom, stop here
-      if (currentY - paddingTop > availableHeight) {
+      // If adding another row would exceed the available height, stop here
+      if (currentY - paddingTop + rowHeight > availableHeight) {
         cutoffIndex = i + 1;
         break;
       }
@@ -175,7 +175,7 @@ export function BraceletCanvas() {
             else consecutiveRightNones = 0;
           }
 
-          let shouldHide = knot.type === 'NONE' && isEdgeThread && patternId !== 'zigzag-festoon' && patternId !== 'diagonal-festoon' && patternId !== 'jumping-festoon' && patternId !== 'alternating-half-hitch';
+          let shouldHide = (knot.type === 'NONE' || knot.type === 'NONE_1') && isEdgeThread && patternId !== 'zigzag-festoon' && patternId !== 'diagonal-festoon' && patternId !== 'jumping-festoon' && patternId !== 'alternating-half-hitch' && patternId !== 'chevron';
 
           if (patternId === 'alternating-half-hitch') {
             // Hide the straight background line for the working threads, because the renderer will draw the diagonal inward/outward loops
@@ -203,11 +203,11 @@ export function BraceletCanvas() {
 
             if (patternId === 'zigzag-festoon' && rowIndex > 0) {
               ctx.globalAlpha = 0.3;
+            } else if (patternId === 'chevron' && (knot.type === 'NONE' || knot.type === 'NONE_1')) {
+              ctx.globalAlpha = 0.5;
             }
             ctx.stroke();
-            if (patternId === 'zigzag-festoon' && rowIndex > 0) {
-              ctx.globalAlpha = 1.0;
-            }
+            ctx.globalAlpha = 1.0;
 
             // Draw beads if enabled (only once per segment, on the 2nd consecutive NONE row)
             const isBeadRow = (isLeftEdge && consecutiveLeftNones === 2) || (isRightEdge && consecutiveRightNones === 2);

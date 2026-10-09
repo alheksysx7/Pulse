@@ -17,6 +17,7 @@ export interface DesignState {
   setThreadsCount: (count: number) => void;
   setRowsCount: (count: number) => void;
   setColor: (index: number, color: string) => void;
+  setAllColors: (color: string) => void;
   applyPalette: (name: string, colors: string[]) => void;
   setVerticalSpacing: (spacing: number) => void;
   setShowBeads: (show: boolean) => void;
@@ -47,7 +48,7 @@ export const useDesignStore = create<DesignState>((set) => ({
 
   setPatternId: (id) => set((state) => {
     const pattern = PATTERNS[id];
-    let newThreadsCount = state.threadsCount;
+    let newThreadsCount = pattern.defaultThreads ?? state.threadsCount;
     if (pattern.evenOnly && newThreadsCount % 2 !== 0) {
       newThreadsCount += 1;
     }
@@ -94,6 +95,11 @@ export const useDesignStore = create<DesignState>((set) => ({
     const newColors = [...state.colors];
     newColors[index] = color;
     return { colors: newColors, activePaletteName: null, paletteShift: 0 }; // clear active palette if manually edited
+  }),
+  
+  setAllColors: (color) => set((state) => {
+    const newColors = new Array(state.threadsCount).fill(color);
+    return { colors: newColors, activePaletteName: null, paletteShift: 0 };
   }),
   
   applyPalette: (name, colors) => set((state) => {

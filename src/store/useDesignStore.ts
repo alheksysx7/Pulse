@@ -65,7 +65,8 @@ export const useDesignStore = create<DesignState>((set) => ({
       patternId: id, 
       threadsCount: newThreadsCount, 
       colors: newColors, 
-      verticalSpacing: pattern.defaultVerticalSpacing ?? 1.0 
+      verticalSpacing: pattern.defaultVerticalSpacing ?? 1.0,
+      knotSize: pattern.defaultKnotSize ?? 24
     };
   }),
   

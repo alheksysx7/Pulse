@@ -48,51 +48,6 @@ export function Instructions() {
     );
   }
 
-  if (patternId === 'square-alternating') {
-    return (
-      <div className={styles.container}>
-        <h2 className={styles.title}>Instrucciones: Tejido Nudo Plano Alternado</h2>
-        
-        <div className={styles.content}>
-          <section className={styles.section}>
-            <h3>Materiales Necesarios</h3>
-            <p>3 hilos de colores contrastantes (por ejemplo: un hilo gris para el centro, uno rojo para la izquierda y uno amarillo para la derecha).</p>
-            <p>Una tabla con clip (portapapeles) para sujetar y tensar el inicio del tejido.</p>
-          </section>
-
-          <section className={styles.section}>
-            <h3>Preparación de la Base</h3>
-            <ul>
-              <li>Sujeta los tres hilos en la parte superior con el clip de la tabla.</li>
-              <li>Coloca el hilo gris en el centro; este funcionará como el hilo guía estático y vertical.</li>
-              <li>Coloca el hilo rojo a la izquierda y el hilo amarillo a la derecha; ambos funcionarán como hilos de trabajo.</li>
-            </ul>
-          </section>
-
-          <section className={styles.section}>
-            <h3>Primer Nudo (Lado Izquierdo)</h3>
-            <ol>
-              <li>Toma el hilo rojo de la izquierda y pásalo por <strong>encima</strong> del hilo guía central, formando un bucle hacia la derecha.</li>
-              <li>Pasa el extremo del hilo rojo por <strong>debajo</strong> del hilo guía y por <strong>dentro</strong> del bucle para cerrar el nudo hacia la izquierda, ajustándolo firmemente en la parte superior.</li>
-            </ol>
-          </section>
-
-          <section className={styles.section}>
-            <h3>Segundo Nudo (Lado Derecho)</h3>
-            <ol>
-              <li>Toma el hilo amarillo de la derecha y pásalo por <strong>encima</strong> del hilo guía central, formando un bucle hacia la izquierda.</li>
-              <li>Pasa el extremo del hilo amarillo por <strong>debajo</strong> del hilo guía y por <strong>dentro</strong> del bucle para cerrar el nudo hacia la derecha, ajustándolo justo debajo del nudo anterior.</li>
-            </ol>
-          </section>
-
-          <section className={styles.section}>
-            <h3>Repetición del Patrón</h3>
-            <p><strong>Alterna:</strong> Continúa repitiendo este ciclo: un nudo con el hilo izquierdo (rojo), seguido de un nudo con el hilo derecho (amarillo), y así sucesivamente.</p>
-          </section>
-        </div>
-      </div>
-    );
-  }
 
   if (patternId === 'zigzag-festoon') {
     return (
@@ -225,6 +180,53 @@ export function Instructions() {
             <h3>Repetición del Patrón</h3>
             <p>Vuelve a repetir el <strong>Paso 2</strong>. Luego, repite el <strong>Paso 3</strong>.</p>
             <p>Continúa alternando y repitiendo este ciclo constante para formar la estructura característica de la pulsera.</p>
+          </section>
+        </div>
+      </div>
+    );
+  }
+
+  if (patternId === 'alternating-half-hitch') {
+    return (
+      <div className={styles.container}>
+        <h2 className={styles.title}>Instrucciones: Pulsera de Macramé (Medio Nudo Festón Alterno a un Hilo)</h2>
+        
+        <div className={styles.content}>
+          <section className={styles.section}>
+            <h3>Materiales Necesarios</h3>
+            <p>3 hilos de colores contrastantes.</p>
+          </section>
+
+          <section className={styles.section}>
+            <h3>Preparación de la Base</h3>
+            <ul>
+              <li>Sujeta los tres hilos en la parte superior con el clip de la tabla.</li>
+              <li>Coloca el hilo gris (o el color que prefieras) en el centro; este funcionará como el hilo guía estático y vertical.</li>
+              <li>Coloca el hilo rojo a la izquierda y el hilo amarillo a la derecha; ambos funcionarán como hilos de trabajo.</li>
+            </ul>
+          </section>
+
+          <section className={styles.section}>
+            <h3>Paso 1: Primer Nudo (Lado Izquierdo)</h3>
+            <ol>
+              <li>Toma el hilo rojo de la izquierda y pásalo por encima del hilo guía central, formando un bucle hacia la derecha.</li>
+              <li>Pasa el extremo del hilo rojo por debajo del hilo guía y por dentro del bucle para cerrar el nudo hacia la izquierda.</li>
+              <li>Ajusta firmemente el nudo en la parte superior.</li>
+            </ol>
+          </section>
+
+          <section className={styles.section}>
+            <h3>Paso 2: Segundo Nudo (Lado Derecho)</h3>
+            <ol>
+              <li>Toma el hilo amarillo de la derecha y pásalo por encima del hilo guía central, formando un bucle hacia la izquierda.</li>
+              <li>Pasa el extremo del hilo amarillo por debajo del hilo guía y por dentro del bucle para cerrar el nudo hacia la derecha.</li>
+              <li>Ajusta firmemente justo debajo del nudo anterior.</li>
+            </ol>
+          </section>
+
+          <section className={styles.section}>
+            <h3>Repetición del Patrón</h3>
+            <p><strong>Alterna:</strong> Continúa repitiendo este ciclo: un nudo con el hilo izquierdo (rojo), seguido de un nudo con el hilo derecho (amarillo), y así sucesivamente.</p>
           </section>
         </div>
       </div>

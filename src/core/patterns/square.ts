@@ -7,6 +7,7 @@ export const squarePattern: Pattern = {
   maxThreads: 4,
   evenOnly: false,
   shiftOddRows: false,
+  defaultKnotSize: 32,
   generateSequence: (_threadsCount: number, rows: number) => {
     const sequence: KnotType[][] = [];
     for (let r = 0; r < rows; r++) {

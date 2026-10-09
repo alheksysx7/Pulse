@@ -7,6 +7,7 @@ export const zigzagFestoonPattern: Pattern = {
   maxThreads: 3,
   evenOnly: false,
   shiftOddRows: true, // We will manually emit the sequence, but shiftOddRows lets us pair (0,1) then (1,2)
+  defaultKnotSize: 24,
   generateSequence: (_threadsCount: number, rows: number) => {
     const sequence: KnotType[][] = [];
 

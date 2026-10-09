@@ -7,8 +7,9 @@ export const jumpingFestoonPattern: Pattern = {
   maxThreads: 5,
   evenOnly: false,
   shiftOddRows: true,
-  defaultVerticalSpacing: 0.6,
+  defaultVerticalSpacing: 0.4,
   lockVerticalSpacing: false,
+  defaultKnotSize: 20,
   generateSequence: (threadsCount: number, rows: number) => {
     const sequence: KnotType[][] = [];
     const effectiveThreads = threadsCount % 2 === 0 ? Math.max(5, threadsCount - 1) : threadsCount;

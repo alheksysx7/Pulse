@@ -9,6 +9,7 @@ export const diagonalFestoonPattern: Pattern = {
   shiftOddRows: true,
   defaultVerticalSpacing: 0.5,
   lockVerticalSpacing: true,
+  defaultKnotSize: 24,
   generateSequence: (threadsCount: number, rows: number) => {
     const sequence: KnotType[][] = [];
 

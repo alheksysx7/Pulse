@@ -51,9 +51,7 @@ export function BraceletCanvas() {
     const pattern = PATTERNS[patternId];
     // Canvas setup using knotSize from store
     let baseRowHeight = knotSize;
-    if (patternId === 'square-alternating') {
-      baseRowHeight = knotSize * 0.5;
-    } else if (patternId === 'square' && threadsCount === 2) {
+    if (patternId === 'square' && threadsCount === 2) {
       baseRowHeight = knotSize * 0.75;
     } else if (patternId === 'zigzag-festoon') {
       baseRowHeight = knotSize * 0.22;
@@ -61,6 +59,8 @@ export function BraceletCanvas() {
       baseRowHeight = knotSize * 0.6;
     } else if (patternId === 'jumping-festoon') {
       baseRowHeight = knotSize * 0.35;
+    } else if (patternId === 'alternating-half-hitch') {
+      baseRowHeight = knotSize * 0.4;
     }
 
     // Apply user's vertical spacing multiplier
@@ -122,8 +122,13 @@ export function BraceletCanvas() {
     // Clear canvas
     ctx.clearRect(0, 0, width, height);
 
+    // Helper to get consistent horizontal position for threads
+    const getNominalThreadX = (i: number) => {
+      return paddingX + (i + 0.5) * (knotSize / 2);
+    };
+
     // Track X positions for smooth slanting
-    const prevThreadX = new Array(threadsCount).fill(0).map((_, i) => paddingX + (i + 0.5) * (knotSize / 2));
+    const prevThreadX = new Array(threadsCount).fill(0).map((_, i) => getNominalThreadX(i));
 
     let consecutiveLeftNones = 0;
     let consecutiveRightNones = 0;
@@ -170,7 +175,13 @@ export function BraceletCanvas() {
             else consecutiveRightNones = 0;
           }
 
-          const shouldHide = knot.type === 'NONE' && isEdgeThread && patternId !== 'zigzag-festoon' && patternId !== 'diagonal-festoon' && patternId !== 'jumping-festoon';
+          let shouldHide = knot.type === 'NONE' && isEdgeThread && patternId !== 'zigzag-festoon' && patternId !== 'diagonal-festoon' && patternId !== 'jumping-festoon' && patternId !== 'alternating-half-hitch';
+
+          if (patternId === 'alternating-half-hitch') {
+            // Hide the straight background line for the working threads, because the renderer will draw the diagonal inward/outward loops
+            if (knot.type === 'F_NO_SWAP' && i === 0) shouldHide = true;
+            if (knot.type === 'B_NO_SWAP' && i === 1) shouldHide = true;
+          }
 
           if (!shouldHide) {
             if (patternId === 'zigzag-festoon') {
@@ -252,7 +263,7 @@ export function BraceletCanvas() {
     if (grid.length > 0) {
       const lastY = rowY[grid.length - 1] + knotSize / 2;
       finalColors.forEach((color, i) => {
-        const threadX = paddingX + (i + 0.5) * (knotSize / 2);
+        const threadX = prevThreadX[i];
         ctx.beginPath();
         ctx.moveTo(threadX, lastY);
         ctx.lineTo(threadX, height - 20);
@@ -278,7 +289,7 @@ export function BraceletCanvas() {
 
         const renderer = KNOT_RENDERERS[knot.type];
         if (renderer) {
-          renderer({ ctx, knot, x, y, knotSize, currentKnotWidth, isLeftEdge, isRightEdge });
+          renderer({ ctx, knot, x, y, knotSize, currentKnotWidth, isLeftEdge, isRightEdge, patternId, rowIndex });
         }
 
         xOffset += currentKnotWidth;

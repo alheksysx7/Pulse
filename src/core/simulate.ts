@@ -56,12 +56,24 @@ export function simulateSequence(initialColors: string[], rowKnotTypes: KnotType
         outColor2 = color1; // The working thread is visible
         nextColors[leftIdx] = color2; // Right thread moves left
         nextColors[rightIdx] = color1; // Left thread moves right
+      } else if (type === 'F_NO_SWAP') {
+        // Forward knot without swapping threads (e.g. for stationary guide threads)
+        outColor1 = color1;
+        outColor2 = color1;
+        nextColors[leftIdx] = color1;
+        nextColors[rightIdx] = color2;
       } else if (type === 'B') {
         // Backward knot: right thread ties over left thread (guide)
         outColor1 = color2; // Knot color is the working thread
         outColor2 = color2; // The working thread is visible
         nextColors[leftIdx] = color2; // Right thread moves left
         nextColors[rightIdx] = color1; // Left thread moves right
+      } else if (type === 'B_NO_SWAP') {
+        // Backward knot without swapping threads
+        outColor1 = color2;
+        outColor2 = color2;
+        nextColors[leftIdx] = color1;
+        nextColors[rightIdx] = color2;
       } else if (type === 'NONE') {
         // No knot: threads drop straight down
         outColor1 = color1;

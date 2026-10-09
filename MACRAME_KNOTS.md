@@ -91,10 +91,10 @@ En el simulador, este nudo se teje usando dos nudos festón fundamentales (`F` y
 * **Vértices (Ojales):** En los puntos extremos del zigzag, se dibuja un pequeño ojal del color del hilo guía asomando por debajo del nudo. Esto representa el punto exacto donde el hilo guía da la vuelta para cambiar de dirección (en el nudo `B` más a la derecha y en el nudo `F` más a la izquierda).
 * **Fondo:** Los hilos guía interiores que bajan verticalmente se dibujan por detrás, dejándose ver sutilmente en los huecos (gaps) formados al aumentar la separación de las filas, mientras que los hilos libres de los bordes externos se ocultan para mantener limpio el contorno del zigzag.
 
-La simulación (ver `zigzag-festoon.ts`) realiza un ciclo repetitivo:
-* **Fase 1 (Guía hacia la derecha):** Teje una cadena de nudos `B` (Backward) inclinados hacia la derecha.
-* **Fila de descanso (`NONE`):** Un espacio vacío para escalar el movimiento.
-* **Fase 2 (Guía hacia la izquierda):** Teje una cadena de nudos `F` (Forward) inclinados hacia la izquierda.
+La simulación (`zigzag-festoon.ts`) cuenta con un **generador dinámico de ciclos**, capaz de calcular el recorrido de cualquier cantidad de hilos:
+* **Escalabilidad Continua:** A diferencia de una matriz rígida de 3 hilos, el motor rastrea de forma matemática la dirección y la posición lógica actual del hilo guía. Esto permite al usuario escalar el patrón desde 3 hilos hasta 12 hilos sin perder el comportamiento de zigzag.
+* **Fase de Recorrido:** Se identifica y dibuja automáticamente cada nudo (Backward o Forward) evaluando si el cruce actual coincide con la paridad geométrica par/impar de la fila. 
+* **Tiempos de Espera (Gaps):** Cuando el hilo guía alcanza una fila en la que la geometría no le permite avanzar, el sistema emite dinámicamente un `NONE` (hueco), permitiendo que el hilo "descanse" una iteración hasta que las parejas de hilos se vuelvan a alinear a su favor.
 
 ### Instrucciones Paso a Paso (Cómo tejerlo en la vida real)
 
@@ -244,3 +244,20 @@ Para representar el apretado entramado de este patrón, la simulación utiliza u
 * El nuevo hilo del extremo derecho pasa a ser el guía para repetir el Paso 3 (tejiendo hacia la izquierda).
 * Vuelve a unirlos en el centro.
 * Continúa alternando ambos lados de manera constante para formar las líneas en forma de "V" o flechas continuas características del diseño Chevron. Ajusta bien cada nudo de manera uniforme para que el tejido quede compacto y prolijo.
+
+## Medio Festón Alterno
+*También conocido como Alternating Half-Hitch Pattern.*
+
+Este diseño es una variación más fina donde se emplea el **Medio Festón** (una sola vuelta, en lugar del festón doble clásico). Físicamente, se teje utilizando un hilo guía central estático y dos hilos de trabajo laterales que se turnan para anudar alrededor de él, creando un efecto de espiral o ADN.
+
+### Anatomía Visual y Renderizado
+En el simulador (`alternating-half-hitch.ts`), este patrón cuenta con un tratamiento especial para reflejar su estructura única de un solo bucle:
+1. **Nudos `NO_SWAP`:** Se emplean los identificadores lógicos `F_NO_SWAP` y `B_NO_SWAP`. Esto le indica al simulador que, a diferencia del festón normal donde el hilo guía y el de trabajo cruzan y cambian posiciones, aquí el hilo guía central se mantiene **estático y vertical** en su columna original en todo momento, y son los hilos de trabajo los que van y vienen para abrazarlo.
+2. **Ancho Reducido:** El motor gráfico dibuja la "píldora" del nudo un 40% más angosta que los festones normales, reflejando visualmente que se trata de un medio nudo de una sola lazada.
+3. **Ángulo Horizontal:** Dado que se trata de una lazada simple que envuelve un eje central, su inclinación (`tilt`) se reduce drásticamente (a `0.2`) respecto a los ángulos pronunciados del festón tradicional. Esto los presenta de forma horizontal y perfectamente apilados como una espiral, evitando que luzcan fragmentados y desconectados.
+
+### Instrucciones Paso a Paso
+1. Toma 3 hilos. El hilo del medio funcionará como el hilo guía central estático.
+2. Toma el hilo izquierdo y teje un medio festón sobre el guía (pasa por encima, envuelve por debajo y saca por el lazo). Ajústalo empujando hacia arriba.
+3. Toma el hilo derecho y teje un medio festón sobre el guía en la dirección contraria. Ajústalo empujando hacia arriba.
+4. Repite este proceso alternando entre el hilo izquierdo y el derecho. Obtendrás un tejido compacto y tubular.

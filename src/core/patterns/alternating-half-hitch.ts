@@ -7,8 +7,8 @@ export const alternatingHalfHitchPattern: Pattern = {
   maxThreads: 3,
   evenOnly: false,
   shiftOddRows: true,
-  defaultVerticalSpacing: 0.8,
-  defaultKnotSize: 25,
+  defaultVerticalSpacing: 1,
+  defaultKnotSize: 20,
   generateSequence: (threadsCount, rowsCount) => {
     // We only allow 3 threads for this specific pattern
     // Central thread is static guide. Left and right are working threads.

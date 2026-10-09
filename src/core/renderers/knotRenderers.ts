@@ -176,8 +176,11 @@ const drawFestoonKnot: KnotRenderer = ({ ctx, knot, x, y, knotSize, currentKnotW
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
 
-  // Draw a horizontal pill shape to represent the two side-by-side wraps
-  const pillWidth = segmentWidth * 1.3; // Horizontal width of the knot (wider)
+  // Draw a horizontal pill shape to represent the wraps
+  let pillWidth = segmentWidth * 1.3; // Horizontal width of the knot (wider)
+  if (knot.type.includes('NO_SWAP')) {
+    pillWidth = segmentWidth * 0.8; // Medio festón es solo una vuelta, más angosto
+  }
   const pillHeight = knotSize * 0.35; // Vertical thickness (squashed)
 
   ctx.save();
@@ -185,7 +188,11 @@ const drawFestoonKnot: KnotRenderer = ({ ctx, knot, x, y, knotSize, currentKnotW
 
   // Angle for the zigzag
   // B knot goes down-right, F knot goes down-left
-  const tilt = isForward ? -0.95 : 0.95; // Even steeper angle for more pronounced staircase effect
+  let tiltMagnitude = 0.95; // Steep angle for chevron staircase effect
+  if (knot.type.includes('NO_SWAP')) {
+    tiltMagnitude = 0.2; // Half hitches are more horizontal
+  }
+  const tilt = isForward ? -tiltMagnitude : tiltMagnitude;
   ctx.rotate(tilt);
 
   // Background shadow

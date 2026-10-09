@@ -12,6 +12,7 @@ export interface DesignState {
   showBeads: boolean;
   beadType: 'gold' | 'silver' | 'wood';
   knotSize: number;
+  threadSlack: number; // slack for unknotted threads in pixels
   
   setPatternId: (id: string) => void;
   setThreadsCount: (count: number) => void;
@@ -23,6 +24,7 @@ export interface DesignState {
   setShowBeads: (show: boolean) => void;
   setBeadType: (type: 'gold' | 'silver' | 'wood') => void;
   setKnotSize: (size: number) => void;
+  setThreadSlack: (slack: number) => void;
 }
 
 const defaultPatternId = 'square';
@@ -45,6 +47,7 @@ export const useDesignStore = create<DesignState>((set) => ({
   showBeads: false,
   beadType: 'gold' as 'gold' | 'silver' | 'wood',
   knotSize: 24,
+  threadSlack: 0,
 
   setPatternId: (id) => set((state) => {
     const pattern = PATTERNS[id];
@@ -120,5 +123,6 @@ export const useDesignStore = create<DesignState>((set) => ({
   setVerticalSpacing: (spacing) => set({ verticalSpacing: spacing }),
   setShowBeads: (show) => set({ showBeads: show }),
   setBeadType: (type) => set({ beadType: type }),
-  setKnotSize: (size) => set({ knotSize: size })
+  setKnotSize: (size) => set({ knotSize: size }),
+  setThreadSlack: (slack) => set({ threadSlack: slack })
 }));

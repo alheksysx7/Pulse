@@ -277,6 +277,52 @@ export function Instructions() {
       </div>
     );
   }
+  
+  if (patternId === 'chevron') {
+    return (
+      <div className={styles.container}>
+        <h2 className={styles.title}>Instrucciones: Patrón Chevron Clásico</h2>
+        
+        <div className={styles.content}>
+          <section className={styles.section}>
+            <h3>Preparación y Orden de los Hilos</h3>
+            <ul>
+              <li>Corta los hilos a una longitud aproximada de 60-70 cm cada uno.</li>
+              <li>Sujeta los extremos superiores juntos con el clip de la tabla.</li>
+              <li>Extiende los hilos hacia abajo y organízalos simétricamente de izquierda a derecha. Por ejemplo, si usas 4 colores (A, B, C, D), colócalos así: A, B, C, D | D, C, B, A (espejo).</li>
+            </ul>
+          </section>
+
+          <section className={styles.section}>
+            <h3>Paso 1: Mitad Izquierda (Mitad hacia el Centro)</h3>
+            <ol>
+              <li>Toma el primer hilo de la extrema izquierda (Hilo 1) y úsalo como hilo activo.</li>
+              <li>Haz un nudo festón doble (Forward Knot) hacia la derecha sobre cada uno de los hilos que le siguen en esa mitad, avanzando hacia el centro.</li>
+              <li>Al terminar, este primer hilo habrá cruzado hacia el centro de la pulsera.</li>
+            </ol>
+          </section>
+
+          <section className={styles.section}>
+            <h3>Paso 2: Mitad Derecha (Mitad hacia el Centro)</h3>
+            <ol>
+              <li>Toma el primer hilo de la extrema derecha (el hilo del borde opuesto).</li>
+              <li>Úsalo como hilo activo y haz nudos festón dobles (Backward Knot) hacia la izquierda, avanzando hacia el centro.</li>
+            </ol>
+          </section>
+
+          <section className={styles.section}>
+            <h3>Paso 3: Unión del Centro</h3>
+            <p>Cuando ambos hilos activos se encuentran en el centro, haz un último nudo festón para unirlos (pasando el hilo de la izquierda sobre el de la derecha), asegurando que la punta en "V" quede bien cerrada y alineada.</p>
+          </section>
+
+          <section className={styles.section}>
+            <h3>Repetición del Patrón</h3>
+            <p>El nuevo hilo que quedó en el extremo izquierdo pasa a ser el activo para repetir el Paso 1. El nuevo hilo del extremo derecho pasa a ser el activo para el Paso 2. Continúa alternando ambos lados de manera constante para formar las líneas en forma de "V".</p>
+          </section>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.container}>

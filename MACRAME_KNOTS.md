@@ -205,3 +205,35 @@ Este patrón es una variante del popular diseño "Chevron". En el Chevron tradic
 **Repetición:**
 * Vuelve a repetir el ciclo completo desde el Paso 1 alternando los lados para formar el patrón continuo. 
 * Ajusta firmemente cada nudo para mantener la forma simétrica de "V".
+
+## Patrón Chevron Clásico
+
+Este patrón es uno de los más populares en pulseras de hilo. Utiliza nudos festón que convergen hacia el centro desde ambos lados, formando una característica V o flecha, entrelazando los hilos activos como guías y moviéndolos hacia el centro.
+
+### Materiales Necesarios
+8 hilos de diferentes colores (puedes usar 4 colores repetidos simétricamente a cada lado, o 8 colores completamente distintos).
+
+### Paso a Paso del Patrón Chevron
+
+**Preparación y Orden de los Hilos:**
+* Corta los 8 hilos a una longitud aproximada de 60-70 cm cada uno.
+* Sujeta los extremos superiores juntos con el clip de la tabla.
+* Extiende los hilos hacia abajo y organízalos simétricamente de izquierda a derecha. Por ejemplo, si usas 4 colores (A, B, C, D), colócalos así: A, B, C, D | D, C, B, A (espejo), o simplemente en el orden de colores que prefieras.
+
+**Mitad Izquierda (Mitad hacia el Centro):**
+* Toma el primer hilo de la extrema izquierda (Hilo 1) y úsalo como hilo guía.
+* Haz un nudo festón doble hacia la derecha sobre cada uno de los hilos que le siguen en esa mitad, avanzando hacia el centro (es decir, anuda sobre el Hilo 2, luego el Hilo 3 y el Hilo 4, hasta llegar a la mitad de los hilos).
+* Al terminar, este primer hilo habrá cruzado hacia el centro de la pulsera.
+
+**Mitad Derecha (Mitad hacia el Centro):**
+* Toma el primer hilo de la extrema derecha (el hilo del borde opuesto).
+* Úsalo como hilo guía y haz nudos festón dobles hacia la izquierda, avanzando hacia el centro (anudando sobre los hilos correspondientes de ese lado hasta encontrarte en el centro con el hilo de la primera mitad).
+
+**Unión del Centro:**
+* Cuando ambos hilos guía se encuentran en el centro, haz un último nudo festón para unirlos (generalmente pasando el hilo de la izquierda sobre el de la derecha, o viceversa, asegurando que la punta en "V" quede bien cerrada y alineada).
+
+**Repetición del Patrón:**
+* Ahora, el nuevo hilo que quedó en el extremo izquierdo de toda la tira pasa a ser el guía para repetir el Paso 2 (tejiendo hacia la derecha).
+* El nuevo hilo del extremo derecho pasa a ser el guía para repetir el Paso 3 (tejiendo hacia la izquierda).
+* Vuelve a unirlos en el centro.
+* Continúa alternando ambos lados de manera constante para formar las líneas en forma de "V" o flechas continuas características del diseño Chevron. Ajusta bien cada nudo de manera uniforme para que el tejido quede compacto y prolijo.

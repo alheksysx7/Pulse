@@ -4,6 +4,7 @@ import { diagonalFestoonPattern } from './diagonal-festoon';
 import { jumpingFestoonPattern } from './jumping-festoon';
 import { alternatingHalfHitchPattern } from './alternating-half-hitch';
 import { vFestoonChevronPattern } from './v-festoon-chevron';
+import { classicChevronPattern } from './chevron';
 import type { Pattern } from '../types';
 
 export const PATTERNS: Record<string, Pattern> = {
@@ -12,7 +13,8 @@ export const PATTERNS: Record<string, Pattern> = {
   [diagonalFestoonPattern.id]: diagonalFestoonPattern,
   [jumpingFestoonPattern.id]: jumpingFestoonPattern,
   [alternatingHalfHitchPattern.id]: alternatingHalfHitchPattern,
-  [vFestoonChevronPattern.id]: vFestoonChevronPattern
+  [vFestoonChevronPattern.id]: vFestoonChevronPattern,
+  [classicChevronPattern.id]: classicChevronPattern
 };
 
 export const PATTERN_LIST = Object.values(PATTERNS);

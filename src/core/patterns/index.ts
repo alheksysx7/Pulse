@@ -5,10 +5,12 @@ import { jumpingFestoonPattern } from './jumping-festoon';
 import { alternatingHalfHitchPattern } from './alternating-half-hitch';
 import { vFestoonChevronPattern } from './v-festoon-chevron';
 import { classicChevronPattern } from './chevron';
+import { alternating2ThreadPattern } from './alternating-2-thread';
 import type { Pattern } from '../types';
 
 export const PATTERNS: Record<string, Pattern> = {
   [squarePattern.id]: squarePattern,
+  [alternating2ThreadPattern.id]: alternating2ThreadPattern,
   [zigzagFestoonPattern.id]: zigzagFestoonPattern,
   [diagonalFestoonPattern.id]: diagonalFestoonPattern,
   [jumpingFestoonPattern.id]: jumpingFestoonPattern,

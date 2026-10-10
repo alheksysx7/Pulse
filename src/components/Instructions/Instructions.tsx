@@ -48,6 +48,32 @@ export function Instructions() {
     );
   }
 
+  if (patternId === 'alternating-2-thread') {
+    return (
+      <div className={styles.container}>
+        <h2 className={styles.title}>Instrucciones: Pulsera de 2 Hilos con Intercambio</h2>
+        <div className={styles.content}>
+          <section className={styles.section}>
+            <h3>Preparación Inicial</h3>
+            <p>Sujeta ambos extremos superiores con el clip de la tabla. Identifica tus hilos: nombra a uno Hilo A (Izquierda) y al otro Hilo B (Derecha).</p>
+          </section>
+          <section className={styles.section}>
+            <h3>Paso 1 (Hilo A anuda sobre Hilo B)</h3>
+            <p>El Hilo B se convierte momentáneamente en el hilo guía. Toma el Hilo A y haz un <strong>medio nudo festón</strong> sobre el Hilo B (pásalo por encima, luego por debajo y ajusta firmemente hacia arriba).</p>
+          </section>
+          <section className={styles.section}>
+            <h3>Paso 2 (Intercambio de roles)</h3>
+            <p>Ahora los papeles se invierten: el Hilo A (que acaba de anudar) pasa a estirarse y convertirse en el nuevo hilo guía. El Hilo B (que servía de guía) pasa a ser el hilo anudador. Toma el Hilo B y haz un medio nudo festón sobre el Hilo A.</p>
+          </section>
+          <section className={styles.section}>
+            <h3>Continuación</h3>
+            <p>Continúa alternando: el hilo que queda libre se convierte en el anudador y el otro en la guía, haciendo un medio nudo en cada ciclo.</p>
+          </section>
+        </div>
+      </div>
+    );
+  }
+
 
   if (patternId === 'zigzag-festoon') {
     return (

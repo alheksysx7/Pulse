@@ -24,7 +24,7 @@ export function BraceletCanvas() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerHeight, setContainerHeight] = useState(0);
 
-  const { patternId, threadsCount, colors, verticalSpacing, knotSize } = useDesignStore();
+  const { patternId, threadsCount, colors, verticalSpacing, knotSize, showBeads, beadType } = useDesignStore();
 
   const avgBrightness = colors.reduce((acc, c) => acc + getBrightness(c), 0) / colors.length;
   const isLightPalette = avgBrightness > 200;
@@ -135,7 +135,6 @@ export function BraceletCanvas() {
 
     // Draw threads first
     grid.forEach((rowKnots, rowIndex) => {
-      const isOddRow = rowIndex % 2 !== 0;
       const y = rowY[rowIndex] + knotSize / 2;
       const prevY = rowIndex === 0 ? 20 : rowY[rowIndex - 1] + knotSize / 2;
       let xOffset = paddingX;
@@ -162,7 +161,6 @@ export function BraceletCanvas() {
 
           // Hide unknotted threads (NONE) ONLY on the extreme edges so they don't stick out.
           // Internal NONE threads should be drawn so they are visible in the zigzag gaps.
-          const isEdgeThread = globalThreadIndex === 0 || globalThreadIndex === threadsCount - 1;
           const isLeftEdge = globalThreadIndex === 0;
           const isRightEdge = globalThreadIndex === threadsCount - 1;
 
@@ -181,6 +179,9 @@ export function BraceletCanvas() {
             // Hide the straight background line for the working threads, because the renderer will draw the diagonal inward/outward loops
             if (knot.type === 'F_NO_SWAP' && i === 0) shouldHide = true;
             if (knot.type === 'B_NO_SWAP' && i === 1) shouldHide = true;
+          } else if (patternId === 'alternating-2-thread') {
+            // Hide ALL straight background lines because the renderer manually draws the core thread zigzagging to the center, and the working thread slack loops
+            shouldHide = true;
           }
 
           if (!shouldHide) {
@@ -218,10 +219,9 @@ export function BraceletCanvas() {
             // Draw beads if enabled (only once per segment, on the 2nd consecutive NONE row)
             const isBeadRow = (isLeftEdge && consecutiveLeftNones === 2) || (isRightEdge && consecutiveRightNones === 2);
 
-            if (useDesignStore.getState().showBeads && patternId === 'jumping-festoon' && isBeadRow && rowIndex >= threadsCount - 1) {
+            if (showBeads && patternId === 'jumping-festoon' && isBeadRow && rowIndex >= threadsCount - 1) {
               const beadRadius = 6;
               const beadY = (prevY + y) / 2;
-              const beadType = useDesignStore.getState().beadType;
 
               let baseColor = '#FFD700';
               let strokeColor = '#B8860B';
@@ -267,15 +267,39 @@ export function BraceletCanvas() {
 
     // Draw bottom tails
     if (grid.length > 0) {
-      const lastY = rowY[grid.length - 1] + knotSize / 2;
+      const lastRowIndex = grid.length - 1;
       finalColors.forEach((color, i) => {
-        const threadX = prevThreadX[i];
+        let threadX = prevThreadX[i];
+        let startY = rowY[lastRowIndex] + knotSize / 2;
+        
+        if (patternId === 'alternating-2-thread') {
+          startY = rowY[lastRowIndex] + knotSize;
+          const knot = grid[lastRowIndex][0];
+          if (knot && knot.type !== 'NONE') {
+            const segmentWidth = knotSize / 2;
+            const centerX = paddingX + segmentWidth;
+            const leftEdge = paddingX + segmentWidth * 0.5;
+            const rightEdge = paddingX + segmentWidth * 1.5;
+            if (knot.type === 'F_NO_SWAP') {
+              threadX = i === 0 ? centerX : rightEdge;
+            } else if (knot.type === 'B_NO_SWAP') {
+              threadX = i === 1 ? centerX : leftEdge;
+            }
+          }
+        }
+
         ctx.beginPath();
-        ctx.moveTo(threadX, lastY);
+        ctx.moveTo(threadX, startY);
         ctx.lineTo(threadX, height - 20);
         ctx.lineWidth = 6;
         ctx.strokeStyle = color;
         ctx.stroke();
+        
+        const tex = getTexture(ctx);
+        if (tex) {
+          ctx.strokeStyle = tex;
+          ctx.stroke();
+        }
       });
     }
 
@@ -302,7 +326,7 @@ export function BraceletCanvas() {
       });
     });
 
-  }, [patternId, threadsCount, colors, containerHeight, verticalSpacing, knotSize, useDesignStore.getState().showBeads, useDesignStore.getState().beadType]);
+  }, [patternId, threadsCount, colors, containerHeight, verticalSpacing, knotSize, showBeads, beadType]);
 
   return (
     <div ref={containerRef} className={`${styles.container} ${isLightPalette ? styles.darkBackground : ''}`}>

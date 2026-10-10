@@ -133,7 +133,7 @@ const drawHalfSquareKnot: KnotRenderer = ({ ctx, knot, x, y, knotSize, currentKn
   ctx.stroke();
 };
 
-const drawFestoonKnot: KnotRenderer = ({ ctx, knot, x, y, knotSize, currentKnotWidth, isLeftEdge, isRightEdge }) => {
+const drawFestoonKnot: KnotRenderer = ({ ctx, knot, x, y, knotSize, currentKnotWidth, isLeftEdge, isRightEdge, patternId }) => {
   if (knot.type === 'NONE') return; // Draw nothing
 
   const segmentWidth = currentKnotWidth / 2;
@@ -155,7 +155,7 @@ const drawFestoonKnot: KnotRenderer = ({ ctx, knot, x, y, knotSize, currentKnotW
 
   // Draw a horizontal pill shape to represent the wraps
   let pillWidth = segmentWidth * 1.3; // Horizontal width of the knot (wider)
-  if (knot.type.includes('NO_SWAP')) {
+  if (knot.type.includes('NO_SWAP') || patternId === 'alternating-2-thread') {
     pillWidth = segmentWidth * 0.8; // Medio festón es solo una vuelta, más angosto
   }
   const pillHeight = knotSize * 0.35; // Vertical thickness (squashed)
@@ -166,7 +166,7 @@ const drawFestoonKnot: KnotRenderer = ({ ctx, knot, x, y, knotSize, currentKnotW
   // Angle for the zigzag
   // B knot goes down-right, F knot goes down-left
   let tiltMagnitude = 0.95; // Steep angle for chevron staircase effect
-  if (knot.type.includes('NO_SWAP')) {
+  if (knot.type.includes('NO_SWAP') || patternId === 'alternating-2-thread') {
     tiltMagnitude = 0.2; // Half hitches are more horizontal
   }
   const tilt = isForward ? -tiltMagnitude : tiltMagnitude;
@@ -224,7 +224,7 @@ const drawFestoonKnot: KnotRenderer = ({ ctx, knot, x, y, knotSize, currentKnotW
   ctx.stroke();
 
   // Guide thread loop at the turnaround edges (only for standard F/B knots that swap)
-  if (knot.type === 'F' || knot.type === 'B') {
+  if ((knot.type === 'F' || knot.type === 'B') && patternId !== 'alternating-2-thread') {
     const guideColor = isForward ? knot.color2 : knot.color1;
     if (isBackward && isRightEdge) {
       // Draw a tiny loop on the right
@@ -260,57 +260,93 @@ const drawHalfFestoonKnot: KnotRenderer = ({ ctx, knot, x, y, knotSize, currentK
 
   // For alternating-half-hitch, we draw the knot exactly ON the guide thread
   // and draw the working thread looping inward and outward.
-  const isAlternating = patternId === 'alternating-half-hitch';
+  const isAlternating = patternId === 'alternating-half-hitch' || patternId === 'alternating-2-thread';
   if (isAlternating) {
-    // F_NO_SWAP: guide is thread 1 (right)
-    // B_NO_SWAP: guide is thread 0 (left)
-    centerX = isForward ? x + segmentWidth * 1.5 : x + segmentWidth * 0.5;
+    if (patternId === 'alternating-2-thread') {
+      centerX = x + segmentWidth; // Center between the two threads
+    } else {
+      // F_NO_SWAP: guide is thread 1 (right)
+      // B_NO_SWAP: guide is thread 0 (left)
+      centerX = isForward ? x + segmentWidth * 1.5 : x + segmentWidth * 0.5;
+    }
   }
 
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
 
-  const pillWidth = segmentWidth * (isAlternating ? 1.5 : 0.8);
+  let pillWidth = segmentWidth * (isAlternating ? 1.5 : 0.8);
+  if (patternId === 'alternating-2-thread') {
+    pillWidth = segmentWidth * 0.75; // Mitad de ancho (1.5 / 2 = 0.75) para medio nudo
+  }
   const pillHeight = knotSize * (isAlternating ? 0.45 : 0.35);
 
   // Draw inward/outward slack loops for alternating pattern
   if (isAlternating) {
-    const workingX = isForward ? x + segmentWidth * 0.5 : x + segmentWidth * 1.5;
+    if (patternId === 'alternating-2-thread') {
+      const workingX = isForward ? x + segmentWidth * 0.5 : x + segmentWidth * 1.5;
+      const guideX = isForward ? x + segmentWidth * 1.5 : x + segmentWidth * 0.5;
+      const guideColor = isForward ? knot.color2 : knot.color1;
+      
+      const topY = rowIndex === 0 ? 20 : y; // Center of previous knot, or top clip
+      const midY = y + knotSize / 2; // Center of current knot
+      const bottomY = y + knotSize; // Center of next knot
+      
+      const workingStartX = rowIndex === 0 ? workingX : centerX;
 
-    // Cap the top extension so it doesn't poke out of the top clip
-    const topExtensionY = rowIndex === 0 ? 20 : y - knotSize * 1.5;
-
-    // Shadow for the slack loop
-    ctx.beginPath();
-    // Start way above to fill the missing background line gap
-    ctx.moveTo(workingX, topExtensionY);
-    ctx.lineTo(workingX, y - knotSize * 0.1);
-    // Curve inward to the knot
-    ctx.quadraticCurveTo(workingX, y + knotSize * 0.2, centerX, y + knotSize / 2);
-    // Curve outward from the knot
-    ctx.quadraticCurveTo(workingX, y + knotSize * 0.8, workingX, y + knotSize * 1.1);
-    // Extend way below to fill the next row's gap
-    ctx.lineTo(workingX, y + knotSize * 2.5);
-
-    ctx.lineWidth = 5;
-    ctx.strokeStyle = 'rgba(0,0,0,0.3)';
-    ctx.stroke();
-
-    // The slack loop
-    ctx.beginPath();
-    ctx.moveTo(workingX, topExtensionY);
-    ctx.lineTo(workingX, y - knotSize * 0.1);
-    ctx.quadraticCurveTo(workingX, y + knotSize * 0.2, centerX, y + knotSize / 2);
-    ctx.quadraticCurveTo(workingX, y + knotSize * 0.8, workingX, y + knotSize * 1.1);
-    ctx.lineTo(workingX, y + knotSize * 2.5);
-
-    ctx.lineWidth = 3;
-    ctx.strokeStyle = knotColor;
-    ctx.stroke();
-    const pattern = getTexture(ctx);
-    if (pattern) {
-      ctx.strokeStyle = pattern;
+      // Working thread (slack loop)
+      ctx.beginPath();
+      ctx.moveTo(workingStartX, topY);
+      ctx.quadraticCurveTo(workingX, midY - knotSize * 0.3, workingX, midY);
+      ctx.quadraticCurveTo(workingX, midY + knotSize * 0.3, centerX, bottomY);
+      ctx.lineWidth = 5;
+      ctx.strokeStyle = 'rgba(0,0,0,0.3)';
       ctx.stroke();
+      
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = knotColor;
+      ctx.stroke();
+      const pattern = getTexture(ctx);
+      if (pattern) { ctx.strokeStyle = pattern; ctx.stroke(); }
+      
+      // Guide thread (zigzag)
+      ctx.beginPath();
+      ctx.moveTo(guideX, topY);
+      ctx.lineTo(centerX, midY);
+      ctx.lineTo(guideX, bottomY);
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = guideColor;
+      ctx.stroke();
+      if (pattern) { ctx.strokeStyle = pattern; ctx.stroke(); }
+    } else {
+      const workingX = isForward ? x + segmentWidth * 0.5 : x + segmentWidth * 1.5;
+      const topExtensionY = rowIndex === 0 ? 20 : y - knotSize * 1.5;
+
+      ctx.beginPath();
+      ctx.moveTo(workingX, topExtensionY);
+      ctx.lineTo(workingX, y - knotSize * 0.1);
+      ctx.quadraticCurveTo(workingX, y + knotSize * 0.2, centerX, y + knotSize / 2);
+      ctx.quadraticCurveTo(workingX, y + knotSize * 0.8, workingX, y + knotSize * 1.1);
+      ctx.lineTo(workingX, y + knotSize * 2.5);
+
+      ctx.lineWidth = 5;
+      ctx.strokeStyle = 'rgba(0,0,0,0.3)';
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(workingX, topExtensionY);
+      ctx.lineTo(workingX, y - knotSize * 0.1);
+      ctx.quadraticCurveTo(workingX, y + knotSize * 0.2, centerX, y + knotSize / 2);
+      ctx.quadraticCurveTo(workingX, y + knotSize * 0.8, workingX, y + knotSize * 1.1);
+      ctx.lineTo(workingX, y + knotSize * 2.5);
+
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = knotColor;
+      ctx.stroke();
+      const pattern = getTexture(ctx);
+      if (pattern) {
+        ctx.strokeStyle = pattern;
+        ctx.stroke();
+      }
     }
   }
 

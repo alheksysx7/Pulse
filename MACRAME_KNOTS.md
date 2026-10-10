@@ -261,3 +261,31 @@ En el simulador (`alternating-half-hitch.ts`), este patrón cuenta con un tratam
 2. Toma el hilo izquierdo y teje un medio festón sobre el guía (pasa por encima, envuelve por debajo y saca por el lazo). Ajústalo empujando hacia arriba.
 3. Toma el hilo derecho y teje un medio festón sobre el guía en la dirección contraria. Ajústalo empujando hacia arriba.
 4. Repite este proceso alternando entre el hilo izquierdo y el derecho. Obtendrás un tejido compacto y tubular.
+
+## Pulsera de 2 Hilos con Intercambio
+*También conocido como Medio Festón 2 Hilos.*
+
+Este diseño es ideal para pulseras simples de dos colores. Se caracteriza por usar solo 2 hilos, donde ambos se turnan constantemente para ser el hilo guía y el hilo anudador.
+
+### Anatomía Visual y Renderizado
+En el simulador (`alternating-2-thread.ts`), se representa utilizando un algoritmo de dibujado totalmente personalizado diseñado para evitar superposiciones de las guías de fondo:
+1. **Lógica Base:** Se usan los identificadores de medio nudo `F_NO_SWAP` y `B_NO_SWAP` en 2 hilos, pero las líneas de fondo automáticas del canvas se ocultan por completo.
+2. **Nudos Centrados:** El nudo central siempre se renderiza en el medio exacto entre ambas columnas (`centerX`), con un grosor ultra-delgado (`0.75`) para simular la textura cilíndrica de un único lazo.
+3. **Núcleo Dinámico (Zigzag):** El hilo que hace de núcleo dibuja una diagonal precisa desde su posición exterior en el borde superior, directo hacia el centro del nudo, y luego de vuelta hacia el borde inferior. 
+4. **Lazos Laterales (Slack Loop):** El hilo enlazador dibuja una pequeña curva desde el borde hacia adentro abrazando el núcleo, creando la textura acanalada característica a cada lado.
+5. **Colas (Bottom Tails):** Las colas colgantes detectan exactamente si en la última fila cada hilo quedó haciendo el nudo (cayendo desde el centro) o actuando de núcleo (cayendo desde el borde).
+
+### Instrucciones Paso a Paso
+**Preparación Inicial:**
+* Corta dos hilos de unos 60 cm cada uno. Sujeta ambos extremos superiores con el clip de la tabla. Nombra a uno Hilo A (Izquierda) y al otro Hilo B (Derecha).
+
+**Paso 1 (El Hilo A anuda sobre el Hilo B):**
+* El Hilo B se convierte momentáneamente en el hilo guía (manteniéndose tenso o inclinado ligeramente hacia un lado).
+* Toma el Hilo A y haz un medio nudo festón sobre el Hilo B (pásalo por encima, luego por debajo y ajusta firmemente hacia arriba).
+
+**Paso 2 (Intercambio de roles):**
+* Ahora los papeles se invierten: el Hilo A (que acaba de anudar) pasa a estirarse y convertirse en el nuevo hilo guía.
+* Toma el Hilo B y haz un medio nudo festón sobre el Hilo A.
+
+**Repetición del Patrón:**
+* Continúa alternando: el hilo que queda libre se convierte en el anudador y el otro en la guía, haciendo un medio nudo en cada ciclo.

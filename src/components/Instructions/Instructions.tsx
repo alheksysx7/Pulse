@@ -74,6 +74,35 @@ export function Instructions() {
     );
   }
 
+  if (patternId === 'diagonal-pairs-6') {
+    return (
+      <div className={styles.container}>
+        <h2 className={styles.title}>Instrucciones: Diagonal y Pares Entrelazados</h2>
+        <div className={styles.content}>
+          <section className={styles.section}>
+            <h3>Paso 1: Diagonal hacia la Derecha</h3>
+            <p>Toma el primer hilo de la extrema izquierda y pásalo por encima de los demás hilos hacia la derecha para utilizarlo como hilo guía.</p>
+            <p>Haz un nudo festón hacia la izquierda (nudo Backward) con cada uno de los hilos sucesivos sobre esta guía. Al hacer un nudo hacia la izquierda con el hilo anudador, el hilo guía avanzará naturalmente hacia la derecha. Esto formará una línea diagonal completa que cruza todo el ancho de los hilos.</p>
+          </section>
+          <section className={styles.section}>
+            <h3>Paso 2: Nudos Festón de Par en Par</h3>
+            <p>Con los hilos ya ordenados según cómo quedaron tras el paso anterior, vamos a trabajar en parejas de izquierda a derecha:</p>
+            <ol>
+              <li>Toma los primeros 2 hilos de la izquierda: el hilo 2 será el hilo guía y, sobre él, harás un nudo festón hacia la derecha utilizando el hilo 1.</li>
+              <li>Toma el siguiente par de hilos (hilos 3 y 4) y repite el proceso: el hilo que queda a la derecha actúa como guía y el de la izquierda anuda hacia la derecha con un nudo festón.</li>
+              <li>Haz lo mismo con el último par restante (hilos 5 y 6) para completar el paso con un último nudo festón hacia la derecha.</li>
+            </ol>
+          </section>
+          <section className={styles.section}>
+            <h3>Repetición del Patrón</h3>
+            <p>Vuelve a repetir el Paso 1 (tomar el hilo de la extrema izquierda como guía y tejer la diagonal completa hacia la derecha).</p>
+            <p>Repite el Paso 2 (agrupar y anudar los hilos de par en par hacia la derecha). Continúa alternando ambos pasos de forma constante.</p>
+          </section>
+        </div>
+      </div>
+    );
+  }
+
 
   if (patternId === 'zigzag-festoon') {
     return (

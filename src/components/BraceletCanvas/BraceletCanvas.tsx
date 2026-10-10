@@ -206,6 +206,8 @@ export function BraceletCanvas() {
               ctx.globalAlpha = 0.3;
             } else if (patternId === 'v-festoon-chevron' && (knot.type === 'NONE' || knot.type === 'NONE_1')) {
               ctx.globalAlpha = 0.5;
+            } else if (patternId === 'diagonal-pairs-6' && (knot.type === 'NONE' || knot.type === 'NONE_1')) {
+              ctx.globalAlpha = 0.6;
             }
             ctx.stroke();
             

@@ -289,3 +289,31 @@ En el simulador (`alternating-2-thread.ts`), se representa utilizando un algorit
 
 **Repetición del Patrón:**
 * Continúa alternando: el hilo que queda libre se convierte en el anudador y el otro en la guía, haciendo un medio nudo en cada ciclo.
+
+## Diagonal y Pares Entrelazados de 6 Hilos
+*Combinación de diagonales y grupos de pares (Nudos Festón `F`).*
+
+Este diseño utiliza exactamente 6 hilos. Combina una clásica diagonal hacia la derecha con una fila donde los hilos se agrupan en pares para anudar simultáneamente.
+
+### Anatomía Visual y Renderizado
+En el simulador (`diagonal-pairs-6.ts`), el patrón ha sido optimizado con un ciclo súper comprimido de 4 filas lógicas. En lugar de tejer una diagonal completa y luego los pares, los ciclos se "solapan" para que no exista absolutamente ningún espacio vertical, logrando que queden 100% pegados:
+1. **Fila 0 (Par):** Se realiza el inicio de la Diagonal N (`B`), el segundo Par de la Diagonal N-1 (`F`), y el final de la Diagonal N-1 (`B`).
+2. **Fila 1 (Impar):** Avanza la Diagonal N (`B`).
+3. **Fila 2 (Par):** Se teje el primer Par de la Diagonal N (`F`), el centro de la Diagonal N (`B`), y el último Par de la Diagonal N-1 (`F`).
+4. **Fila 3 (Impar):** Avanza la Diagonal N (`B`).
+
+Esta arquitectura entrelaza matemáticamente múltiples pasos al mismo tiempo. Al eliminar cualquier fila vacía, los nudos pares se tejen en el instante exacto en que los hilos quedan libres, adhiriéndose físicamente a la diagonal sin dejar hilos rectos.
+
+### Instrucciones Paso a Paso
+**Paso 1: Diagonal hacia la Derecha**
+* Toma el primer hilo de la extrema izquierda y pásalo por encima de los demás hilos hacia la derecha para utilizarlo como hilo guía.
+* Haz un nudo festón hacia la izquierda (nudo Backward) con cada uno de los hilos sucesivos sobre esta guía. Al hacer el nudo a la izquierda, el hilo guía avanzará naturalmente hacia la derecha formando una diagonal completa.
+
+**Paso 2: Nudos Festón de Par en Par**
+* Con los hilos ya ordenados, agrúpalos en 3 parejas de izquierda a derecha.
+* **Pareja 1 (hilos 1 y 2):** El hilo 2 será el guía, y sobre él harás un nudo festón hacia la derecha con el hilo 1.
+* **Pareja 2 (hilos 3 y 4):** El hilo 4 actúa como guía y el 3 anuda sobre él hacia la derecha.
+* **Pareja 3 (hilos 5 y 6):** El hilo 6 actúa como guía y el 5 anuda sobre él hacia la derecha.
+
+**Repetición:**
+* Vuelve a tomar el hilo de la extrema izquierda para iniciar la siguiente diagonal, y repite todo el proceso.

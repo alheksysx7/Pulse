@@ -103,6 +103,47 @@ export function Instructions() {
     );
   }
 
+  if (patternId === 'feston-simetrico-4') {
+    return (
+      <div className={styles.container}>
+        <h2 className={styles.title}>Instrucciones: Festón Simétrico 4 Hilos</h2>
+        <div className={styles.content}>
+          <section className={styles.section}>
+            <h3>Preparación Inicial</h3>
+            <p>Corta los 4 hilos a una longitud aproximada de 60-70 cm cada uno. Sujétalos en la parte superior con el clip de la tabla y organízalos de izquierda a derecha (Hilos 1, 2, 3 y 4).</p>
+          </section>
+
+          <section className={styles.section}>
+            <h3>Paso 1: Nudo Festón Central</h3>
+            <p>Toma los dos hilos del centro (Hilos 2 y 3). Utiliza el Hilo 3 como hilo guía y haz un nudo festón hacia la derecha con el Hilo 2 sobre él, uniendo el centro de la pulsera.</p>
+          </section>
+
+          <section className={styles.section}>
+            <h3>Paso 2: Movimiento del Lado Izquierdo</h3>
+            <ol>
+              <li>Toma el Hilo 1 (el de la extrema izquierda) y haz un nudo festón hacia la derecha sobre el hilo guía central (el Hilo 3).</li>
+              <li>Inmediatamente después, ese mismo Hilo 1 (que funcionó como anudador) pasa por debajo del hilo guía (el Hilo 3) y hace un nudo festón hacia la izquierda.</li>
+            </ol>
+          </section>
+
+          <section className={styles.section}>
+            <h3>Paso 3: Movimiento Simétrico del Lado Derecho</h3>
+            <ol>
+              <li>Del lado opuesto, toma el Hilo 4 (el de la extrema derecha).</li>
+              <li>Haz un nudo festón hacia la izquierda sobre el hilo guía correspondiente del centro (el Hilo 2).</li>
+              <li>A continuación, ese mismo Hilo 4 (que fue anudador) pasa por debajo del hilo guía (el Hilo 2) y hace un nudo festón hacia la derecha.</li>
+            </ol>
+          </section>
+
+          <section className={styles.section}>
+            <h3>Repetición del Patrón</h3>
+            <p>Vuelve a repetir todo el proceso desde el Paso 1, tomando los hilos en el nuevo orden en el que hayan quedado tras completar la ronda anterior.</p>
+            <p>Ajusta cada nudo firmemente de manera uniforme para mantener la estructura simétrica y compacta de la pulsera.</p>
+          </section>
+        </div>
+      </div>
+    );
+  }
 
   if (patternId === 'zigzag-festoon') {
     return (

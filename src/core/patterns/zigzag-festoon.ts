@@ -2,12 +2,14 @@ import type { Pattern, KnotType } from '../types';
 
 export const zigzagFestoonPattern: Pattern = {
   id: 'zigzag-festoon',
-  name: 'Nudo festón zigzag alterno',
+  name: 'Festón zigzag alterno',
   minThreads: 3,
   maxThreads: 3,
   evenOnly: false,
   shiftOddRows: true, // We will manually emit the sequence, but shiftOddRows lets us pair (0,1) then (1,2)
   defaultVerticalSpacing: 0.7,
+  baseRowHeightRatio: 0.22,
+  innerThreadAlpha: 0.5,
   defaultKnotSize: 24,
   generateSequence: (threadsCount: number, rows: number) => {
     const sequence: KnotType[][] = [];

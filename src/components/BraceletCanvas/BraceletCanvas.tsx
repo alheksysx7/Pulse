@@ -50,18 +50,8 @@ export function BraceletCanvas() {
     // We will do a simple drawing first to test.
     const pattern = PATTERNS[patternId];
     // Canvas setup using knotSize from store
-    let baseRowHeight = knotSize;
-    if (patternId === 'square' && threadsCount === 2) {
-      baseRowHeight = knotSize * 0.75;
-    } else if (patternId === 'zigzag-festoon') {
-      baseRowHeight = knotSize * 0.22;
-    } else if (patternId === 'diagonal-festoon') {
-      baseRowHeight = knotSize * 0.6;
-    } else if (patternId === 'jumping-festoon') {
-      baseRowHeight = knotSize * 0.35;
-    } else if (patternId === 'alternating-half-hitch') {
-      baseRowHeight = knotSize * 0.4;
-    }
+    const baseRowHeightRatio = pattern?.baseRowHeightRatio ?? (patternId === 'square' && threadsCount === 2 ? 0.75 : 1);
+    const baseRowHeight = knotSize * baseRowHeightRatio;
 
     // Apply user's vertical spacing multiplier
     const rowHeight = baseRowHeight * useDesignStore.getState().verticalSpacing;
@@ -206,9 +196,10 @@ export function BraceletCanvas() {
               shouldHide = true;
             }
           }
-
           if (!shouldHide) {
-            if (patternId === 'zigzag-festoon') {
+            const isEdge = isLeftEdge || isRightEdge;
+
+            if (pattern?.innerThreadAlpha !== undefined && !isEdge && rowIndex > 0) {
               // Draw drop shadow for the thread (shifted right and down so it's visible on vertical lines)
               ctx.beginPath();
               ctx.moveTo(startX + 2, prevY + 2);
@@ -225,10 +216,8 @@ export function BraceletCanvas() {
             ctx.lineWidth = 6; // Thicker threads to reduce gaps
             ctx.strokeStyle = color;
 
-            if (patternId === 'zigzag-festoon' && rowIndex > 0) {
-              ctx.globalAlpha = 0.3;
-            } else if (patternId === 'v-festoon-chevron' && (knot.type === 'NONE' || knot.type === 'NONE_1')) {
-              ctx.globalAlpha = 0.5;
+            if (pattern?.innerThreadAlpha !== undefined && !isEdge && rowIndex > 0) {
+              ctx.globalAlpha = pattern.innerThreadAlpha;
             }
             ctx.stroke();
 

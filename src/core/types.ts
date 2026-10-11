@@ -18,6 +18,8 @@ export interface Pattern {
   defaultThreads?: number; // Default number of threads for this pattern
   evenOnly: boolean;
   shiftOddRows?: boolean; // If false, odd rows don't shift by 1 thread (default true)
+  baseRowHeightRatio?: number; // Custom multiplier for base row height
+  innerThreadAlpha?: number; // Alpha transparency for middle/inner threads behind the weave
   defaultVerticalSpacing?: number; // Custom vertical spacing for this pattern
   minVerticalSpacing?: number; // Minimum allowed vertical spacing
   maxVerticalSpacing?: number; // Maximum allowed vertical spacing

@@ -8,6 +8,7 @@ export const jumpingFestoonPattern: Pattern = {
   evenOnly: false,
   shiftOddRows: true,
   defaultVerticalSpacing: 0.9,
+  baseRowHeightRatio: 0.35,
   defaultKnotSize: 20,
   generateSequence: (threadsCount: number, rows: number) => {
     const sequence: KnotType[][] = [];

@@ -47,7 +47,7 @@ Para lograr una simulación fotorrealista de este nudo, la aplicación lo render
 Este patrón se crea utilizando filas entrelazadas de nudos planos. En lugar de tejer nudos planos en una sola columna vertical, los nudos se desplazan horizontalmente en cada fila, uniendo grupos de hilos adyacentes para formar una malla o red. Requiere un mínimo de 4 hilos, pero es ideal para pulseras anchas con 6, 8 o más hilos.
 
 ### Anatomía Visual y Renderizado
-A nivel de software, la lógica de simulación (`square-alternating.ts`) genera una malla real utilizando nudos planos completos (`SQUARE`), exigiendo un mínimo de 8 hilos (número par) para garantizar que el efecto de entrelazado sea visible y no se degrade a una columna simple.
+A nivel de software, la lógica de simulación (`square.ts`) genera una malla real utilizando nudos planos completos (`SQUARE`), exigiendo un mínimo de 8 hilos (número par) para garantizar que el efecto de entrelazado sea visible y no se degrade a una columna simple.
 1. **Fila Par (0, 2, 4...):** El simulador agrupa los hilos de 4 en 4, tejiendo múltiples nudos `SQUARE` uno al lado del otro. Para lograr esto, `simulate.ts` está programado para limitar la envergadura (`threadSpan`) del nudo plano a un máximo de 4 hilos cuando forma parte de una secuencia, evitando que un solo nudo se apropie de todo el ancho de la pulsera.
 2. **Fila Impar (1, 3, 5...):** La secuencia inserta explícitamente un nudo vacío (`NONE`) al inicio de la fila, lo que provoca un desfase estructural de 2 hilos. Los hilos centrales restantes se agrupan en nudos `SQUARE` de 4 hilos. Al llegar al extremo derecho, los hilos sobrantes también se dejan libres. Esto enlaza los nudos de la fila anterior, produciendo la red.
 3. **Conexiones Orgánicas (Curvas de Bezier):** Para evitar que el desfase diagonal luzca rígido o artificial (como un cableado recto), el renderizador de la pulsera (`BraceletCanvas.tsx`) dibuja los hilos que viajan entre las filas utilizando curvas de Bezier cúbicas (`ctx.bezierCurveTo`). Esto otorga a los enlaces diagonales una caída y tensión natural.
@@ -314,3 +314,39 @@ En el simulador (`diagonal-pairs-6.ts`), el patrón está optimizado para que el
 
 **Repetición:**
 * Vuelve a tomar el hilo de la extrema izquierda para iniciar la siguiente diagonal, y repite todo el proceso.
+
+## Festón Simétrico de 4 Hilos
+*Patrón Simétrico de 4 Hilos.*
+
+Este diseño clásico se caracteriza por un juego simétrico en los laterales que abraza un eje central continuo. Utiliza 4 hilos donde los dos hilos centrales se entrelazan mediante nudos festón, mientras que los hilos de los extremos realizan nudos de ida y vuelta (festón hacia el centro e inmediatamente festón de regreso hacia el exterior), creando un patrón balanceado y compacto.
+
+### Anatomía Visual y Renderizado
+En el simulador (`feston-simetrico-4.ts`), el patrón se estructura en ciclos de 3 filas con control directo de columnas (`shiftOddRows: false`):
+1. **Fila 1 (Nudo Festón Central):** Representado por `['NONE_1', 'F', 'NONE_1']`. El hilo 2 hace un nudo festón hacia la derecha (`F`) sobre el hilo 3 en el centro exacto de la pulsera, intercambiando sus posiciones en el núcleo central.
+2. **Fila 2 (Apertura hacia el Centro):** Representado por `['F', 'B']`. El hilo 1 (extrema izquierda) anuda hacia la derecha (`F`) sobre el hilo guía central izquierdo, y simultáneamente el hilo 4 (extrema derecha) anuda hacia la izquierda (`B`) sobre el hilo guía central derecho.
+3. **Fila 3 (Cierre de Retorno hacia el Exterior):** Representado por `['B', 'F']`. El hilo 1 anuda hacia la izquierda (`B`) sobre su guía para regresar al borde izquierdo, y el hilo 4 anuda hacia la derecha (`F`) sobre su guía para regresar al borde derecho.
+4. **Intercambio Dinámico del Núcleo:** Los hilos exteriores (1 y 4) siempre regresan a los bordes conservando el marco exterior, mientras que los hilos centrales (2 y 3) van alternando de lado en cada ronda, produciendo un trenzado rítmico y simétrico.
+
+### Instrucciones Paso a Paso (Cómo tejerlo en la vida real)
+
+**Preparación Inicial:**
+* Corta los 4 hilos a una longitud aproximada de 60-70 cm cada uno.
+* Sujétalos en la parte superior con el clip de la tabla y extiéndelos en paralelo de izquierda a derecha (Hilos 1, 2, 3 y 4).
+
+**Paso 1: Nudo Festón Central:**
+* Toma los dos hilos del centro (Hilos 2 y 3).
+* Utiliza el Hilo 3 como hilo guía y haz un nudo festón hacia la derecha con el Hilo 2 sobre él, uniendo el centro de la pulsera.
+
+**Paso 2: Movimiento del Lado Izquierdo:**
+* Toma el Hilo 1 (el de la extrema izquierda) y haz un nudo festón hacia la derecha sobre el hilo guía central (el Hilo 3).
+* Inmediatamente después, ese mismo Hilo 1 (que funcionó como anudador) pasa por debajo del hilo guía (el Hilo 3) y hace un nudo festón hacia la izquierda.
+
+**Paso 3: Movimiento Simétrico del Lado Derecho:**
+* Del lado opuesto, toma el Hilo 4 (el de la extrema derecha).
+* Haz un nudo festón hacia la izquierda sobre el hilo guía correspondiente del centro (el Hilo 2).
+* A continuación, ese mismo Hilo 4 (que fue anudador) pasa por debajo del hilo guía (el Hilo 2) y hace un nudo festón hacia la derecha.
+
+**Repetición del Patrón:**
+* Vuelve a repetir todo el proceso desde el Paso 1, tomando los hilos en el nuevo orden en el que hayan quedado tras completar la ronda anterior.
+* Ajusta cada nudo firmemente de manera uniforme para mantener la estructura simétrica y compacta de la pulsera.
+

@@ -223,8 +223,8 @@ const drawFestoonKnot: KnotRenderer = ({ ctx, knot, x, y, knotSize, currentKnotW
   ctx.strokeStyle = 'rgba(255,255,255,0.4)';
   ctx.stroke();
 
-  // Guide thread loop at the turnaround edges (only for standard F/B knots that swap)
-  if ((knot.type === 'F' || knot.type === 'B') && patternId !== 'alternating-2-thread') {
+  // Guide thread loop at the turnaround edges (only for zigzag festoon)
+  if ((knot.type === 'F' || knot.type === 'B') && patternId === 'zigzag-festoon') {
     const guideColor = isForward ? knot.color2 : knot.color1;
     if (isBackward && isRightEdge) {
       // Draw a tiny loop on the right

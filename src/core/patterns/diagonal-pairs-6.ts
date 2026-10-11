@@ -11,7 +11,7 @@ export const diagonalPairs6Pattern: Pattern = {
   minVerticalSpacing: 0.1,
   maxVerticalSpacing: 0.3,
   defaultVerticalSpacing: 0.3,
-  defaultKnotSize: 20,
+  defaultKnotSize: 24,
   generateSequence: (_threadsCount: number, rows: number) => {
     const sequence: KnotType[][] = [];
 

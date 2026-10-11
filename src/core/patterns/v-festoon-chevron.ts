@@ -9,6 +9,7 @@ export const vFestoonChevronPattern: Pattern = {
   evenOnly: false,
   shiftOddRows: false,
   defaultVerticalSpacing: 0.3,
+  innerThreadAlpha: 0.5,
   minVerticalSpacing: 0.2,
   defaultKnotSize: 21,
   generateSequence: (threadsCount: number, rows: number) => {

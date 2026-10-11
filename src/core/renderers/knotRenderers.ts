@@ -154,9 +154,9 @@ const drawFestoonKnot: KnotRenderer = ({ ctx, knot, x, y, knotSize, currentKnotW
   ctx.lineJoin = 'round';
 
   // Draw a horizontal pill shape to represent the wraps
-  let pillWidth = segmentWidth * 1.3; // Horizontal width of the knot (wider)
+  let pillWidth = (knotSize / 2) * 1.3; // Horizontal width of the knot (wider)
   if (knot.type.includes('NO_SWAP') || patternId === 'alternating-2-thread') {
-    pillWidth = segmentWidth * 0.8; // Medio festón es solo una vuelta, más angosto
+    pillWidth = (knotSize / 2) * 0.8; // Medio festón es solo una vuelta, más angosto
   }
   const pillHeight = knotSize * 0.35; // Vertical thickness (squashed)
 

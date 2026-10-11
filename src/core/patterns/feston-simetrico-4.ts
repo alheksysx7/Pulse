@@ -9,11 +9,12 @@ export const symmetricFestoon4Pattern: Pattern = {
   evenOnly: true,
   shiftOddRows: false,
   baseRowHeightRatio: 0.45,
-  innerThreadAlpha: 0.5,
-  defaultVerticalSpacing: 1,
+  innerThreadAlpha: 0.1,
+  horizontalSpacingRatio: 0.7,
+  defaultVerticalSpacing: 1.2,
   minVerticalSpacing: 0.2,
   maxVerticalSpacing: 1.5,
-  defaultKnotSize: 20,
+  defaultKnotSize: 24,
   generateSequence: (_threadsCount: number, rows: number) => {
     const sequence: KnotType[][] = [];
     const cycle: KnotType[][] = [

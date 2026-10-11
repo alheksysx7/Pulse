@@ -115,7 +115,8 @@ export function BraceletCanvas() {
     grid = finalSim.grid;
     finalColors = finalSim.finalColors;
 
-    const width = threadsCount * (knotSize / 2) + paddingX * 2;
+    const horizontalStep = (knotSize / 2) * (pattern?.horizontalSpacingRatio ?? 1.0);
+    const width = threadsCount * horizontalStep + paddingX * 2;
     const height = currentY + paddingBottom;
 
     // Handle high DPI displays
@@ -131,7 +132,7 @@ export function BraceletCanvas() {
 
     // Helper to get consistent horizontal position for threads
     const getNominalThreadX = (i: number) => {
-      return paddingX + (i + 0.5) * (knotSize / 2);
+      return paddingX + (i + 0.5) * horizontalStep;
     };
 
     // Track X positions for smooth slanting
@@ -151,8 +152,8 @@ export function BraceletCanvas() {
       const currentThreadX = [...prevThreadX];
 
       rowKnots.forEach((knot) => {
-        const currentKnotWidth = (knot.threadSpan / 2) * knotSize;
-        const segmentWidth = currentKnotWidth / knot.threadSpan;
+        const currentKnotWidth = knot.threadSpan * horizontalStep;
+        const segmentWidth = horizontalStep;
 
         for (let i = 0; i < knot.threadSpan; i++) {
           const nominalX = xOffset + (i + 0.5) * segmentWidth;
@@ -348,9 +349,9 @@ export function BraceletCanvas() {
 
       rowKnots.forEach((knot) => {
         const x = xOffset;
-        const currentKnotWidth = (knot.threadSpan / 2) * knotSize;
+        const currentKnotWidth = knot.threadSpan * horizontalStep;
         const isLeftEdge = Math.abs(x - paddingX) < 1;
-        const isRightEdge = Math.abs((x + currentKnotWidth) - (paddingX + threadsCount * (knotSize / 2))) < 1;
+        const isRightEdge = Math.abs((x + currentKnotWidth) - (paddingX + threadsCount * horizontalStep)) < 1;
 
         const renderer = KNOT_RENDERERS[knot.type];
         if (renderer) {

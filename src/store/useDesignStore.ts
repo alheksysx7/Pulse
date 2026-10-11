@@ -120,7 +120,12 @@ export const useDesignStore = create<DesignState>((set) => ({
     };
   }),
   
-  setVerticalSpacing: (spacing) => set({ verticalSpacing: spacing }),
+  setVerticalSpacing: (spacing) => set((state) => {
+    const pattern = PATTERNS[state.patternId];
+    const min = pattern.minVerticalSpacing ?? 0.6;
+    const max = pattern.maxVerticalSpacing ?? 2.0;
+    return { verticalSpacing: Math.min(max, Math.max(min, spacing)) };
+  }),
   setShowBeads: (show) => set({ showBeads: show }),
   setBeadType: (type) => set({ beadType: type }),
   setKnotSize: (size) => set({ knotSize: size }),

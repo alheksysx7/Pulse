@@ -20,6 +20,7 @@ export interface Pattern {
   shiftOddRows?: boolean; // If false, odd rows don't shift by 1 thread (default true)
   defaultVerticalSpacing?: number; // Custom vertical spacing for this pattern
   minVerticalSpacing?: number; // Minimum allowed vertical spacing
+  maxVerticalSpacing?: number; // Maximum allowed vertical spacing
   defaultKnotSize?: number; // Custom knot size for this pattern
   /**
    * Generates a grid of knots (array of rows, where each row is an array of KnotTypes).

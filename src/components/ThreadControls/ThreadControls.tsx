@@ -38,7 +38,7 @@ export function ThreadControls() {
         <input
           type="range"
           min={pattern.minVerticalSpacing ?? 0.6}
-          max={2.0}
+          max={pattern.maxVerticalSpacing ?? 2.0}
           step={0.1}
           value={verticalSpacing}
           onChange={(e) => setVerticalSpacing(Number(e.target.value))}

@@ -296,13 +296,10 @@ En el simulador (`alternating-2-thread.ts`), se representa utilizando un algorit
 Este diseño utiliza exactamente 6 hilos. Combina una clásica diagonal hacia la derecha con una fila donde los hilos se agrupan en pares para anudar simultáneamente.
 
 ### Anatomía Visual y Renderizado
-En el simulador (`diagonal-pairs-6.ts`), el patrón ha sido optimizado con un ciclo súper comprimido de 4 filas lógicas. En lugar de tejer una diagonal completa y luego los pares, los ciclos se "solapan" para que no exista absolutamente ningún espacio vertical, logrando que queden 100% pegados:
-1. **Fila 0 (Par):** Se realiza el inicio de la Diagonal N (`B`), el segundo Par de la Diagonal N-1 (`F`), y el final de la Diagonal N-1 (`B`).
-2. **Fila 1 (Impar):** Avanza la Diagonal N (`B`).
-3. **Fila 2 (Par):** Se teje el primer Par de la Diagonal N (`F`), el centro de la Diagonal N (`B`), y el último Par de la Diagonal N-1 (`F`).
-4. **Fila 3 (Impar):** Avanza la Diagonal N (`B`).
-
-Esta arquitectura entrelaza matemáticamente múltiples pasos al mismo tiempo. Al eliminar cualquier fila vacía, los nudos pares se tejen en el instante exacto en que los hilos quedan libres, adhiriéndose físicamente a la diagonal sin dejar hilos rectos.
+En el simulador (`diagonal-pairs-6.ts`), el patrón está optimizado para que el tejido **inicie puramente con la diagonal sobre el hilo guía** y mantenga **los 3 nudos festón hacia la derecha (`F`) adheridos directamente a la diagonal**:
+1. **Inicio Limpio (Filas 0 a 3):** La primera diagonal nace en la fila 0 de forma completamente limpia (sin ningún nudo flotando encima). El primer par (`F`) se teje en la fila 2 exactamente debajo del primer nudo de la diagonal, manteniendo el espacio vertical cerrado al mínimo.
+2. **Entrelazado Continuo (Fila 4 en adelante):** Cada grupo de 3 pares se teje en diagonal escalonada adherido directamente a su nudo diagonal correspondiente (Par 1 en fila 4k+2, Par 2 en fila 4k+0, Par 3 en fila 4k+2), logrando que los nudos festón derechos sigan la misma pendiente diagonal y queden físicamente pegados a ella sin huecos.
+3. **Terminación:** El renderizador (`BraceletCanvas.tsx`) sincroniza el punto de corte (`cutoffIndex`) y la secuencia de cierre para que la pulsera finalice siempre con la diagonal completa de nudos festón hacia la izquierda (`B`) cruzando de izquierda a derecha sin nudos debajo, conectando las colas inferiores directamente al nudo final de cada hilo.
 
 ### Instrucciones Paso a Paso
 **Paso 1: Diagonal hacia la Derecha**

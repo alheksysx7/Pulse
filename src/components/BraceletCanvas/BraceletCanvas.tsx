@@ -102,8 +102,25 @@ export function BraceletCanvas() {
       }
     }
 
+    if (patternId === 'diagonal-pairs-6') {
+      // Garantizar que la pulsera termine con la diagonal sobre la guía completa (filas 4, 8, 12, etc.)
+      for (let i = cutoffIndex - 1; i >= 4; i--) {
+        if (i % 4 === 0) {
+          cutoffIndex = i + 1;
+          currentY = rowY[i] + rowHeight;
+          break;
+        }
+      }
+    }
+
     // Trim the sequence and re-simulate to get the correct final colors at the cutoff point
     const trimmedSequence = sequence.slice(0, cutoffIndex);
+    if (patternId === 'diagonal-pairs-6' && trimmedSequence.length >= 5) {
+      const last = trimmedSequence.length - 1;
+      trimmedSequence[last - 2] = ['NONE', 'B', trimmedSequence.length >= 8 ? 'F' : 'NONE'];
+      trimmedSequence[last - 1] = ['NONE', 'B'];
+      trimmedSequence[last] = ['NONE', 'NONE', 'B'];
+    }
     const finalSim = simulateSequence(colors, trimmedSequence, shiftOddRows);
     grid = finalSim.grid;
     finalColors = finalSim.finalColors;
@@ -132,6 +149,7 @@ export function BraceletCanvas() {
 
     let consecutiveLeftNones = 0;
     let consecutiveRightNones = 0;
+    const hasThreadKnotted = new Array(threadsCount).fill(false);
 
     // Draw threads first
     grid.forEach((rowKnots, rowIndex) => {
@@ -182,6 +200,11 @@ export function BraceletCanvas() {
           } else if (patternId === 'alternating-2-thread') {
             // Hide ALL straight background lines because the renderer manually draws the core thread zigzagging to the center, and the working thread slack loops
             shouldHide = true;
+          } else if (patternId === 'diagonal-pairs-6') {
+            // Ocultar las líneas verticales tras el tejido solo después de que el hilo ya haya entrado a su primer nudo
+            if (hasThreadKnotted[globalThreadIndex]) {
+              shouldHide = true;
+            }
           }
 
           if (!shouldHide) {
@@ -206,11 +229,9 @@ export function BraceletCanvas() {
               ctx.globalAlpha = 0.3;
             } else if (patternId === 'v-festoon-chevron' && (knot.type === 'NONE' || knot.type === 'NONE_1')) {
               ctx.globalAlpha = 0.5;
-            } else if (patternId === 'diagonal-pairs-6' && (knot.type === 'NONE' || knot.type === 'NONE_1')) {
-              ctx.globalAlpha = 0.6;
             }
             ctx.stroke();
-            
+
             const tex = getTexture(ctx);
             if (tex) {
               ctx.strokeStyle = tex;
@@ -256,6 +277,10 @@ export function BraceletCanvas() {
             }
           }
 
+          if (knot.type !== 'NONE' && knot.type !== 'NONE_1') {
+            hasThreadKnotted[globalThreadIndex] = true;
+          }
+
           currentThreadX[globalThreadIndex] = targetX;
           globalThreadIndex++;
         }
@@ -270,11 +295,30 @@ export function BraceletCanvas() {
     // Draw bottom tails
     if (grid.length > 0) {
       const lastRowIndex = grid.length - 1;
+
+      // Track the row of the last active knot for each thread column
+      const lastKnotRow = new Array(threadsCount).fill(lastRowIndex);
+      if (patternId === 'diagonal-pairs-6') {
+        grid.forEach((rowKnots, rIndex) => {
+          let tIdx = 0;
+          rowKnots.forEach((k) => {
+            for (let s = 0; s < k.threadSpan; s++) {
+              if (k.type !== 'NONE' && k.type !== 'NONE_1') {
+                lastKnotRow[tIdx] = rIndex;
+              }
+              tIdx++;
+            }
+          });
+        });
+      }
+
       finalColors.forEach((color, i) => {
         let threadX = prevThreadX[i];
         let startY = rowY[lastRowIndex] + knotSize / 2;
-        
-        if (patternId === 'alternating-2-thread') {
+
+        if (patternId === 'diagonal-pairs-6') {
+          startY = rowY[lastKnotRow[i]] + knotSize / 2;
+        } else if (patternId === 'alternating-2-thread') {
           startY = rowY[lastRowIndex] + knotSize;
           const knot = grid[lastRowIndex][0];
           if (knot && knot.type !== 'NONE') {
@@ -296,7 +340,7 @@ export function BraceletCanvas() {
         ctx.lineWidth = 6;
         ctx.strokeStyle = color;
         ctx.stroke();
-        
+
         const tex = getTexture(ctx);
         if (tex) {
           ctx.strokeStyle = tex;

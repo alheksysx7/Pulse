@@ -2,7 +2,7 @@
   padding: 2rem;
   height: 100%;
   overflow-y: auto;
-  color: #fff;
+  color: var(--color-text);
 }
 
 .emptyState {
@@ -18,7 +18,7 @@
 .title {
   font-size: 1.5rem;
   margin-bottom: 2rem;
-  color: #a78bfa;
+  color: var(--color-accent-terracotta);
 }
 
 .content {
@@ -30,26 +30,26 @@
 }
 
 .section {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: var(--color-surface);
   border-radius: 12px;
   padding: 1.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--color-border);
 }
 
 .section h3 {
-  color: #e2e8f0;
+  color: var(--color-text);
   margin-bottom: 1rem;
   font-size: 1.2rem;
 }
 
 .section p {
-  color: #cbd5e1;
+  color: var(--color-text-muted);
   line-height: 1.6;
   margin-bottom: 1rem;
 }
 
 .section ul, .section ol {
-  color: #cbd5e1;
+  color: var(--color-text-muted);
   line-height: 1.6;
   padding-left: 1.5rem;
   display: flex;
@@ -58,5 +58,5 @@
 }
 
 .section li strong {
-  color: #f8fafc;
+  color: var(--color-text);
 }

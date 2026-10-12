@@ -1,8 +1,30 @@
-import { Lock } from 'lucide-react';
+import { useState, type ReactNode } from 'react';
+import { ChevronDown, Lock } from 'lucide-react';
 import { useDesignStore } from '../../store/useDesignStore';
 import { PREDEFINED_PALETTES } from '../../core/palettes';
 import styles from './ThreadControls.module.css';
 import { PATTERNS } from '../../core/patterns';
+import { PatternPicker } from '../PatternPicker/PatternPicker';
+
+function Accordion({ title, defaultOpen = true, children }: { title: string; defaultOpen?: boolean; children: ReactNode }) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <section className={`${styles.accordion} ${open ? styles.open : ''}`}>
+      <button
+        type="button"
+        className={styles.accordionHeader}
+        onClick={() => setOpen(o => !o)}
+        aria-expanded={open}
+      >
+        <span className={styles.accordionTitle}>{title}</span>
+        <ChevronDown size={16} className={styles.chevron} />
+      </button>
+      <div className={styles.accordionBody}>
+        <div className={styles.accordionInner}>{children}</div>
+      </div>
+    </section>
+  );
+}
 
 export function ThreadControls() {
   const {
@@ -14,7 +36,8 @@ export function ThreadControls() {
     showBeads, setShowBeads,
     beadType, setBeadType,
     knotSize, setKnotSize,
-    setAllColors
+    setAllColors,
+    activePaletteName
   } = useDesignStore();
 
   const pattern = PATTERNS[patternId];
@@ -22,130 +45,142 @@ export function ThreadControls() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.section}>
-        <div className={styles.headerWithBadge}>
-          <h3 className={styles.title}>Threads: {threadsCount}</h3>
+      <Accordion title="Estructura Base">
+        <PatternPicker />
+        <div className={styles.field}>
+          <div className={styles.headerWithBadge}>
+            <h3 className={styles.title}>Threads: {threadsCount}</h3>
+            {isThreadCountFixed && (
+              <span className={styles.fixedBadge} title="Este patrón tiene un número fijo de hilos">
+                <Lock size={12} className={styles.lockIcon} />
+                Fijo
+              </span>
+            )}
+          </div>
+          <input
+            type="range"
+            min={pattern.minThreads}
+            max={pattern.maxThreads || 16}
+            step={pattern.evenOnly ? 2 : 1}
+            value={threadsCount}
+            onChange={(e) => setThreadsCount(Number(e.target.value))}
+            disabled={isThreadCountFixed}
+            className={`${styles.slider} ${isThreadCountFixed ? styles.disabledSlider : ''}`}
+          />
           {isThreadCountFixed && (
-            <span className={styles.fixedBadge} title="Este patrón tiene un número fijo de hilos">
-              <Lock size={12} className={styles.lockIcon} />
-              Fijo
-            </span>
+            <p className={styles.fixedHint}>
+              Este patrón requiere exactamente {pattern.minThreads} hilos para su estructura.
+            </p>
           )}
         </div>
-        <input
-          type="range"
-          min={pattern.minThreads}
-          max={pattern.maxThreads || 16}
-          step={pattern.evenOnly ? 2 : 1}
-          value={threadsCount}
-          onChange={(e) => setThreadsCount(Number(e.target.value))}
-          disabled={isThreadCountFixed}
-          className={`${styles.slider} ${isThreadCountFixed ? styles.disabledSlider : ''}`}
-        />
-        {isThreadCountFixed && (
-          <p className={styles.fixedHint}>
-            Este patrón requiere exactamente {pattern.minThreads} hilos para su estructura.
-          </p>
-        )}
-      </div>
+      </Accordion>
 
-      <div className={styles.section}>
-        <h3 className={styles.title}>Vertical Spacing: {verticalSpacing.toFixed(1)}x</h3>
-        <input
-          type="range"
-          min={pattern.minVerticalSpacing ?? 0.6}
-          max={pattern.maxVerticalSpacing ?? 2.0}
-          step={0.1}
-          value={verticalSpacing}
-          onChange={(e) => setVerticalSpacing(Number(e.target.value))}
-          className={styles.slider}
-        />
-      </div>
+      <Accordion title="Geometría">
+        <div className={styles.field}>
+          <h3 className={styles.title}>Vertical Spacing: {verticalSpacing.toFixed(1)}x</h3>
+          <input
+            type="range"
+            min={pattern.minVerticalSpacing ?? 0.6}
+            max={pattern.maxVerticalSpacing ?? 2.0}
+            step={0.1}
+            value={verticalSpacing}
+            onChange={(e) => setVerticalSpacing(Number(e.target.value))}
+            className={styles.slider}
+          />
+        </div>
 
-      <div className={styles.section}>
-        <h3 className={styles.title}>Knot Size: {knotSize}px</h3>
-        <input
-          type="range"
-          min={10}
-          max={40}
-          step={1}
-          value={knotSize}
-          onChange={(e) => setKnotSize(Number(e.target.value))}
-          className={styles.slider}
-        />
-      </div>
+        <div className={styles.field}>
+          <h3 className={styles.title}>Knot Size: {knotSize}px</h3>
+          <input
+            type="range"
+            min={10}
+            max={40}
+            step={1}
+            value={knotSize}
+            onChange={(e) => setKnotSize(Number(e.target.value))}
+            className={styles.slider}
+          />
+        </div>
 
-      {patternId === 'jumping-festoon' && (
-        <div className={styles.section}>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', marginBottom: '8px' }}>
-            <input
-              type="checkbox"
-              checked={showBeads}
-              onChange={(e) => setShowBeads(e.target.checked)}
-              style={{ width: '18px', height: '18px', cursor: 'pointer' }}
-            />
-            <span style={{ fontSize: '14px', fontWeight: 500 }}>Agregar Balines (Abalorios)</span>
-          </label>
-
-          {showBeads && (
-            <div style={{ marginLeft: '26px' }}>
+        {patternId === 'jumping-festoon' && (
+          <div className={styles.field}>
+            <div className={styles.toggleRow}>
+              <span className={styles.toggleLabel} id="beads-label">Agregar Balines (Abalorios)</span>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={showBeads}
+                aria-labelledby="beads-label"
+                className={`${styles.switch} ${showBeads ? styles.switchOn : ''}`}
+                onClick={() => setShowBeads(!showBeads)}
+              >
+                <span className={styles.switchThumb} />
+              </button>
+            </div>
+            {showBeads && (
               <select
                 value={beadType}
                 onChange={(e) => setBeadType(e.target.value as any)}
-                style={{ width: '100%', padding: '6px', borderRadius: '4px', border: '1px solid #ddd' }}
+                className={styles.select}
               >
                 <option value="gold">Dorado</option>
                 <option value="silver">Plateado</option>
                 <option value="wood">Madera</option>
               </select>
-            </div>
-          )}
-        </div>
-      )}
+            )}
+          </div>
+        )}
+      </Accordion>
 
-      <div className={styles.section}>
-        <h3 className={styles.title}>Colors</h3>
-        <div className={styles.colorGrid}>
-          {colors.map((color, index) => (
-            <div 
-              key={index} 
-              className={styles.colorItem} 
-              onDoubleClick={() => setAllColors(color)}
-              title="Doble clic para aplicar este color a todos los hilos"
-            >
-              <span className={styles.colorLabel}>{index + 1}</span>
-              <input
-                type="color"
-                value={color}
-                onChange={(e) => setColor(index, e.target.value)}
-                className={styles.colorInput}
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className={styles.section}>
-        <h3 className={styles.title}>Palettes</h3>
-        <p className={styles.subtitle}>Click a palette to apply it. Click again to cycle colors.</p>
-        <div className={styles.paletteGrid}>
-          {PREDEFINED_PALETTES.map((palette) => (
-            <button
-              key={palette.name}
-              className={styles.paletteButton}
-              onClick={() => applyPalette(palette.name, palette.colors)}
-              title={palette.name}
-            >
-              <div className={styles.palettePreview}>
-                {palette.colors.map((c, i) => (
-                  <div key={i} className={styles.paletteColor} style={{ backgroundColor: c }} />
-                ))}
+      <Accordion title="Color y Estilo">
+        <div className={styles.field}>
+          <h3 className={styles.title}>Colors</h3>
+          <div className={styles.colorRow}>
+            {colors.map((color, index) => (
+              <div
+                key={index}
+                className={styles.colorItem}
+                onDoubleClick={() => setAllColors(color)}
+                title="Doble clic para aplicar este color a todos los hilos"
+              >
+                <input
+                  type="color"
+                  value={color}
+                  onChange={(e) => setColor(index, e.target.value)}
+                  className={styles.colorInput}
+                  aria-label={`Color del hilo ${index + 1}`}
+                />
+                <span className={styles.colorLabel}>{index + 1}</span>
               </div>
-              <span className={styles.paletteName}>{palette.name}</span>
-            </button>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
+
+        <div className={styles.field}>
+          <h3 className={styles.title}>Palettes</h3>
+          <p className={styles.subtitle}>Click para aplicar. Click otra vez para rotar colores.</p>
+          <div className={styles.paletteGrid}>
+            {PREDEFINED_PALETTES.map((palette) => {
+              const isActive = activePaletteName === palette.name;
+              return (
+                <button
+                  key={palette.name}
+                  className={`${styles.paletteButton} ${isActive ? styles.paletteButtonActive : ''}`}
+                  onClick={() => applyPalette(palette.name, palette.colors)}
+                  title={palette.name}
+                >
+                  <div className={styles.palettePreview}>
+                    {palette.colors.map((c, i) => (
+                      <div key={i} className={styles.paletteColor} style={{ backgroundColor: c }} />
+                    ))}
+                  </div>
+                  <span className={styles.paletteName}>{palette.name}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </Accordion>
     </div>
   );
 }

@@ -324,8 +324,15 @@
 }
 
 @media (max-width: 768px) {
+  .appContainer {
+    height: 100dvh;
+    overflow-y: auto;
+  }
+
   .main {
     flex-direction: column;
+    overflow: visible;
+    min-height: calc(100dvh - 3.5rem);
   }
 
   .sidebar {
@@ -334,11 +341,19 @@
     top: auto;
     bottom: auto;
     width: auto;
-    height: 45vh;
-    margin: 0.75rem;
+    height: auto;
+    max-height: 52vh;
+    margin: 0.75rem 0.75rem 0.25rem 0.75rem;
+    flex-shrink: 0;
+  }
+
+  .controlsPanel {
+    max-height: 52vh;
   }
 
   .workspace {
-    padding: 1rem;
+    padding: 0.75rem;
+    flex: 1;
+    min-height: 380px;
   }
 }

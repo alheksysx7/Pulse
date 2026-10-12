@@ -7,13 +7,13 @@ export const zigzagFestoonPattern: Pattern = {
   maxThreads: 3,
   evenOnly: false,
   shiftOddRows: true, // We will manually emit the sequence, but shiftOddRows lets us pair (0,1) then (1,2)
-  defaultVerticalSpacing: 0.7,
+  defaultVerticalSpacing: 0.4,
   minVerticalSpacing: 0.2,
   maxVerticalSpacing: 1.5,
   baseRowHeightRatio: 0.22,
   innerThreadAlpha: 0.5,
   applyAlphaToEdges: true,
-  defaultKnotSize: 24,
+  defaultKnotSize: 22,
   generateSequence: (threadsCount: number, rows: number) => {
     const sequence: KnotType[][] = [];
     const cycleRowKnots: KnotType[][] = [];

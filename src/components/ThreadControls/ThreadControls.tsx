@@ -5,6 +5,7 @@ import { PREDEFINED_PALETTES } from '../../core/palettes';
 import styles from './ThreadControls.module.css';
 import { PATTERNS } from '../../core/patterns';
 import { PatternPicker } from '../PatternPicker/PatternPicker';
+import { TRANSLATIONS } from '../../core/i18n';
 
 function Accordion({ title, defaultOpen = true, children }: { title: string; defaultOpen?: boolean; children: ReactNode }) {
   const [open, setOpen] = useState(defaultOpen);
@@ -37,23 +38,25 @@ export function ThreadControls() {
     beadType, setBeadType,
     knotSize, setKnotSize,
     setAllColors,
-    activePaletteName
+    activePaletteName,
+    language
   } = useDesignStore();
 
+  const t = TRANSLATIONS[language];
   const pattern = PATTERNS[patternId];
   const isThreadCountFixed = pattern.maxThreads !== undefined && pattern.minThreads >= pattern.maxThreads;
 
   return (
     <div className={styles.container}>
-      <Accordion title="Estructura Base">
+      <Accordion title={t.sectionBaseStructure}>
         <PatternPicker />
         <div className={styles.field}>
           <div className={styles.headerWithBadge}>
-            <h3 className={styles.title}>Threads: {threadsCount}</h3>
+            <h3 className={styles.title}>{t.threadsLabel}: {threadsCount}</h3>
             {isThreadCountFixed && (
-              <span className={styles.fixedBadge} title="Este patrón tiene un número fijo de hilos">
+              <span className={styles.fixedBadge} title={t.fixedBadgeTitle}>
                 <Lock size={12} className={styles.lockIcon} />
-                Fijo
+                {t.fixedBadge}
               </span>
             )}
           </div>
@@ -69,15 +72,15 @@ export function ThreadControls() {
           />
           {isThreadCountFixed && (
             <p className={styles.fixedHint}>
-              Este patrón requiere exactamente {pattern.minThreads} hilos para su estructura.
+              {t.fixedHint(pattern.minThreads)}
             </p>
           )}
         </div>
       </Accordion>
 
-      <Accordion title="Geometría">
+      <Accordion title={t.sectionGeometry}>
         <div className={styles.field}>
-          <h3 className={styles.title}>Vertical Spacing: {verticalSpacing.toFixed(1)}x</h3>
+          <h3 className={styles.title}>{t.verticalSpacingLabel}: {verticalSpacing.toFixed(1)}x</h3>
           <input
             type="range"
             min={pattern.minVerticalSpacing ?? 0.6}
@@ -90,7 +93,7 @@ export function ThreadControls() {
         </div>
 
         <div className={styles.field}>
-          <h3 className={styles.title}>Knot Size: {knotSize}px</h3>
+          <h3 className={styles.title}>{t.knotSizeLabel}: {knotSize}px</h3>
           <input
             type="range"
             min={10}
@@ -105,7 +108,7 @@ export function ThreadControls() {
         {patternId === 'jumping-festoon' && (
           <div className={styles.field}>
             <div className={styles.toggleRow}>
-              <span className={styles.toggleLabel} id="beads-label">Agregar Balines (Abalorios)</span>
+              <span className={styles.toggleLabel} id="beads-label">{t.addBeadsLabel}</span>
               <button
                 type="button"
                 role="switch"
@@ -123,32 +126,32 @@ export function ThreadControls() {
                 onChange={(e) => setBeadType(e.target.value as any)}
                 className={styles.select}
               >
-                <option value="gold">Dorado</option>
-                <option value="silver">Plateado</option>
-                <option value="wood">Madera</option>
+                <option value="gold">{t.beadGold}</option>
+                <option value="silver">{t.beadSilver}</option>
+                <option value="wood">{t.beadWood}</option>
               </select>
             )}
           </div>
         )}
       </Accordion>
 
-      <Accordion title="Color y Estilo">
+      <Accordion title={t.sectionColorStyle}>
         <div className={styles.field}>
-          <h3 className={styles.title}>Colors</h3>
+          <h3 className={styles.title}>{t.colorsLabel}</h3>
           <div className={styles.colorRow}>
             {colors.map((color, index) => (
               <div
                 key={index}
                 className={styles.colorItem}
                 onDoubleClick={() => setAllColors(color)}
-                title="Doble clic para aplicar este color a todos los hilos"
+                title={t.colorItemTooltip}
               >
                 <input
                   type="color"
                   value={color}
                   onChange={(e) => setColor(index, e.target.value)}
                   className={styles.colorInput}
-                  aria-label={`Color del hilo ${index + 1}`}
+                  aria-label={t.colorInputAria(index + 1)}
                 />
                 <span className={styles.colorLabel}>{index + 1}</span>
               </div>
@@ -157,24 +160,25 @@ export function ThreadControls() {
         </div>
 
         <div className={styles.field}>
-          <h3 className={styles.title}>Palettes</h3>
-          <p className={styles.subtitle}>Click para aplicar. Click otra vez para rotar colores.</p>
+          <h3 className={styles.title}>{t.palettesLabel}</h3>
+          <p className={styles.subtitle}>{t.palettesSubtitle}</p>
           <div className={styles.paletteGrid}>
             {PREDEFINED_PALETTES.map((palette) => {
               const isActive = activePaletteName === palette.name;
+              const paletteDisplayName = t.palettes[palette.name] || palette.name;
               return (
                 <button
                   key={palette.name}
                   className={`${styles.paletteButton} ${isActive ? styles.paletteButtonActive : ''}`}
                   onClick={() => applyPalette(palette.name, palette.colors)}
-                  title={palette.name}
+                  title={paletteDisplayName}
                 >
                   <div className={styles.palettePreview}>
                     {palette.colors.map((c, i) => (
                       <div key={i} className={styles.paletteColor} style={{ backgroundColor: c }} />
                     ))}
                   </div>
-                  <span className={styles.paletteName}>{palette.name}</span>
+                  <span className={styles.paletteName}>{paletteDisplayName}</span>
                 </button>
               );
             })}

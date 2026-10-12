@@ -12,6 +12,7 @@ export interface DesignState {
   showBeads: boolean;
   beadType: 'gold' | 'silver' | 'wood';
   knotSize: number;
+  language: 'es' | 'en';
   
   setPatternId: (id: string) => void;
   setThreadsCount: (count: number) => void;
@@ -22,6 +23,7 @@ export interface DesignState {
   setShowBeads: (show: boolean) => void;
   setBeadType: (type: 'gold' | 'silver' | 'wood') => void;
   setKnotSize: (size: number) => void;
+  setLanguage: (lang: 'es' | 'en') => void;
 }
 
 const defaultPatternId = 'diagonal-festoon';
@@ -43,6 +45,12 @@ export const useDesignStore = create<DesignState>((set) => ({
   showBeads: false,
   beadType: 'gold' as 'gold' | 'silver' | 'wood',
   knotSize: PATTERNS[defaultPatternId].defaultKnotSize ?? 24,
+  language: (localStorage.getItem('pulse-lang') === 'en' ? 'en' : 'es') as 'es' | 'en',
+
+  setLanguage: (lang) => {
+    localStorage.setItem('pulse-lang', lang);
+    set({ language: lang });
+  },
 
   setPatternId: (id) => set((state) => {
     const pattern = PATTERNS[id];

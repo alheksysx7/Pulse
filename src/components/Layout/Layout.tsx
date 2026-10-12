@@ -1,6 +1,8 @@
 import { useState, Suspense, lazy } from 'react';
 import styles from './Layout.module.css';
 import { ThreadControls } from '../ThreadControls/ThreadControls';
+import { useDesignStore } from '../../store/useDesignStore';
+import { TRANSLATIONS } from '../../core/i18n';
 
 // Code split the views for performance
 const BraceletCanvas = lazy(() => import('../BraceletCanvas/BraceletCanvas').then(m => ({ default: m.BraceletCanvas })));
@@ -10,10 +12,10 @@ type Theme = 'light' | 'dark' | 'nature';
 
 // Each theme is represented by the same festoon knot (forward "F" knot, as in the simulation),
 // differing only in color.
-const THEMES: { id: Theme; label: string; color: string }[] = [
-  { id: 'nature', label: 'Ambiente naturaleza', color: '#4ade80' },
-  { id: 'dark', label: 'Ambiente oscuro', color: '#52525b' },
-  { id: 'light', label: 'Ambiente claro', color: '#fdba74' },
+const THEMES: { id: Theme; color: string; labelKey: 'themeNature' | 'themeDark' | 'themeLight' }[] = [
+  { id: 'nature', color: '#4ade80', labelKey: 'themeNature' },
+  { id: 'dark', color: '#52525b', labelKey: 'themeDark' },
+  { id: 'light', color: '#fdba74', labelKey: 'themeLight' },
 ];
 
 function FestoonKnot({ color }: { color: string }) {
@@ -40,10 +42,12 @@ const getInitialTheme = (): Theme => {
 export function Layout() {
   const [activeView, setActiveView] = useState<'simulation' | 'instructions'>('simulation');
   const [theme, setTheme] = useState<Theme>(getInitialTheme);
+  const { language, setLanguage } = useDesignStore();
+  const t = TRANSLATIONS[language];
 
-  const changeTheme = (t: Theme) => {
-    setTheme(t);
-    localStorage.setItem('pulse-theme', t);
+  const changeTheme = (tId: Theme) => {
+    setTheme(tId);
+    localStorage.setItem('pulse-theme', tId);
   };
 
   return (
@@ -51,25 +55,49 @@ export function Layout() {
       <header className={styles.header}>
         <div className={styles.brand}>
           <div className={styles.brandRow}>
-            <h1 className={styles.logo}>Pulse</h1>
-            <div className={styles.themeSwitcher} role="radiogroup" aria-label="Ambiente de fondo">
-              {THEMES.map(t => (
-                <button
-                  key={t.id}
-                  type="button"
-                  role="radio"
-                  aria-checked={theme === t.id}
-                  aria-label={t.label}
-                  title={t.label}
-                  className={`${styles.knotButton} ${theme === t.id ? styles.knotActive : ''}`}
-                  onClick={() => changeTheme(t.id)}
-                >
-                  <FestoonKnot color={t.color} />
-                </button>
-              ))}
+            <h1 className={styles.logo}>{t.appTitle}</h1>
+            <div className={styles.themeSwitcher} role="radiogroup" aria-label={t.themeAria}>
+              {THEMES.map(th => {
+                const label = t[th.labelKey];
+                return (
+                  <button
+                    key={th.id}
+                    type="button"
+                    role="radio"
+                    aria-checked={theme === th.id}
+                    aria-label={label}
+                    title={label}
+                    className={`${styles.knotButton} ${theme === th.id ? styles.knotActive : ''}`}
+                    onClick={() => changeTheme(th.id)}
+                  >
+                    <FestoonKnot color={th.color} />
+                  </button>
+                );
+              })}
             </div>
           </div>
-          <p className={styles.subtitle}>Macramé Studio</p>
+          <p className={styles.subtitle}>{t.appSubtitle}</p>
+        </div>
+
+        <div className={styles.headerActions}>
+          <div className={styles.langSwitcher} role="group" aria-label={t.languageAria}>
+            <button
+              type="button"
+              className={`${styles.langBtn} ${language === 'es' ? styles.langBtnActive : ''}`}
+              onClick={() => setLanguage('es')}
+              aria-pressed={language === 'es'}
+            >
+              ES
+            </button>
+            <button
+              type="button"
+              className={`${styles.langBtn} ${language === 'en' ? styles.langBtnActive : ''}`}
+              onClick={() => setLanguage('en')}
+              aria-pressed={language === 'en'}
+            >
+              EN
+            </button>
+          </div>
         </div>
       </header>
 
@@ -86,18 +114,18 @@ export function Layout() {
               className={`${styles.tab} ${activeView === 'simulation' ? styles.activeTab : ''}`}
               onClick={() => setActiveView('simulation')}
             >
-              Simulation
+              {t.tabSimulation}
             </button>
             <button 
               className={`${styles.tab} ${activeView === 'instructions' ? styles.activeTab : ''}`}
               onClick={() => setActiveView('instructions')}
             >
-              Instrucciones
+              {t.tabInstructions}
             </button>
           </div>
 
           <div className={styles.viewContent}>
-            <Suspense fallback={<div className={styles.loading}>Loading view...</div>}>
+            <Suspense fallback={<div className={styles.loading}>{t.loadingView}</div>}>
               {activeView === 'simulation' && <BraceletCanvas />}
               {activeView === 'instructions' && <Instructions />}
             </Suspense>

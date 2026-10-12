@@ -50,6 +50,43 @@
   gap: 0;
 }
 
+.headerActions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.langSwitcher {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+}
+
+.langBtn {
+  padding: 0.2rem 0.55rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all 200ms ease;
+}
+
+.langBtn:hover {
+  color: var(--color-text);
+}
+
+.langBtnActive {
+  background: var(--color-surface);
+  color: var(--color-accent-terracotta);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
 .knotButton {
   display: grid;
   place-items: center;

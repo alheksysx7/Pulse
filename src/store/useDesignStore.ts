@@ -5,7 +5,6 @@ import { PREDEFINED_PALETTES } from '../core/palettes';
 export interface DesignState {
   patternId: string;
   threadsCount: number;
-  rowsCount: number;
   colors: string[];
   activePaletteName: string | null;
   paletteShift: number;
@@ -13,11 +12,9 @@ export interface DesignState {
   showBeads: boolean;
   beadType: 'gold' | 'silver' | 'wood';
   knotSize: number;
-  threadSlack: number; // slack for unknotted threads in pixels
   
   setPatternId: (id: string) => void;
   setThreadsCount: (count: number) => void;
-  setRowsCount: (count: number) => void;
   setColor: (index: number, color: string) => void;
   setAllColors: (color: string) => void;
   applyPalette: (name: string, colors: string[]) => void;
@@ -25,7 +22,6 @@ export interface DesignState {
   setShowBeads: (show: boolean) => void;
   setBeadType: (type: 'gold' | 'silver' | 'wood') => void;
   setKnotSize: (size: number) => void;
-  setThreadSlack: (slack: number) => void;
 }
 
 const defaultPatternId = 'diagonal-festoon';
@@ -40,7 +36,6 @@ const getInitialColors = (count: number, palette: string[]) => {
 export const useDesignStore = create<DesignState>((set) => ({
   patternId: defaultPatternId,
   threadsCount: defaultThreadsCount,
-  rowsCount: 20, // default visible rows
   colors: getInitialColors(defaultThreadsCount, defaultColors),
   activePaletteName: PREDEFINED_PALETTES[0].name,
   paletteShift: 0,
@@ -48,7 +43,6 @@ export const useDesignStore = create<DesignState>((set) => ({
   showBeads: false,
   beadType: 'gold' as 'gold' | 'silver' | 'wood',
   knotSize: PATTERNS[defaultPatternId].defaultKnotSize ?? 24,
-  threadSlack: 0,
 
   setPatternId: (id) => set((state) => {
     const pattern = PATTERNS[id];
@@ -93,8 +87,6 @@ export const useDesignStore = create<DesignState>((set) => ({
     };
   }),
   
-  setRowsCount: (count) => set({ rowsCount: count }),
-  
   setColor: (index, color) => set((state) => {
     const newColors = [...state.colors];
     newColors[index] = color;
@@ -129,6 +121,5 @@ export const useDesignStore = create<DesignState>((set) => ({
   }),
   setShowBeads: (show) => set({ showBeads: show }),
   setBeadType: (type) => set({ beadType: type }),
-  setKnotSize: (size) => set({ knotSize: size }),
-  setThreadSlack: (slack) => set({ threadSlack: slack })
+  setKnotSize: (size) => set({ knotSize: size })
 }));

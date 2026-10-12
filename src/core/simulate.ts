@@ -89,29 +89,14 @@ export function simulateSequence(initialColors: string[], rowKnotTypes: KnotType
         if (type === 'HALF_SQUARE_L') {
           outColor1 = outerLeft;
           outColor2 = outerRight;
-        } else if (type === 'HALF_SQUARE_R') {
+        } else {
           outColor1 = outerRight;
           outColor2 = outerLeft;
-        } else {
-          // If there are no core threads (threadSpan === 2), the two threads interlock with each other,
-          // causing the visible front color to alternate every row.
-          if (threadSpan === 2 && rowIndex % 2 !== 0) {
-            outColor1 = outerRight;
-            outColor2 = outerLeft;
-          } else {
-            outColor1 = outerLeft; // Zigzag inner thread (always goes OVER)
-            outColor2 = outerRight; // Border outer thread (always goes UNDER)
-          }
         }
         
-        // Colors swap position in a HALF square knot, but not in a full SQUARE knot
-        if (type === 'HALF_SQUARE_L' || type === 'HALF_SQUARE_R') {
-          nextColors[leftIdx] = outerRight;
-          nextColors[leftIdx + threadSpan - 1] = outerLeft;
-        } else {
-          nextColors[leftIdx] = outerLeft;
-          nextColors[leftIdx + threadSpan - 1] = outerRight;
-        }
+        // Colors swap position in a HALF square knot
+        nextColors[leftIdx] = outerRight;
+        nextColors[leftIdx + threadSpan - 1] = outerLeft;
         
         for (let i = 1; i < threadSpan - 1; i++) {
           nextColors[leftIdx + i] = currentColors[leftIdx + i]; // core threads

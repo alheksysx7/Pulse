@@ -1,3 +1,4 @@
+import { Lock } from 'lucide-react';
 import { useDesignStore } from '../../store/useDesignStore';
 import { PREDEFINED_PALETTES } from '../../core/palettes';
 import styles from './ThreadControls.module.css';
@@ -17,11 +18,20 @@ export function ThreadControls() {
   } = useDesignStore();
 
   const pattern = PATTERNS[patternId];
+  const isThreadCountFixed = pattern.maxThreads !== undefined && pattern.minThreads >= pattern.maxThreads;
 
   return (
     <div className={styles.container}>
       <div className={styles.section}>
-        <h3 className={styles.title}>Threads: {threadsCount}</h3>
+        <div className={styles.headerWithBadge}>
+          <h3 className={styles.title}>Threads: {threadsCount}</h3>
+          {isThreadCountFixed && (
+            <span className={styles.fixedBadge} title="Este patrón tiene un número fijo de hilos">
+              <Lock size={12} className={styles.lockIcon} />
+              Fijo
+            </span>
+          )}
+        </div>
         <input
           type="range"
           min={pattern.minThreads}
@@ -29,8 +39,14 @@ export function ThreadControls() {
           step={pattern.evenOnly ? 2 : 1}
           value={threadsCount}
           onChange={(e) => setThreadsCount(Number(e.target.value))}
-          className={styles.slider}
+          disabled={isThreadCountFixed}
+          className={`${styles.slider} ${isThreadCountFixed ? styles.disabledSlider : ''}`}
         />
+        {isThreadCountFixed && (
+          <p className={styles.fixedHint}>
+            Este patrón requiere exactamente {pattern.minThreads} hilos para su estructura.
+          </p>
+        )}
       </div>
 
       <div className={styles.section}>

@@ -1,4 +1,4 @@
-import type { Pattern } from '../types';
+import type { Pattern, KnotType } from '../types';
 
 export const alternatingHalfHitchPattern: Pattern = {
   id: 'alternating-half-hitch',
@@ -14,7 +14,7 @@ export const alternatingHalfHitchPattern: Pattern = {
     // We only allow 3 threads for this specific pattern
     // Central thread is static guide. Left and right are working threads.
 
-    const sequence: any[] = [];
+    const sequence: KnotType[][] = [];
     for (let r = 0; r < rowsCount; r++) {
       // With shiftOddRows = true:
       // Even rows (0, 2, 4...): threadOffset = 0. Knot covers threads 0 and 1.

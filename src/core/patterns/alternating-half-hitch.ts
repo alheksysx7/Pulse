@@ -10,7 +10,7 @@ export const alternatingHalfHitchPattern: Pattern = {
   defaultVerticalSpacing: 1,
   baseRowHeightRatio: 0.4,
   defaultKnotSize: 20,
-  generateSequence: (threadsCount, rowsCount) => {
+  generateSequence: (_threadsCount, rowsCount) => {
     // We only allow 3 threads for this specific pattern
     // Central thread is static guide. Left and right are working threads.
 

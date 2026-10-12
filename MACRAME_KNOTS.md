@@ -350,3 +350,49 @@ En el simulador (`feston-simetrico-4.ts`), el patrón se estructura en ciclos de
 * Vuelve a repetir todo el proceso desde el Paso 1, tomando los hilos en el nuevo orden en el que hayan quedado tras completar la ronda anterior.
 * Ajusta cada nudo firmemente de manera uniforme para mantener la estructura simétrica y compacta de la pulsera.
 
+## Festón Zigzag Alterno
+*Patrón de Festón en Zigzag Continuo (3 Hilos).*
+
+El patrón de festón zigzag alterno se teje sobre una base de 3 hilos donde un único hilo guía viaja continuamente de un extremo a otro en vaivén, tejiendo nudos festón dobles sobre los hilos que encuentra a su paso antes de doblar en la esquina y emprender el camino de regreso.
+
+### Anatomía Visual y Renderizado
+En el simulador (`zigzag-festoon.ts`) y el renderizador de canvas (`BraceletCanvas.tsx` / `knotRenderers.ts`), el patrón cuenta con una arquitectura dedicada:
+1. **Secuencia de Vaivén (Ciclos de 6 Filas):**
+   - **Pasada de Ida (Izquierda a Derecha):** Fila 0 teje el nudo festón entre hilos 0 y 1; Fila 1 teje el nudo festón entre hilos 1 y 2 alcanzando el extremo derecho.
+   - **Retorno de Esquina Derecha:** Fila 2 reserva el espacio de giro sin nudo activo (`NONE_1`).
+   - **Pasada de Vuelta (Derecha a Izquierda):** Fila 3 teje entre hilos 1 y 2 en sentido inverso; Fila 4 teje entre hilos 0 y 1 alcanzando el extremo izquierdo.
+   - **Retorno de Esquina Izquierda:** Fila 5 reserva el espacio de giro (`NONE_1`).
+2. **Inclinación Dinámica hacia la Horizontal (`verticalSpacing`):**
+   - El ángulo de inclinación (`tiltMagnitude`) escala fluidamente según el valor de espaciado vertical.
+   - Al reducir el espaciado vertical al mínimo (`minVerticalSpacing: 0.2`), la inclinación desciende progresivamente a **0 rad**, volviendo los nudos **completamente horizontales**.
+3. **Alineación de Pasadas y Control de Esquinas (`inPassStep` y `cornerStep`):**
+   - Dentro de una misma pasada, el desfase vertical (`inPassStep`) se compacta al aplanar los nudos, permitiendo que los 2 primeros nudos se ubiquen lado a lado formando una barra horizontal continua.
+   - En las esquinas de retorno, la distancia vertical (`cornerStep`) respeta como mínimo el grosor físico del nudo (`knotSize * 0.35 + 2px`), garantizando que los nudos de la siguiente pasada queden ubicados limpiamente **debajo** de los primeros y nunca se superpongan ni se deformen entre sí.
+4. **Bucle Continuo del Hilo Guía:**
+   - En cada esquina exterior, el renderizador proyecta una curva de retorno en **U continua** con el color exacto del hilo guía.
+   - Esta curva nace desde el interior del nudo superior y entra directamente al nudo inferior, ilustrando con realismo cómo el mismo hilo guía dobla la esquina y queda atado a ambos nudos.
+5. **Transparencia en Hilos de Fondo (`applyAlphaToEdges`):**
+   - La propiedad `applyAlphaToEdges: true` permite que `innerThreadAlpha` module suavemente la opacidad de los tres hilos verticales de fondo y sus sombras mientras quedan detrás del tejido principal (exceptuando la fila superior inicial `rowIndex === 0` que permanece opaca al 100%).
+
+### Instrucciones Paso a Paso (Cómo tejerlo en la vida real)
+
+**Preparación Inicial:**
+* Corta 3 hilos de diferente color para identificar fácilmente el guía y los hilos pasivos (por ejemplo: Hilo 1 izquierdo, Hilo 2 central e Hilo 3 derecho).
+* Sujétalos en la parte superior con el clip de la tabla portapapeles.
+
+**Fase 1: Zigzag hacia la Derecha:**
+* Toma el **Hilo 1 (extrema izquierda)**: este será el **hilo guía** para esta fase. Sostenlo en diagonal hacia abajo y a la derecha por encima de los otros hilos.
+* Con el **Hilo 2**, teje un nudo festón doble sobre el hilo guía ajustando hacia arriba.
+* A continuación, con el **Hilo 3 (extrema derecha)**, teje otro nudo festón doble sobre el mismo hilo guía.
+* Ahora el hilo guía original ha llegado a la posición de la extrema derecha.
+
+**Fase 2: Retorno y Zigzag hacia la Izquierda:**
+* El mismo hilo guía gira en la esquina exterior derecha y se orienta diagonalmente hacia abajo y a la izquierda por encima de los otros dos hilos.
+* Con el hilo que está en la posición 2, teje un nudo festón doble sobre el hilo guía apretando hacia la izquierda.
+* Con el hilo de la extrema izquierda, teje el siguiente nudo festón doble sobre el hilo guía.
+* El hilo guía ha regresado a la extrema izquierda.
+
+**Repetición del Patrón:**
+* Alterna continuamente entre la Fase 1 y la Fase 2 para formar el zigzag regular en vaivén a lo largo de toda la pulsera.
+
+

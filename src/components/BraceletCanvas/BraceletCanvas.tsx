@@ -65,7 +65,8 @@ export function BraceletCanvas() {
     const availableHeight = Math.max(100, containerHeight - paddingTop - paddingBottom);
     if (containerHeight > 0) {
       // Multiply by 2 because some patterns skip rows (NONE knots) which don't add to height
-      actualRowsCount = Math.max(10, Math.floor(availableHeight / rowHeight) * 2);
+      const effectiveRowStep = patternId === 'zigzag-festoon' ? Math.max(rowHeight, 2.5) : rowHeight;
+      actualRowsCount = Math.min(300, Math.max(10, Math.floor(availableHeight / effectiveRowStep) * 2));
     }
 
     const sequence = pattern.generateSequence(threadsCount, actualRowsCount);
@@ -76,17 +77,37 @@ export function BraceletCanvas() {
     let currentY = paddingTop;
     let cutoffIndex = grid.length;
 
+    const isZigzagFestoon = patternId === 'zigzag-festoon';
+    const currentVs = useDesignStore.getState().verticalSpacing;
+    const minVs = pattern.minVerticalSpacing ?? 0.2;
+    const tiltFactor = Math.max(0, (currentVs - minVs) / (0.7 - minVs));
+    const inPassStep = isZigzagFestoon ? rowHeight * Math.min(1.0, tiltFactor) : rowHeight;
+    // cornerStep must be at least the knot height (knotSize * 0.35) plus spacing to prevent superposition
+    const cornerStep = isZigzagFestoon ? Math.max(rowHeight * 2, knotSize * 0.35 + 2) : rowHeight * 2;
+
     for (let i = 0; i < grid.length; i++) {
       const rowKnots = grid[i];
       rowY.push(currentY);
 
-      const hasKnots = rowKnots.some(k => k.type !== 'NONE');
-      if (hasKnots) {
-        currentY += rowHeight;
+      let stepY = rowHeight;
+      if (isZigzagFestoon) {
+        const cycleIdx = i % 6;
+        if (cycleIdx === 0 || cycleIdx === 3) {
+          stepY = inPassStep;
+        } else {
+          stepY = cornerStep / 2;
+        }
+      } else {
+        const hasKnots = rowKnots.some(k => k.type !== 'NONE');
+        if (!hasKnots) {
+          stepY = 0;
+        }
       }
 
+      currentY += stepY;
+
       // If adding another row would exceed the available height, stop here
-      if (currentY - paddingTop + rowHeight > availableHeight) {
+      if (currentY - paddingTop + stepY > availableHeight) {
         cutoffIndex = i + 1;
         break;
       }
@@ -199,8 +220,11 @@ export function BraceletCanvas() {
           }
           if (!shouldHide) {
             const isEdge = isLeftEdge || isRightEdge;
+            const isInnerThread = pattern?.applyAlphaToEdges ? true : !isEdge;
+            const shouldApplyAlpha = pattern?.innerThreadAlpha !== undefined && isInnerThread && rowIndex > 0;
 
-            if (pattern?.innerThreadAlpha !== undefined && !isEdge && rowIndex > 0) {
+            if (shouldApplyAlpha) {
+              ctx.globalAlpha = pattern.innerThreadAlpha!;
               // Draw drop shadow for the thread (shifted right and down so it's visible on vertical lines)
               ctx.beginPath();
               ctx.moveTo(startX + 2, prevY + 2);
@@ -216,10 +240,6 @@ export function BraceletCanvas() {
             ctx.lineTo(targetX, y);
             ctx.lineWidth = 6; // Thicker threads to reduce gaps
             ctx.strokeStyle = color;
-
-            if (pattern?.innerThreadAlpha !== undefined && !isEdge && rowIndex > 0) {
-              ctx.globalAlpha = pattern.innerThreadAlpha;
-            }
             ctx.stroke();
 
             const tex = getTexture(ctx);
@@ -339,6 +359,87 @@ export function BraceletCanvas() {
       });
     }
 
+    // Draw guide thread turnaround loops at the corners for zigzag-festoon connecting both knots
+    if (patternId === 'zigzag-festoon') {
+      const pillWidth = (knotSize / 2) * 1.3;
+      const bulge = Math.max(5, knotSize * 0.22);
+
+      for (let r = 0; r < grid.length - 2; r++) {
+        const cycleIdx = r % 6;
+        if (cycleIdx === 1) {
+          // Right corner: connects row r (knot 1-2) with row r + 2 (knot 1-2)
+          const knotUpper = grid[r].find(k => k.threadSpan === 2);
+          const knotLower = grid[r + 2].find(k => k.threadSpan === 2);
+          if (knotUpper && knotLower) {
+            const guideColor = knotUpper.color1;
+            const centerX = paddingX + 2 * horizontalStep;
+            const xRight = centerX + pillWidth / 2;
+            const yUpper = rowY[r] + knotSize / 2;
+            const yLower = rowY[r + 2] + knotSize / 2;
+            const startX = xRight - 3;
+            const endX = xRight - 3;
+
+            // Shadow
+            ctx.beginPath();
+            ctx.moveTo(startX, yUpper + 1);
+            ctx.bezierCurveTo(xRight + bulge + 1, yUpper + 1, xRight + bulge + 1, yLower + 1, endX, yLower + 1);
+            ctx.lineWidth = 4;
+            ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+            ctx.stroke();
+
+            // Guide loop connecting both knots
+            ctx.beginPath();
+            ctx.moveTo(startX, yUpper);
+            ctx.bezierCurveTo(xRight + bulge, yUpper, xRight + bulge, yLower, endX, yLower);
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = guideColor;
+            ctx.stroke();
+
+            const tex = getTexture(ctx);
+            if (tex) {
+              ctx.strokeStyle = tex;
+              ctx.stroke();
+            }
+          }
+        } else if (cycleIdx === 4) {
+          // Left corner: connects row r (knot 0-1) with row r + 2 (knot 0-1)
+          const knotUpper = grid[r].find(k => k.threadSpan === 2);
+          const knotLower = grid[r + 2].find(k => k.threadSpan === 2);
+          if (knotUpper && knotLower) {
+            const guideColor = knotUpper.color2;
+            const centerX = paddingX + horizontalStep;
+            const xLeft = centerX - pillWidth / 2;
+            const yUpper = rowY[r] + knotSize / 2;
+            const yLower = rowY[r + 2] + knotSize / 2;
+            const startX = xLeft + 3;
+            const endX = xLeft + 3;
+
+            // Shadow
+            ctx.beginPath();
+            ctx.moveTo(startX, yUpper + 1);
+            ctx.bezierCurveTo(xLeft - bulge - 1, yUpper + 1, xLeft - bulge - 1, yLower + 1, endX, yLower + 1);
+            ctx.lineWidth = 4;
+            ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+            ctx.stroke();
+
+            // Guide loop connecting both knots
+            ctx.beginPath();
+            ctx.moveTo(startX, yUpper);
+            ctx.bezierCurveTo(xLeft - bulge, yUpper, xLeft - bulge, yLower, endX, yLower);
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = guideColor;
+            ctx.stroke();
+
+            const tex = getTexture(ctx);
+            if (tex) {
+              ctx.strokeStyle = tex;
+              ctx.stroke();
+            }
+          }
+        }
+      }
+    }
+
     // Draw grid of knots (bottom to top so upper knots overlap lower ones)
     const reversedGrid = [...grid].reverse();
     reversedGrid.forEach((rowKnots, reverseIndex) => {
@@ -355,7 +456,7 @@ export function BraceletCanvas() {
 
         const renderer = KNOT_RENDERERS[knot.type];
         if (renderer) {
-          renderer({ ctx, knot, x, y, knotSize, currentKnotWidth, isLeftEdge, isRightEdge, patternId, rowIndex });
+          renderer({ ctx, knot, x, y, knotSize, currentKnotWidth, isLeftEdge, isRightEdge, patternId, rowIndex, verticalSpacing });
         }
 
         xOffset += currentKnotWidth;

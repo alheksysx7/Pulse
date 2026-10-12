@@ -11,6 +11,7 @@ export interface RenderContext {
   isRightEdge?: boolean;
   patternId?: string;
   rowIndex?: number;
+  verticalSpacing?: number;
 }
 
 export type KnotRenderer = (params: RenderContext) => void;
@@ -133,17 +134,15 @@ const drawHalfSquareKnot: KnotRenderer = ({ ctx, knot, x, y, knotSize, currentKn
   ctx.stroke();
 };
 
-const drawFestoonKnot: KnotRenderer = ({ ctx, knot, x, y, knotSize, currentKnotWidth, isLeftEdge, isRightEdge, patternId }) => {
+const drawFestoonKnot: KnotRenderer = ({ ctx, knot, x, y, knotSize, currentKnotWidth, patternId, verticalSpacing }) => {
   if (knot.type === 'NONE') return; // Draw nothing
 
-  const segmentWidth = currentKnotWidth / 2;
   const centerX = x + currentKnotWidth / 2;
 
   // A festoon knot (half-hitch) covers the guide thread.
   // F: working thread is left (color1), guide is right (color2). Knot is color1.
   // B: working thread is right (color2), guide is left (color1). Knot is color2.
   const isForward = knot.type === 'F' || knot.type === 'F_NO_SWAP';
-  const isBackward = knot.type === 'B' || knot.type === 'B_NO_SWAP';
   const knotColor = isForward ? knot.color1 : knot.color2;
 
   // Guide thread is hidden inside the knot so we don't draw it here.
@@ -166,7 +165,13 @@ const drawFestoonKnot: KnotRenderer = ({ ctx, knot, x, y, knotSize, currentKnotW
   // Angle for the zigzag
   // B knot goes down-right, F knot goes down-left
   let tiltMagnitude = 0.95; // Steep angle for chevron staircase effect
-  if (knot.type.includes('NO_SWAP') || patternId === 'alternating-2-thread') {
+  if (patternId === 'zigzag-festoon') {
+    // Al disminuir verticalSpacing hacia el mínimo (0.2), los nudos festón se vuelven progresivamente horizontales (tilt = 0)
+    const vs = verticalSpacing ?? 0.7;
+    const minVs = 0.2;
+    const factor = Math.max(0, (vs - minVs) / (0.7 - minVs));
+    tiltMagnitude = Math.min(1.1, factor * 0.85);
+  } else if (knot.type.includes('NO_SWAP') || patternId === 'alternating-2-thread') {
     tiltMagnitude = 0.2; // Half hitches are more horizontal
   }
   const tilt = isForward ? -tiltMagnitude : tiltMagnitude;
@@ -222,27 +227,6 @@ const drawFestoonKnot: KnotRenderer = ({ ctx, knot, x, y, knotSize, currentKnotW
   ctx.lineWidth = 2;
   ctx.strokeStyle = 'rgba(255,255,255,0.4)';
   ctx.stroke();
-
-  // Guide thread loop at the turnaround edges (only for zigzag festoon)
-  if ((knot.type === 'F' || knot.type === 'B') && patternId === 'zigzag-festoon') {
-    const guideColor = isForward ? knot.color2 : knot.color1;
-    if (isBackward && isRightEdge) {
-      // Draw a tiny loop on the right
-      ctx.beginPath();
-      ctx.arc(pillWidth / 2 - 1, 0, pillHeight / 2.5, -Math.PI / 2, Math.PI / 2);
-      ctx.lineWidth = 2.5;
-      ctx.strokeStyle = guideColor;
-      ctx.stroke();
-    }
-    if (isForward && isLeftEdge) {
-      // Draw a tiny loop on the left
-      ctx.beginPath();
-      ctx.arc(-pillWidth / 2 + 1, 0, pillHeight / 2.5, Math.PI / 2, Math.PI * 1.5);
-      ctx.lineWidth = 2.5;
-      ctx.strokeStyle = guideColor;
-      ctx.stroke();
-    }
-  }
 
   ctx.restore();
 };

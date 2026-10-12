@@ -8,6 +8,7 @@ export interface DesignState {
   rowsCount: number;
   colors: string[];
   activePaletteName: string | null;
+  paletteShift: number;
   verticalSpacing: number; // Multiplier for the vertical spacing between rows
   showBeads: boolean;
   beadType: 'gold' | 'silver' | 'wood';

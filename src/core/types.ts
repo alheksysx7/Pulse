@@ -20,6 +20,7 @@ export interface Pattern {
   shiftOddRows?: boolean; // If false, odd rows don't shift by 1 thread (default true)
   baseRowHeightRatio?: number; // Custom multiplier for base row height
   innerThreadAlpha?: number; // Alpha transparency for middle/inner threads behind the weave
+  applyAlphaToEdges?: boolean; // If true, apply innerThreadAlpha also to edge threads behind the weave (e.g. in zigzag patterns)
   horizontalSpacingRatio?: number; // Custom multiplier for horizontal spacing between threads (default 1.0)
   defaultVerticalSpacing?: number; // Custom vertical spacing for this pattern
   minVerticalSpacing?: number; // Minimum allowed vertical spacing

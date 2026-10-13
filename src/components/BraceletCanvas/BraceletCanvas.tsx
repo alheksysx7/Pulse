@@ -590,20 +590,11 @@ export function BraceletCanvas() {
     });
 
     if (match && match.knot.inThreadIds && match.knot.inColors) {
-      // Calculate exact knot screen position from canvas coordinates
-      const knotScreenLeft = rect.left + (match.x / scaleX);
-      const knotScreenTop = rect.top + (match.y / scaleY);
-      const knotScreenWidth = match.width / scaleX;
-      const knotScreenHeight = match.height / scaleY;
-
-      // Also get container bounds (the visible viewport of the simulation canvas)
       setSelectedKnot({
         rowIndex: match.rowIndex,
         knotType: match.knot.type,
         inThreadIds: match.knot.inThreadIds,
         inColors: match.knot.inColors,
-        screenX: knotScreenLeft + knotScreenWidth / 2,
-        screenY: knotScreenTop + knotScreenHeight / 2,
         canvasX: match.x,
         canvasY: match.y,
       });

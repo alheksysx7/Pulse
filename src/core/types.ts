@@ -10,8 +10,6 @@ export interface SelectedKnotInfo {
   knotType: string;
   inThreadIds: number[];
   inColors: string[];
-  screenX: number;
-  screenY: number;
   canvasX: number;
   canvasY: number;
 }

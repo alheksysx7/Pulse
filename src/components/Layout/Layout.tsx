@@ -4,6 +4,7 @@ import styles from './Layout.module.css';
 import { ThreadControls } from '../ThreadControls/ThreadControls';
 import { useDesignStore } from '../../store/useDesignStore';
 import { TRANSLATIONS } from '../../core/i18n';
+import { PulseLogo } from '../Logo/PulseLogo';
 
 // Code split the views for performance
 const BraceletCanvas = lazy(() => import('../BraceletCanvas/BraceletCanvas').then(m => ({ default: m.BraceletCanvas })));
@@ -14,9 +15,9 @@ type Theme = 'light' | 'dark' | 'nature';
 // Each theme is represented by the same festoon knot (forward "F" knot, as in the simulation),
 // differing only in color.
 const THEMES: { id: Theme; color: string; labelKey: 'themeNature' | 'themeDark' | 'themeLight' }[] = [
-  { id: 'nature', color: '#e07a5f', labelKey: 'themeNature' },
+  { id: 'dark', color: '#0f7c90', labelKey: 'themeDark' },
   { id: 'light', color: '#e8ae4c', labelKey: 'themeLight' },
-  { id: 'dark', color: '#0f7c90', labelKey: 'themeDark' }
+  { id: 'nature', color: '#e07a5f', labelKey: 'themeNature' }
 ];
 
 function FestoonKnot({ color }: { color: string }) {
@@ -65,32 +66,34 @@ export function Layout() {
     <div className={styles.appContainer} data-theme={theme}>
       <header className={styles.header}>
         <div className={styles.brand}>
-          <div className={styles.brandRow}>
+          <div className={styles.brandTitleWrap}>
+            <PulseLogo className={styles.logoMark} size={28} />
             <h1 className={styles.logo}>{t.appTitle}</h1>
-            <div className={styles.themeSwitcher} role="radiogroup" aria-label={t.themeAria}>
-              {THEMES.map(th => {
-                const label = t[th.labelKey];
-                return (
-                  <button
-                    key={th.id}
-                    type="button"
-                    role="radio"
-                    aria-checked={theme === th.id}
-                    aria-label={label}
-                    title={label}
-                    className={`${styles.knotButton} ${theme === th.id ? styles.knotActive : ''}`}
-                    onClick={() => changeTheme(th.id)}
-                  >
-                    <FestoonKnot color={th.color} />
-                  </button>
-                );
-              })}
-            </div>
           </div>
           <p className={styles.subtitle}>{t.appSubtitle}</p>
         </div>
 
         <div className={styles.headerActions}>
+          <div className={styles.themeSwitcher} role="radiogroup" aria-label={t.themeAria}>
+            {THEMES.map(th => {
+              const label = t[th.labelKey];
+              return (
+                <button
+                  key={th.id}
+                  type="button"
+                  role="radio"
+                  aria-checked={theme === th.id}
+                  aria-label={label}
+                  title={label}
+                  className={`${styles.knotButton} ${theme === th.id ? styles.knotActive : ''}`}
+                  onClick={() => changeTheme(th.id)}
+                >
+                  <FestoonKnot color={th.color} />
+                </button>
+              );
+            })}
+          </div>
+
           <div className={styles.langSwitcher} role="group" aria-label={t.languageAria}>
             <button
               type="button"

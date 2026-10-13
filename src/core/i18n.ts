@@ -47,6 +47,18 @@ export const TRANSLATIONS = {
     colorInputAria: (n: number) => `Color del hilo ${n}`,
     palettesLabel: 'Paletas de Colores',
     palettesSubtitle: 'Clic para aplicar. Clic de nuevo para rotar colores.',
+    divisionsResetNotice: 'Las divisiones de color se reiniciaron al cambiar la configuración.',
+    dismissNotice: 'Cerrar',
+    removeDivisionAria: 'Eliminar división de color',
+    addDivisionTitle: 'Cambiar color desde este nudo',
+    knotSelectedTitle: 'Nudo seleccionado',
+    knotRowLabel: (row: number) => `Fila ${row + 1}`,
+    knottedThread: 'Anudador',
+    guideThread: 'Guía',
+    changeColorFromHere: 'Cambiar color desde aquí',
+    maxDivisionsReached: 'Máximo 2 divisiones por hilo',
+    selectThreadToChange: 'Selecciona qué hilo cambiar:',
+    newColorLabel: 'Nuevo color:',
 
     // Pattern names (translated if needed)
     patterns: {
@@ -123,6 +135,18 @@ export const TRANSLATIONS = {
     colorInputAria: (n: number) => `Thread color ${n}`,
     palettesLabel: 'Color Palettes',
     palettesSubtitle: 'Click to apply. Click again to cycle colors.',
+    divisionsResetNotice: 'Color divisions were reset due to configuration change.',
+    dismissNotice: 'Dismiss',
+    removeDivisionAria: 'Remove color division',
+    addDivisionTitle: 'Change color from this knot',
+    knotSelectedTitle: 'Selected Knot',
+    knotRowLabel: (row: number) => `Row ${row + 1}`,
+    knottedThread: 'Working Thread',
+    guideThread: 'Guide',
+    changeColorFromHere: 'Change color from here',
+    maxDivisionsReached: 'Maximum 2 divisions per thread reached',
+    selectThreadToChange: 'Select thread to change:',
+    newColorLabel: 'New color:',
 
     // Pattern names (English)
     patterns: {

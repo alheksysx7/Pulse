@@ -395,4 +395,16 @@ En el simulador (`zigzag-festoon.ts`) y el renderizador de canvas (`BraceletCanv
 **Repetición del Patrón:**
 * Alterna continuamente entre la Fase 1 y la Fase 2 para formar el zigzag regular en vaivén a lo largo de toda la pulsera.
 
+## Divisiones de Color Interactivas en Nudos Festón (Corte Limpio)
+
+En el tejido real de macramé, cambiar el color de un hilo en medio de un diseño se realiza uniendo o reemplazando el hilo directamente en el nudo donde se desea iniciar el nuevo color (corte limpio).
+
+### Mecánica en la Aplicación
+1. **Interacción Directa:** Al hacer clic sobre cualquier nudo festón activo (`F`, `B`, `F_NO_SWAP`, `B_NO_SWAP`), se despliega un popover contextual.
+2. **Selección del Hilo:** Permite elegir entre el hilo anudador (hilo de trabajo) o el hilo guía en ese punto exacto del tejido.
+3. **Identidad del Hilo (`threadId`):** El color no se asocia rígidamente a la columna visual, sino a la identidad física del hilo, por lo que viajará con él a través de las diagonales e intercambios posteriores.
+4. **Límite de Tramos:** Cada hilo admite hasta 2 divisiones (3 segmentos de color en total).
+5. **Panel Lateral:** Cada hilo muestra su cronología de segmentos en el panel de control, permitiendo ajustar individualmente los colores, eliminar divisiones con el botón `×`, o pasar el cursor por encima para resaltar el hilo correspondiente en el lienzo.
+6. **Reinicio Seguro:** Al modificar el patrón o cambiar la cantidad de hilos de la pulsera, las divisiones se reinician automáticamente y se notifica al usuario mediante un aviso contextual.
+
 

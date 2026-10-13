@@ -1,4 +1,4 @@
-import { useState, Suspense, lazy } from 'react';
+import { useState, useEffect, Suspense, lazy } from 'react';
 import { ChevronUp, SlidersHorizontal } from 'lucide-react';
 import styles from './Layout.module.css';
 import { ThreadControls } from '../ThreadControls/ThreadControls';
@@ -44,8 +44,17 @@ export function Layout() {
   const [activeView, setActiveView] = useState<'simulation' | 'instructions'>('simulation');
   const [theme, setTheme] = useState<Theme>(getInitialTheme);
   const [isMobileControlsOpen, setIsMobileControlsOpen] = useState(true);
-  const { language, setLanguage } = useDesignStore();
+  const { language, setLanguage, divisionsResetNotice, clearDivisionsResetNotice } = useDesignStore();
   const t = TRANSLATIONS[language];
+
+  useEffect(() => {
+    if (divisionsResetNotice) {
+      const timer = setTimeout(() => {
+        clearDivisionsResetNotice();
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [divisionsResetNotice, clearDivisionsResetNotice]);
 
   const changeTheme = (tId: Theme) => {
     setTheme(tId);
@@ -154,6 +163,20 @@ export function Layout() {
           </div>
         </aside>
       </main>
+
+      {divisionsResetNotice && (
+        <div className={styles.toast} role="status" aria-live="polite">
+          <span>{t.divisionsResetNotice}</span>
+          <button
+            type="button"
+            className={styles.toastCloseBtn}
+            onClick={clearDivisionsResetNotice}
+            aria-label={t.dismissNotice}
+          >
+            {t.dismissNotice}
+          </button>
+        </div>
+      )}
     </div>
   );
 }

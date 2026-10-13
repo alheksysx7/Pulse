@@ -258,7 +258,56 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.15rem;
+  gap: 0.25rem;
+  padding: 0.2rem;
+  border-radius: 8px;
+  transition: background-color 200ms ease;
+}
+
+.colorItem:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.segmentList {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.segmentWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.removeSegmentBtn {
+  position: absolute;
+  top: -4px;
+  right: -5px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: none;
+  background: #ef4444;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  transition: transform 150ms ease, background-color 150ms ease;
+  z-index: 2;
+}
+
+.removeSegmentBtn:hover {
+  background: #dc2626;
+  transform: scale(1.2);
 }
 
 .colorLabel {
@@ -353,3 +402,233 @@
   text-overflow: ellipsis;
   line-height: 1.2;
 }
+
+/* ---------- Selected Knot Card ---------- */
+.knotCard {
+  border-radius: 16px;
+  background: rgba(234, 88, 12, 0.08);
+  border: 1px solid rgba(251, 146, 60, 0.35);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  padding: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  animation: knotCardIn 250ms ease-out;
+}
+
+@keyframes knotCardIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.knotCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 0.45rem;
+}
+
+.knotCardTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.knotSparkleIcon {
+  color: var(--color-accent-terracotta, #ea580c);
+}
+
+.knotCardTitle {
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #fff;
+  margin: 0;
+}
+
+.knotRowBadge {
+  font-size: 0.7rem;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.15rem 0.45rem;
+  border-radius: 9999px;
+  color: rgba(242, 239, 233, 0.75);
+}
+
+.knotCardCloseBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 6px;
+  border: none;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(242, 239, 233, 0.65);
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.knotCardCloseBtn:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+}
+
+.knotCardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.knotCardLabel {
+  font-size: 0.74rem;
+  font-weight: 500;
+  color: rgba(242, 239, 233, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.knotThreadSelector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.knotThreadOption {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.45rem 0.6rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  cursor: pointer;
+  transition: all 150ms ease;
+  text-align: left;
+}
+
+.knotThreadOption:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.knotThreadOptionSelected {
+  border-color: var(--color-accent-terracotta, #ea580c);
+  background: rgba(234, 88, 12, 0.15);
+  box-shadow: 0 0 0 1px rgba(234, 88, 12, 0.4);
+}
+
+.knotThreadSwatch {
+  width: 1.15rem;
+  height: 1.15rem;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.knotThreadText {
+  font-size: 0.78rem;
+  color: #f2efe9;
+}
+
+.knotColorPickerSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin-top: 0.15rem;
+}
+
+.knotColorInputRow {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.knotColorInput {
+  -webkit-appearance: none;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 0;
+  overflow: hidden;
+  background: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.knotColorInput::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.knotColorInput::-webkit-color-swatch {
+  border: none;
+  border-radius: 50%;
+}
+
+.knotHexCode {
+  font-size: 0.8rem;
+  font-family: monospace;
+  font-weight: 600;
+  color: #f2efe9;
+}
+
+.knotQuickPalette {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.knotQuickColor {
+  width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+  transition: transform 150ms ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.knotQuickColor:hover {
+  transform: scale(1.18);
+}
+
+.knotWarningMessage {
+  font-size: 0.74rem;
+  color: #fca5a5;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  padding: 0.45rem 0.6rem;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.knotSubmitBtn {
+  margin-top: 0.2rem;
+  padding: 0.6rem 0.85rem;
+  background: var(--color-accent-terracotta, #ea580c);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 150ms ease;
+  text-align: center;
+  border: none;
+  box-shadow: 0 2px 8px rgba(234, 88, 12, 0.35);
+}
+
+.knotSubmitBtn:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+

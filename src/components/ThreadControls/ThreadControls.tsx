@@ -1,11 +1,139 @@
 import { useState, type ReactNode } from 'react';
-import { ChevronDown, Lock } from 'lucide-react';
-import { useDesignStore } from '../../store/useDesignStore';
+import { ChevronDown, Lock, Sparkles, X } from 'lucide-react';
+import { useDesignStore, MAX_DIVISIONS } from '../../store/useDesignStore';
 import { PREDEFINED_PALETTES } from '../../core/palettes';
 import styles from './ThreadControls.module.css';
 import { PATTERNS } from '../../core/patterns';
 import { PatternPicker } from '../PatternPicker/PatternPicker';
 import { TRANSLATIONS } from '../../core/i18n';
+import type { SelectedKnotInfo } from '../../core/types';
+
+function SelectedKnotCardContent({ knot, onClose }: { knot: SelectedKnotInfo; onClose: () => void }) {
+  const { segments, addDivision, language, colors } = useDesignStore();
+  const t = TRANSLATIONS[language];
+
+  const [selectedThreadIndex, setSelectedThreadIndex] = useState<number>(0);
+  const activeThreadId = knot.inThreadIds[selectedThreadIndex] ?? knot.inThreadIds[0];
+  const currentThreadColor = knot.inColors[selectedThreadIndex] ?? '#000000';
+  const [newColor, setNewColor] = useState<string>(currentThreadColor);
+
+  const activeThreadSegments = segments[activeThreadId] || [];
+  const divisionsCount = Math.max(0, activeThreadSegments.length - 1);
+  const isMaxReached = divisionsCount >= MAX_DIVISIONS;
+
+  const isForward = knot.knotType === 'F' || knot.knotType === 'F_NO_SWAP';
+  const getThreadRole = (idx: number) => {
+    if (isForward) {
+      return idx === 0 ? t.knottedThread : t.guideThread;
+    } else {
+      return idx === 1 ? t.knottedThread : t.guideThread;
+    }
+  };
+
+  const quickPalette = Array.from(new Set(colors));
+
+  const handleApply = () => {
+    if (isMaxReached) return;
+    addDivision(activeThreadId, knot.rowIndex, newColor);
+    onClose();
+  };
+
+  return (
+    <section className={styles.knotCard} aria-label={t.addDivisionTitle}>
+      <div className={styles.knotCardHeader}>
+        <div className={styles.knotCardTitleRow}>
+          <Sparkles size={15} className={styles.knotSparkleIcon} />
+          <h4 className={styles.knotCardTitle}>{t.knotSelectedTitle}</h4>
+          <span className={styles.knotRowBadge}>{t.knotRowLabel(knot.rowIndex)}</span>
+        </div>
+        <button
+          type="button"
+          onClick={onClose}
+          className={styles.knotCardCloseBtn}
+          aria-label={t.dismissNotice}
+          title={t.dismissNotice}
+        >
+          <X size={15} />
+        </button>
+      </div>
+
+      <div className={styles.knotCardBody}>
+        <label className={styles.knotCardLabel}>{t.selectThreadToChange}</label>
+        <div className={styles.knotThreadSelector}>
+          {knot.inThreadIds.map((tId, idx) => {
+            const isSelected = selectedThreadIndex === idx;
+            const threadColor = knot.inColors[idx];
+            const role = getThreadRole(idx);
+            return (
+              <button
+                key={idx}
+                type="button"
+                className={`${styles.knotThreadOption} ${isSelected ? styles.knotThreadOptionSelected : ''}`}
+                onClick={() => {
+                  setSelectedThreadIndex(idx);
+                  setNewColor(knot.inColors[idx]);
+                }}
+              >
+                <span
+                  className={styles.knotThreadSwatch}
+                  style={{ backgroundColor: threadColor }}
+                />
+                <span className={styles.knotThreadText}>
+                  <strong>#{tId + 1}</strong> ({role})
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        <div className={styles.knotColorPickerSection}>
+          <label className={styles.knotCardLabel}>{t.newColorLabel}</label>
+          <div className={styles.knotColorInputRow}>
+            <input
+              type="color"
+              value={newColor}
+              onChange={(e) => setNewColor(e.target.value)}
+              className={styles.knotColorInput}
+            />
+            <span className={styles.knotHexCode}>{newColor.toUpperCase()}</span>
+          </div>
+
+          <div className={styles.knotQuickPalette}>
+            {quickPalette.map((c, i) => (
+              <button
+                key={i}
+                type="button"
+                className={styles.knotQuickColor}
+                style={{ backgroundColor: c }}
+                onClick={() => setNewColor(c)}
+              />
+            ))}
+          </div>
+        </div>
+
+        {isMaxReached ? (
+          <div className={styles.knotWarningMessage}>
+            {t.maxDivisionsReached}
+          </div>
+        ) : (
+          <button
+            type="button"
+            className={styles.knotSubmitBtn}
+            onClick={handleApply}
+          >
+            {t.changeColorFromHere}
+          </button>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function SelectedKnotCard({ knot, onClose }: { knot: SelectedKnotInfo; onClose: () => void }) {
+  // Key by row and knot coordinates so internal state resets cleanly when selecting another knot
+  const knotKey = `${knot.rowIndex}-${knot.canvasX}`;
+  return <SelectedKnotCardContent key={knotKey} knot={knot} onClose={onClose} />;
+}
 
 function Accordion({ title, defaultOpen = true, children }: { title: string; defaultOpen?: boolean; children: ReactNode }) {
   const [open, setOpen] = useState(defaultOpen);
@@ -31,6 +159,9 @@ export function ThreadControls() {
   const {
     threadsCount, setThreadsCount,
     colors, setColor,
+    segments, updateSegmentColor, removeDivision,
+    setHighlightedThreadId,
+    selectedKnot, setSelectedKnot,
     applyPalette,
     patternId,
     verticalSpacing, setVerticalSpacing,
@@ -48,6 +179,12 @@ export function ThreadControls() {
 
   return (
     <div className={styles.container}>
+      {selectedKnot && (
+        <SelectedKnotCard
+          knot={selectedKnot}
+          onClose={() => setSelectedKnot(null)}
+        />
+      )}
       <Accordion title={t.sectionBaseStructure}>
         <PatternPicker />
         <div className={styles.field}>
@@ -139,23 +276,57 @@ export function ThreadControls() {
         <div className={styles.field}>
           <h3 className={styles.title}>{t.colorsLabel}</h3>
           <div className={styles.colorRow}>
-            {colors.map((color, index) => (
-              <div
-                key={index}
-                className={styles.colorItem}
-                onDoubleClick={() => setAllColors(color)}
-                title={t.colorItemTooltip}
-              >
-                <input
-                  type="color"
-                  value={color}
-                  onChange={(e) => setColor(index, e.target.value)}
-                  className={styles.colorInput}
-                  aria-label={t.colorInputAria(index + 1)}
-                />
-                <span className={styles.colorLabel}>{index + 1}</span>
-              </div>
-            ))}
+            {Array.from({ length: threadsCount }, (_, index) => {
+              const threadSegs = segments[index] || [{ fromRow: 0, color: colors[index] || '#ea580c' }];
+              return (
+                <div
+                  key={index}
+                  className={styles.colorItem}
+                  onMouseEnter={() => setHighlightedThreadId(index)}
+                  onMouseLeave={() => setHighlightedThreadId(null)}
+                >
+                  <div className={styles.segmentList}>
+                    {threadSegs.map((seg, sIdx) => (
+                      <div
+                        key={sIdx}
+                        className={styles.segmentWrapper}
+                        onDoubleClick={() => sIdx === 0 && setAllColors(seg.color)}
+                        title={sIdx === 0 ? t.colorItemTooltip : undefined}
+                      >
+                        <input
+                          type="color"
+                          value={seg.color}
+                          onChange={(e) => {
+                            if (sIdx === 0) {
+                              setColor(index, e.target.value);
+                            } else {
+                              updateSegmentColor(index, sIdx, e.target.value);
+                            }
+                          }}
+                          className={styles.colorInput}
+                          aria-label={t.colorInputAria(index + 1)}
+                        />
+                        {sIdx > 0 && (
+                          <button
+                            type="button"
+                            className={styles.removeSegmentBtn}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              removeDivision(index, sIdx);
+                            }}
+                            aria-label={t.removeDivisionAria}
+                            title={t.removeDivisionAria}
+                          >
+                            ×
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  <span className={styles.colorLabel}>{index + 1}</span>
+                </div>
+              );
+            })}
           </div>
         </div>
 

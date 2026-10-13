@@ -1,10 +1,27 @@
 export type KnotType = 'HALF_SQUARE_L' | 'HALF_SQUARE_R' | 'F' | 'B' | 'F_NO_SWAP' | 'B_NO_SWAP' | 'NONE' | 'NONE_1';
 
+export interface ThreadSegment {
+  fromRow: number; // Row index where this segment starts (0 for initial segment)
+  color: string;
+}
+
+export interface SelectedKnotInfo {
+  rowIndex: number;
+  knotType: string;
+  inThreadIds: number[];
+  inColors: string[];
+  screenX: number;
+  screenY: number;
+  canvasX: number;
+  canvasY: number;
+}
+
 export interface Knot {
   type: KnotType;
   color1: string; // Left thread color
   color2: string; // Right thread color (or second thread)
   inColors?: string[]; // All incoming thread colors for this knot
+  inThreadIds?: number[]; // Original thread IDs (indices in row 0) entering this knot
   outColor1: string; // Color to render
   outColor2: string; 
   threadSpan: number; // 2 for normal, 4 for square

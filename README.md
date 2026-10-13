@@ -26,6 +26,8 @@
 
 - **🎛️ Controles en Tiempo Real:**
   - Cantidad de hilos personalizable con validación par/impar según el patrón.
+  - **Divisiones de Color Interactivas en Nudos Festón (Corte Limpio):** Haz clic sobre cualquier nudo festón para abrir el popover interactivo, elegir anudador o guía y cambiar su color a partir de ese punto (hasta 2 divisiones por hilo / 3 tramos de color).
+  - Cronología visual de tramos por hilo en el panel de control con selector por segmento, eliminación rápida (`×`) y resaltado sincronizado al pasar el cursor.
   - Selector interactivo de color por hilo y paletas predefinidas con rotación cíclica al hacer clic.
   - Control de espaciado vertical (`Vertical Spacing`) y tamaño de nudos (`Knot Size`).
   - Activación de abalorios y selección de materiales metálicos o maderas.

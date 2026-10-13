@@ -1,9 +1,19 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { useDesignStore } from '../../store/useDesignStore';
 import { PATTERNS } from '../../core/patterns';
 import { simulateSequence } from '../../core/simulate';
 import { KNOT_RENDERERS, getTexture } from '../../core/renderers/knotRenderers';
+import type { Knot } from '../../core/types';
 import styles from './BraceletCanvas.module.css';
+
+interface DrawnKnot {
+  rowIndex: number;
+  knot: Knot;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
 
 const getBrightness = (hex: string) => {
   let r = 0, g = 0, b = 0;
@@ -24,7 +34,22 @@ export function BraceletCanvas() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerHeight, setContainerHeight] = useState(0);
 
-  const { patternId, threadsCount, colors, verticalSpacing, knotSize, showBeads, beadType } = useDesignStore();
+  const {
+    patternId,
+    threadsCount,
+    colors,
+    segments,
+    highlightedThreadId,
+    selectedKnot,
+    setSelectedKnot,
+    verticalSpacing,
+    knotSize,
+    showBeads,
+    beadType
+  } = useDesignStore();
+
+  const [hoveredKnot, setHoveredKnot] = useState<{ rowIndex: number; x: number; y: number } | null>(null);
+  const drawnKnotsRef = useRef<DrawnKnot[]>([]);
 
   const avgBrightness = colors.reduce((acc, c) => acc + getBrightness(c), 0) / colors.length;
   const isLightPalette = avgBrightness > 200;
@@ -71,7 +96,7 @@ export function BraceletCanvas() {
 
     const sequence = pattern.generateSequence(threadsCount, actualRowsCount);
     const shiftOddRows = pattern.shiftOddRows !== false;
-    let { grid, finalColors } = simulateSequence(colors, sequence, shiftOddRows);
+    let { grid, finalColors } = simulateSequence(colors, sequence, shiftOddRows, segments);
 
     const rowY: number[] = [];
     let currentY = paddingTop;
@@ -132,7 +157,7 @@ export function BraceletCanvas() {
       trimmedSequence[last - 1] = ['NONE', 'B'];
       trimmedSequence[last] = ['NONE', 'NONE', 'B'];
     }
-    const finalSim = simulateSequence(colors, trimmedSequence, shiftOddRows);
+    const finalSim = simulateSequence(colors, trimmedSequence, shiftOddRows, segments);
     grid = finalSim.grid;
     finalColors = finalSim.finalColors;
 
@@ -234,13 +259,26 @@ export function BraceletCanvas() {
               ctx.stroke();
             }
 
+            const currentThreadId = knot.inThreadIds ? knot.inThreadIds[i] : undefined;
+            const isThreadHighlighted = currentThreadId !== undefined && currentThreadId === highlightedThreadId;
+
             // Draw the actual thread
             ctx.beginPath();
             ctx.moveTo(startX, prevY);
             ctx.lineTo(targetX, y);
-            ctx.lineWidth = 6; // Thicker threads to reduce gaps
-            ctx.strokeStyle = color;
+            ctx.lineWidth = isThreadHighlighted ? 8 : 6; // Thicker threads to reduce gaps
+            ctx.strokeStyle = isThreadHighlighted ? '#ffffff' : color;
             ctx.stroke();
+
+            if (isThreadHighlighted) {
+              // Draw colored core inside highlight
+              ctx.beginPath();
+              ctx.moveTo(startX, prevY);
+              ctx.lineTo(targetX, y);
+              ctx.lineWidth = 5;
+              ctx.strokeStyle = color;
+              ctx.stroke();
+            }
 
             const tex = getTexture(ctx);
             if (tex) {
@@ -440,6 +478,9 @@ export function BraceletCanvas() {
       }
     }
 
+    // Clear and populate drawn knots for interactive hit-testing
+    const drawnKnots: DrawnKnot[] = [];
+
     // Draw grid of knots (bottom to top so upper knots overlap lower ones)
     const reversedGrid = [...grid].reverse();
     reversedGrid.forEach((rowKnots, reverseIndex) => {
@@ -459,15 +500,124 @@ export function BraceletCanvas() {
           renderer({ ctx, knot, x, y, knotSize, currentKnotWidth, isLeftEdge, isRightEdge, patternId, rowIndex, verticalSpacing });
         }
 
+        // Only festoon knots are interactive for color divisions
+        const isFestoon = knot.type === 'F' || knot.type === 'B' || knot.type === 'F_NO_SWAP' || knot.type === 'B_NO_SWAP';
+        if (isFestoon && knot.inThreadIds && knot.inThreadIds.length > 0) {
+          drawnKnots.push({
+            rowIndex,
+            knot,
+            x,
+            y,
+            width: currentKnotWidth,
+            height: knotSize
+          });
+        }
+
         xOffset += currentKnotWidth;
       });
     });
 
-  }, [patternId, threadsCount, colors, containerHeight, verticalSpacing, knotSize, showBeads, beadType]);
+    drawnKnotsRef.current = drawnKnots;
+
+    // Draw selection or hover ring on top
+    const targetKnot = selectedKnot 
+      ? { rowIndex: selectedKnot.rowIndex, x: selectedKnot.canvasX, y: selectedKnot.canvasY }
+      : hoveredKnot;
+
+    if (targetKnot) {
+      const match = drawnKnots.find(dk => dk.rowIndex === targetKnot.rowIndex && Math.abs(dk.x - targetKnot.x) < 5);
+      if (match) {
+        ctx.save();
+        const centerX = match.x + match.width / 2;
+        const centerY = match.y + match.height / 2;
+        const radius = Math.max(match.width, match.height) / 2 + 3;
+
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+        ctx.lineWidth = 2.5;
+        ctx.strokeStyle = selectedKnot ? '#D36C50' : 'rgba(211, 108, 80, 0.6)';
+        ctx.setLineDash([4, 3]);
+        ctx.stroke();
+        ctx.restore();
+      }
+    }
+
+  }, [patternId, threadsCount, colors, segments, highlightedThreadId, containerHeight, verticalSpacing, knotSize, showBeads, beadType, hoveredKnot, selectedKnot]);
+
+  // Pointer event handlers for hit testing festoon knots
+  const handlePointerMove = useCallback((e: React.PointerEvent<HTMLCanvasElement>) => {
+    // Only handle mouse / desktop hover
+    if (e.pointerType === 'touch') return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / (window.devicePixelRatio || 1) / rect.width;
+    const scaleY = canvas.height / (window.devicePixelRatio || 1) / rect.height;
+    const x = (e.clientX - rect.left) * scaleX;
+    const y = (e.clientY - rect.top) * scaleY;
+
+    // Find any knot bounding box containing (x, y)
+    const match = drawnKnotsRef.current.find(k => {
+      const pad = 4;
+      return x >= k.x - pad && x <= k.x + k.width + pad && y >= k.y - pad && y <= k.y + k.height + pad;
+    });
+
+    if (match) {
+      canvas.style.cursor = 'pointer';
+      if (!hoveredKnot || hoveredKnot.rowIndex !== match.rowIndex || hoveredKnot.x !== match.x) {
+        setHoveredKnot({ rowIndex: match.rowIndex, x: match.x, y: match.y });
+      }
+    } else {
+      canvas.style.cursor = 'default';
+      if (hoveredKnot) {
+        setHoveredKnot(null);
+      }
+    }
+  }, [hoveredKnot]);
+
+  const handlePointerDown = useCallback((e: React.PointerEvent<HTMLCanvasElement>) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / (window.devicePixelRatio || 1) / rect.width;
+    const scaleY = canvas.height / (window.devicePixelRatio || 1) / rect.height;
+    const x = (e.clientX - rect.left) * scaleX;
+    const y = (e.clientY - rect.top) * scaleY;
+
+    const match = drawnKnotsRef.current.find(k => {
+      const pad = 6;
+      return x >= k.x - pad && x <= k.x + k.width + pad && y >= k.y - pad && y <= k.y + k.height + pad;
+    });
+
+    if (match && match.knot.inThreadIds && match.knot.inColors) {
+      // Calculate exact knot screen position from canvas coordinates
+      const knotScreenLeft = rect.left + (match.x / scaleX);
+      const knotScreenTop = rect.top + (match.y / scaleY);
+      const knotScreenWidth = match.width / scaleX;
+      const knotScreenHeight = match.height / scaleY;
+
+      // Also get container bounds (the visible viewport of the simulation canvas)
+      setSelectedKnot({
+        rowIndex: match.rowIndex,
+        knotType: match.knot.type,
+        inThreadIds: match.knot.inThreadIds,
+        inColors: match.knot.inColors,
+        screenX: knotScreenLeft + knotScreenWidth / 2,
+        screenY: knotScreenTop + knotScreenHeight / 2,
+        canvasX: match.x,
+        canvasY: match.y,
+      });
+    }
+  }, [setSelectedKnot]);
 
   return (
     <div ref={containerRef} className={`${styles.container} ${isLightPalette ? styles.darkBackground : ''}`}>
-      <canvas ref={canvasRef} className={styles.canvas} />
+      <canvas
+        ref={canvasRef}
+        className={styles.canvas}
+        onPointerMove={handlePointerMove}
+        onPointerDown={handlePointerDown}
+      />
     </div>
   );
 }

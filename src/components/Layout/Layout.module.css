@@ -323,37 +323,209 @@
   font-size: 0.875rem;
 }
 
+/* Bottom Sheet mobile controls (hidden on desktop) */
+.mobileBackdrop {
+  display: none;
+}
+
+.sheetHandleBtn {
+  display: none;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
 @media (max-width: 768px) {
   .appContainer {
     height: 100dvh;
-    overflow-y: auto;
+    overflow: hidden;
   }
 
   .main {
     flex-direction: column;
-    overflow: visible;
-    min-height: calc(100dvh - 3.5rem);
+    overflow: hidden;
+    height: calc(100dvh - 3.5rem);
+    position: relative;
+    display: flex;
   }
 
-  .sidebar {
-    position: relative;
-    left: auto;
-    top: auto;
-    bottom: auto;
-    width: auto;
+  /* --- Top Section: Simulation Workspace --- */
+  .workspace {
+    padding: 0.5rem 0.75rem 0.25rem 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    width: 100%;
+    min-height: 0;
+    overflow: hidden;
+    transition: flex 300ms ease, height 300ms ease;
+  }
+
+  /* When split view is open: simulation gets ~44% of vertical space, always in view */
+  .main.splitOpen .workspace {
+    flex: 0 0 44%;
+    height: 44%;
+    max-height: 44%;
+  }
+
+  /* When controls are collapsed: simulation expands to full available height */
+  .main.splitCollapsed .workspace {
+    flex: 1;
     height: auto;
-    max-height: 52vh;
-    margin: 0.75rem 0.75rem 0.25rem 0.75rem;
+    max-height: none;
+    padding-bottom: 0.5rem;
+  }
+
+  .viewTabs {
+    gap: 0.5rem;
     flex-shrink: 0;
   }
 
-  .controlsPanel {
-    max-height: 52vh;
+  .tab {
+    padding: 0.25rem 0.75rem;
+    font-size: 0.8rem;
   }
 
-  .workspace {
-    padding: 0.75rem;
+  .viewContent {
     flex: 1;
-    min-height: 380px;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    border-radius: var(--radius-md);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  }
+
+  /* --- Bottom Section: Controls Sidebar --- */
+  .sidebar {
+    position: relative;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    top: auto;
+    width: 100%;
+    margin: 0;
+    z-index: 20;
+    border-radius: 20px 20px 0 0;
+    border-bottom: none;
+    border-left: none;
+    border-right: none;
+    box-shadow: 0 -8px 28px rgba(0, 0, 0, 0.45);
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(24, 22, 21, 0.94);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    backdrop-filter: blur(28px) saturate(180%);
+    transition: flex 300ms cubic-bezier(0.16, 1, 0.3, 1), height 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .main.splitOpen .sidebar {
+    flex: 1 1 56%;
+    height: 56%;
+    max-height: 56%;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .main.splitCollapsed .sidebar {
+    flex: 0 0 44px;
+    height: 44px;
+    min-height: 44px;
+    max-height: 44px;
+    overflow: hidden;
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.3);
+  }
+
+  .sheetHandleBtn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 44px;
+    min-height: 44px;
+    padding: 0 1rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    user-select: none;
+    flex-shrink: 0;
+  }
+
+  .sheetHandlePill {
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 36px;
+    height: 3.5px;
+    border-radius: var(--radius-full);
+    background: rgba(255, 255, 255, 0.35);
+  }
+
+  .appContainer[data-theme='light'] .sheetHandlePill {
+    background: rgba(0, 0, 0, 0.25);
+  }
+
+  .appContainer[data-theme='light'] .sidebar {
+    background-color: rgba(255, 255, 255, 0.95);
+    border-top-color: rgba(0, 0, 0, 0.12);
+    box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.08);
+  }
+
+  .appContainer[data-theme='nature'] .sidebar {
+    background-color: rgba(248, 251, 244, 0.95);
+    border-top-color: rgba(0, 0, 0, 0.1);
+  }
+
+  .sheetHandleLeft {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .sheetIcon {
+    color: var(--color-accent-terracotta, #fb923c);
+  }
+
+  .sheetHandleTitle {
+    font-size: 0.825rem;
+    font-weight: 600;
+    color: var(--color-text);
+    letter-spacing: 0.01em;
+  }
+
+  .sheetHandleRight {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .sheetHandleAction {
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .sheetChevron {
+    color: var(--color-text-muted);
+    transition: transform 250ms ease;
+  }
+
+  .sheetChevronDown {
+    transform: rotate(180deg);
+  }
+
+  .controlsPanel {
+    flex: 1;
+    max-height: none;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    padding: 0.25rem 0.85rem 2.5rem;
   }
 }
+

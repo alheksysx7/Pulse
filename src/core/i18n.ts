@@ -16,6 +16,11 @@ export const TRANSLATIONS = {
     tabInstructions: 'Instrucciones',
     loadingView: 'Cargando vista...',
 
+    // Mobile Bottom Sheet
+    controlsSheetTitle: 'Controles y Ajustes',
+    controlsSheetExpand: 'Abrir controles',
+    controlsSheetCollapse: 'Pantalla completa',
+
     // Sidebar Accordions
     sectionBaseStructure: 'Estructura Base',
     sectionGeometry: 'Geometría',
@@ -86,6 +91,11 @@ export const TRANSLATIONS = {
     tabSimulation: 'Simulation',
     tabInstructions: 'Instructions',
     loadingView: 'Loading view...',
+
+    // Mobile Bottom Sheet
+    controlsSheetTitle: 'Controls & Settings',
+    controlsSheetExpand: 'Open controls',
+    controlsSheetCollapse: 'Full screen',
 
     // Sidebar Accordions
     sectionBaseStructure: 'Base Structure',

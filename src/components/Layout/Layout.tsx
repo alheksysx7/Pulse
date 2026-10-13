@@ -1,4 +1,5 @@
 import { useState, Suspense, lazy } from 'react';
+import { ChevronUp, SlidersHorizontal } from 'lucide-react';
 import styles from './Layout.module.css';
 import { ThreadControls } from '../ThreadControls/ThreadControls';
 import { useDesignStore } from '../../store/useDesignStore';
@@ -42,6 +43,7 @@ const getInitialTheme = (): Theme => {
 export function Layout() {
   const [activeView, setActiveView] = useState<'simulation' | 'instructions'>('simulation');
   const [theme, setTheme] = useState<Theme>(getInitialTheme);
+  const [isMobileControlsOpen, setIsMobileControlsOpen] = useState(true);
   const { language, setLanguage } = useDesignStore();
   const t = TRANSLATIONS[language];
 
@@ -101,13 +103,7 @@ export function Layout() {
         </div>
       </header>
 
-      <main className={styles.main}>
-        <aside className={styles.sidebar}>
-          <div className={styles.controlsPanel}>
-            <ThreadControls />
-          </div>
-        </aside>
-
+      <main className={`${styles.main} ${isMobileControlsOpen ? styles.splitOpen : styles.splitCollapsed}`}>
         <section className={styles.workspace}>
           <div className={styles.viewTabs}>
             <button 
@@ -131,6 +127,32 @@ export function Layout() {
             </Suspense>
           </div>
         </section>
+
+        <aside className={`${styles.sidebar} ${isMobileControlsOpen ? styles.sheetOpen : ''}`}>
+          <button
+            type="button"
+            className={styles.sheetHandleBtn}
+            onClick={() => setIsMobileControlsOpen(prev => !prev)}
+            aria-expanded={isMobileControlsOpen}
+            aria-label={isMobileControlsOpen ? t.controlsSheetCollapse : t.controlsSheetExpand}
+          >
+            <div className={styles.sheetHandlePill} />
+            <div className={styles.sheetHandleLeft}>
+              <SlidersHorizontal size={15} className={styles.sheetIcon} />
+              <span className={styles.sheetHandleTitle}>{t.controlsSheetTitle}</span>
+            </div>
+            <div className={styles.sheetHandleRight}>
+              <span className={styles.sheetHandleAction}>
+                {isMobileControlsOpen ? t.controlsSheetCollapse : t.controlsSheetExpand}
+              </span>
+              <ChevronUp className={`${styles.sheetChevron} ${isMobileControlsOpen ? styles.sheetChevronDown : ''}`} size={18} />
+            </div>
+          </button>
+
+          <div className={styles.controlsPanel}>
+            <ThreadControls />
+          </div>
+        </aside>
       </main>
     </div>
   );

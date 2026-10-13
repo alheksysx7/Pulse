@@ -14,9 +14,9 @@ type Theme = 'light' | 'dark' | 'nature';
 // Each theme is represented by the same festoon knot (forward "F" knot, as in the simulation),
 // differing only in color.
 const THEMES: { id: Theme; color: string; labelKey: 'themeNature' | 'themeDark' | 'themeLight' }[] = [
-  { id: 'nature', color: '#4ade80', labelKey: 'themeNature' },
-  { id: 'dark', color: '#52525b', labelKey: 'themeDark' },
-  { id: 'light', color: '#fdba74', labelKey: 'themeLight' },
+  { id: 'nature', color: '#e07a5f', labelKey: 'themeNature' },
+  { id: 'light', color: '#e8ae4c', labelKey: 'themeLight' },
+  { id: 'dark', color: '#0f7c90', labelKey: 'themeDark' }
 ];
 
 function FestoonKnot({ color }: { color: string }) {
@@ -115,13 +115,13 @@ export function Layout() {
       <main className={`${styles.main} ${isMobileControlsOpen ? styles.splitOpen : styles.splitCollapsed}`}>
         <section className={styles.workspace}>
           <div className={styles.viewTabs}>
-            <button 
+            <button
               className={`${styles.tab} ${activeView === 'simulation' ? styles.activeTab : ''}`}
               onClick={() => setActiveView('simulation')}
             >
               {t.tabSimulation}
             </button>
-            <button 
+            <button
               className={`${styles.tab} ${activeView === 'instructions' ? styles.activeTab : ''}`}
               onClick={() => setActiveView('instructions')}
             >

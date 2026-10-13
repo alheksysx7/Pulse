@@ -26,3 +26,9 @@
   background-color: #3b3a38;
   background-image: radial-gradient(#5a5855 1px, transparent 1px);
 }
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem 0.5rem;
+  }
+}

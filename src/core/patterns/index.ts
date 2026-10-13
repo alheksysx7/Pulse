@@ -11,16 +11,16 @@ import { symmetricFestoon4Pattern } from './feston-simetrico-4';
 import type { Pattern } from '../types';
 
 export const PATTERNS: Record<string, Pattern> = {
-  [squarePattern.id]: squarePattern,
+  [diagonalFestoonPattern.id]: diagonalFestoonPattern,
   [symmetricFestoon4Pattern.id]: symmetricFestoon4Pattern,
   [diagonalPairs6Pattern.id]: diagonalPairs6Pattern,
   [alternating2ThreadPattern.id]: alternating2ThreadPattern,
   [zigzagFestoonPattern.id]: zigzagFestoonPattern,
-  [diagonalFestoonPattern.id]: diagonalFestoonPattern,
   [jumpingFestoonPattern.id]: jumpingFestoonPattern,
   [alternatingHalfHitchPattern.id]: alternatingHalfHitchPattern,
   [vFestoonChevronPattern.id]: vFestoonChevronPattern,
-  [classicChevronPattern.id]: classicChevronPattern
+  [classicChevronPattern.id]: classicChevronPattern,
+  [squarePattern.id]: squarePattern
 };
 
 export const PATTERN_LIST = Object.values(PATTERNS);

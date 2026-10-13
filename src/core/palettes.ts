@@ -41,10 +41,6 @@ export const PREDEFINED_PALETTES: Palette[] = [
     colors: ['#2C4C3B', '#596A48', '#4A3525', '#8B3A33', '#888C8D']
   },
   {
-    name: 'Cereza Burdeos',
-    colors: ['#6D1A2B', '#B3202F', '#E39AA5', '#EFE4DC', '#2B1618']
-  },
-  {
     name: 'Sorbete Vivo',
     colors: ['#F2693F', '#F4B731', '#EE7FA3', '#4DB6D9', '#8A55C9']
   },

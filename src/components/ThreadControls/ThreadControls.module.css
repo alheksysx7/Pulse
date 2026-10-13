@@ -7,13 +7,13 @@
 /* ---------- Accordion ---------- */
 .accordion {
   border-radius: 16px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--ctrl-card-bg, rgba(255, 255, 255, 0.03));
+  border: 1px solid var(--ctrl-card-border, rgba(255, 255, 255, 0.06));
   transition: all 300ms ease-out;
 }
 
 .accordion.open {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--ctrl-card-bg-open, rgba(255, 255, 255, 0.05));
 }
 
 .accordionHeader {
@@ -22,7 +22,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 0.7rem 0.9rem;
-  color: #f2efe9;
+  color: var(--ctrl-text, #f2efe9);
   background: transparent;
   border-radius: 16px;
   cursor: pointer;
@@ -30,7 +30,7 @@
 }
 
 .accordionHeader:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--ctrl-card-hover, rgba(255, 255, 255, 0.05));
 }
 
 .accordionTitle {
@@ -42,6 +42,7 @@
 
 .chevron {
   opacity: 0.7;
+  color: var(--ctrl-text-muted, inherit);
   transition: transform 300ms ease-out;
 }
 
@@ -87,7 +88,7 @@
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: rgba(242, 239, 233, 0.65);
+  color: var(--ctrl-text-muted, rgba(242, 239, 233, 0.65));
 }
 
 .headerWithBadge {
@@ -105,9 +106,9 @@
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: rgba(242, 239, 233, 0.7);
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--ctrl-badge-text, rgba(242, 239, 233, 0.7));
+  background: var(--ctrl-badge-bg, rgba(255, 255, 255, 0.06));
+  border: 1px solid var(--ctrl-badge-border, rgba(255, 255, 255, 0.1));
   border-radius: var(--radius-full);
   user-select: none;
 }
@@ -118,7 +119,7 @@
 
 .subtitle {
   font-size: 0.8rem;
-  color: rgba(242, 239, 233, 0.5);
+  color: var(--ctrl-text-dim, rgba(242, 239, 233, 0.5));
   margin-top: -0.15rem;
 }
 
@@ -129,14 +130,15 @@
   width: 100%;
   height: 6px;
   border-radius: var(--radius-full);
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--ctrl-track-bg, rgba(255, 255, 255, 0.12));
   outline: none;
   cursor: pointer;
   transition: all 300ms ease-out;
 }
 
 .slider:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--ctrl-track-bg, rgba(255, 255, 255, 0.2));
+  filter: brightness(1.1);
 }
 
 .slider::-webkit-slider-thumb {
@@ -170,7 +172,7 @@
   opacity: 0.4;
   cursor: default;
   filter: grayscale(80%);
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--ctrl-track-bg, rgba(255, 255, 255, 0.12));
 }
 
 .disabledSlider:hover::-webkit-slider-thumb,
@@ -181,7 +183,7 @@
 
 .fixedHint {
   font-size: 0.8rem;
-  color: rgba(242, 239, 233, 0.5);
+  color: var(--ctrl-text-dim, rgba(242, 239, 233, 0.5));
   line-height: 1.3;
 }
 
@@ -196,7 +198,7 @@
 .toggleLabel {
   font-size: 0.9rem;
   font-weight: 500;
-  color: #f2efe9;
+  color: var(--ctrl-text, #f2efe9);
 }
 
 .switch {
@@ -205,8 +207,8 @@
   width: 40px;
   height: 22px;
   border-radius: var(--radius-full);
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: var(--ctrl-track-bg, rgba(255, 255, 255, 0.12));
+  border: 1px solid var(--ctrl-input-border, rgba(255, 255, 255, 0.15));
   cursor: pointer;
   transition: all 300ms ease-out;
 }
@@ -236,15 +238,16 @@
   width: 100%;
   padding: 0.4rem 0.6rem;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.06);
-  color: #f2efe9;
+  border: 1px solid var(--ctrl-input-border, rgba(255, 255, 255, 0.12));
+  background: var(--ctrl-input-bg, rgba(255, 255, 255, 0.06));
+  color: var(--ctrl-text, #f2efe9);
   font-size: 0.9rem;
   transition: all 300ms ease-out;
 }
 
 .select option {
-  color: #2d2a26;
+  background: var(--ctrl-input-bg, #ffffff);
+  color: var(--ctrl-text, #2d2a26);
 }
 
 /* ---------- Colors ---------- */
@@ -265,7 +268,7 @@
 }
 
 .colorItem:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--ctrl-card-hover, rgba(255, 255, 255, 0.05));
 }
 
 .segmentList {
@@ -312,12 +315,12 @@
 
 .colorLabel {
   font-size: 0.72rem;
-  color: rgba(242, 239, 233, 0.5);
+  color: var(--ctrl-text-dim, rgba(242, 239, 233, 0.5));
 }
 
 .colorInput {
   -webkit-appearance: none;
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  border: 1px solid var(--ctrl-input-border, rgba(255, 255, 255, 0.25));
   width: 1.75rem;
   height: 1.75rem;
   border-radius: var(--radius-full);
@@ -355,16 +358,16 @@
   gap: 0.45rem;
   padding: 0.6rem;
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--ctrl-btn-border, rgba(255, 255, 255, 0.08));
+  background: var(--ctrl-btn-bg, rgba(255, 255, 255, 0.04));
   cursor: pointer;
   transition: all 300ms ease-out;
   text-align: left;
 }
 
 .paletteButton:hover {
-  background: rgba(255, 255, 255, 0.09);
-  border-color: rgba(255, 255, 255, 0.22);
+  background: var(--ctrl-btn-hover, rgba(255, 255, 255, 0.09));
+  border-color: var(--ctrl-btn-border, rgba(255, 255, 255, 0.22));
   transform: translateY(-1px);
 }
 
@@ -375,7 +378,7 @@
 }
 
 .paletteButtonActive .paletteName {
-  color: #fff;
+  color: var(--color-accent-terracotta, #ea580c);
   font-weight: 600;
 }
 
@@ -395,7 +398,7 @@
 .paletteName {
   font-size: 0.76rem;
   font-weight: 500;
-  color: rgba(242, 239, 233, 0.85);
+  color: var(--ctrl-text, rgba(242, 239, 233, 0.85));
   text-align: left;
   white-space: nowrap;
   overflow: hidden;
@@ -431,7 +434,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--ctrl-card-border, rgba(255, 255, 255, 0.08));
   padding-bottom: 0.45rem;
 }
 
@@ -450,16 +453,16 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: #fff;
+  color: var(--ctrl-text, #fff);
   margin: 0;
 }
 
 .knotRowBadge {
   font-size: 0.7rem;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--ctrl-badge-bg, rgba(255, 255, 255, 0.1));
   padding: 0.15rem 0.45rem;
   border-radius: 9999px;
-  color: rgba(242, 239, 233, 0.75);
+  color: var(--ctrl-badge-text, rgba(242, 239, 233, 0.75));
 }
 
 .knotCardCloseBtn {
@@ -470,15 +473,15 @@
   height: 1.5rem;
   border-radius: 6px;
   border: none;
-  background: rgba(255, 255, 255, 0.06);
-  color: rgba(242, 239, 233, 0.65);
+  background: var(--ctrl-btn-bg, rgba(255, 255, 255, 0.06));
+  color: var(--ctrl-text-muted, rgba(242, 239, 233, 0.65));
   cursor: pointer;
   transition: all 150ms ease;
 }
 
 .knotCardCloseBtn:hover {
-  background: rgba(255, 255, 255, 0.14);
-  color: #fff;
+  background: var(--ctrl-btn-hover, rgba(255, 255, 255, 0.14));
+  color: var(--ctrl-text, #fff);
 }
 
 .knotCardBody {
@@ -490,7 +493,7 @@
 .knotCardLabel {
   font-size: 0.74rem;
   font-weight: 500;
-  color: rgba(242, 239, 233, 0.6);
+  color: var(--ctrl-text-muted, rgba(242, 239, 233, 0.6));
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -507,16 +510,16 @@
   gap: 0.55rem;
   padding: 0.45rem 0.6rem;
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--ctrl-btn-border, rgba(255, 255, 255, 0.1));
+  background: var(--ctrl-btn-bg, rgba(255, 255, 255, 0.04));
   cursor: pointer;
   transition: all 150ms ease;
   text-align: left;
 }
 
 .knotThreadOption:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.2);
+  background: var(--ctrl-btn-hover, rgba(255, 255, 255, 0.08));
+  border-color: var(--ctrl-btn-border, rgba(255, 255, 255, 0.2));
 }
 
 .knotThreadOptionSelected {
@@ -536,7 +539,7 @@
 
 .knotThreadText {
   font-size: 0.78rem;
-  color: #f2efe9;
+  color: var(--ctrl-text, #f2efe9);
 }
 
 .knotColorPickerSection {
@@ -554,7 +557,7 @@
 
 .knotColorInput {
   -webkit-appearance: none;
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  border: 1px solid var(--ctrl-input-border, rgba(255, 255, 255, 0.25));
   width: 2rem;
   height: 2rem;
   border-radius: 50%;
@@ -578,7 +581,7 @@
   font-size: 0.8rem;
   font-family: monospace;
   font-weight: 600;
-  color: #f2efe9;
+  color: var(--ctrl-text, #f2efe9);
 }
 
 .knotQuickPalette {
@@ -591,7 +594,7 @@
   width: 1.35rem;
   height: 1.35rem;
   border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid var(--ctrl-input-border, rgba(255, 255, 255, 0.15));
   cursor: pointer;
   transition: transform 150ms ease;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);

@@ -60,3 +60,22 @@
 .section li strong {
   color: var(--color-text);
 }
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0.85rem;
+  }
+
+  .content {
+    gap: 1rem;
+  }
+
+  .section {
+    padding: 1rem;
+  }
+
+  .title {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+}
